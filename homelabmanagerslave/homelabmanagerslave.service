@@ -1,0 +1,15 @@
+[Unit]
+Description=Homelabmanagerslave
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+User=root
+Type=simple
+Restart=always
+RestartSec=1
+ExecStartPre=/root/ramdisk.sh
+ExecStart=/usr/bin/bash -c "while true; do /root/homelabmanager.sh; sleep 1; done"
+
+[Install]
+WantedBy=multi-user.target
