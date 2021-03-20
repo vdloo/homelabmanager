@@ -1,0 +1,4 @@
+Put this in the crontab on the VM saltmaster:
+```
+*/2 * * * * salt-run manage.down removekeys=True > /dev/null 2>&1
+```
