@@ -1,3 +1,4 @@
+from os import environ
 from django.http import HttpResponse
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
@@ -19,26 +20,48 @@ provider "libvirt" {
 """
 
 SALT_ROLE = """
-data "template_file" "{role}_user_data" {{
+data "template_file" "{name}_user_data" {{
   template = <<EOT
 #cloud-config
-write_files:
--   content: "role: {role}"
-    owner: root:root
-    path: /etc/salt/grains
-    permissions: '0644'
--   content: ""
-    owner: root:root
-    path: /etc/cloud/cloud.cfg
-    permissions: '0644'
+runcmd:
+- |
+    set -e
+    # Obviously you should not do this in any real environment
+    echo "root:toor" | chpasswd
+    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+    sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+    
+    # Configure the hostname
+    echo {name} > /etc/hostname
+    echo "127.0.0.1\tlocalhost" > /etc/hosts
+    echo "127.0.0.1\t{name}" >> /etc/hosts
+    
+    # Resize disk and install SaltStack
+    curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest/salt-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg] https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest focal main" > /etc/apt/sources.list.d/salt.list
+    apt-get update -y
+    apt-get install cloud-guest-utils e2fsprogs salt-minion  -y
+    growpart /dev/vda 1 || /bin/true
+    resize2fs /dev/vda1 || /bin/true
+    echo "master: {vm_saltmaster}" > /etc/salt/minion
+    echo "role: {role}" > /etc/salt/grains
+    echo "hypervisor: {hypervisor}" >> /etc/salt/grains
+    systemctl stop salt-minion || /bin/true
+    systemctl enable salt-minion || /bin/true
+    rm -f /etc/salt/minion_id
+    
+    # Delete the cloud-config config and reboot
+    rm -f /etc/cloud/cloud.cfg
+    reboot
+
 manage_etc_hosts: False
 preserve_hostname: True
 EOT
 }}
 
-resource "libvirt_cloudinit_disk" "{role}_commoninit" {{
-  name           = "{role}_commoninit.iso"
-  user_data      = data.template_file.{role}_user_data.rendered
+resource "libvirt_cloudinit_disk" "{name}_commoninit" {{
+  name           = "{name}_commoninit.iso"
+  user_data      = data.template_file.{name}_user_data.rendered
 }}
 """
 
@@ -66,7 +89,7 @@ resource "libvirt_domain" "{name}" {{
   name = "{name}"
   memory = "{ram}"
   vcpu = {cpu}
-  cloudinit = libvirt_cloudinit_disk.{role}_commoninit.id
+  cloudinit = libvirt_cloudinit_disk.{name}_commoninit.id
   
   network_interface {{
     macvtap = "{interface}"
@@ -107,6 +130,15 @@ resource "libvirt_domain" "{name}" {{
 """
 
 
+def get_vm_saltmaster_ip():
+    """
+    Return the VM Saltmaster IP
+    :return str vm_saltmaster_ip: The VM saltmaster IP
+    """
+    vm_saltmaster_ip = environ.get("VM_SALTMASTER_IP", "127.0.0.1")
+    return vm_saltmaster_ip
+
+
 def generate_cloud_init_configuration(hypervisor_name):
     """
     Generate cloud-init configuration. This terraform
@@ -119,9 +151,13 @@ def generate_cloud_init_configuration(hypervisor_name):
         host=hypervisor_name
     )
     cloud_init_config = ""
-    roles = set([x.role for x in relevant_resources])
-    for role in roles:
-        cloud_init_config += SALT_ROLE.format(role=role)
+    for relevant_resource in relevant_resources:
+        cloud_init_config += SALT_ROLE.format(
+            role=relevant_resource.name,
+            name=relevant_resource.name,
+            hypervisor=relevant_resource.host,
+            vm_saltmaster=get_vm_saltmaster_ip()
+        )
     return cloud_init_config
 
 

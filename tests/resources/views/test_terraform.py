@@ -1,5 +1,7 @@
+import os
 from django.test import TestCase
 from django.urls import reverse
+from unittest.mock import patch
 
 from resources.factory import ResourceFactory
 
@@ -31,19 +33,19 @@ class TestTerraform(TestCase):
         cloudinit_disk_lines = [l for l in content_lines if 'libvirt_cloudinit_disk' in l]
         self.assertEqual(0, len(cloudinit_disk_lines))
 
-    def test_terraform_returns_only_cloud_init_for_roles_of_hypervisor_if_two_nodes(self):
+    def test_terraform_returns_only_cloud_init_for_nodes_of_hypervisor_if_two_nodes(self):
         ret = self.client.get(self.terraform_url + '?host=hypervisor99')
 
         content_lines = ret.content.decode('utf-8').split('\n')
         cloudinit_disk_lines = [l for l in content_lines if 'resource "libvirt_cloudinit_disk' in l]
         self.assertEqual(2, len(cloudinit_disk_lines))
 
-    def test_terraform_returns_only_cloud_init_for_roles_of_hypervisor_if_only_one_role_on_two_nodes(self):
+    def test_terraform_returns_cloud_init_for_nodes_of_hypervisor_if_only_one_role_on_two_nodes(self):
         ret = self.client.get(self.terraform_url + '?host=hypervisor88')
 
         content_lines = ret.content.decode('utf-8').split('\n')
         cloudinit_disk_lines = [l for l in content_lines if 'resource "libvirt_cloudinit_disk' in l]
-        self.assertEqual(1, len(cloudinit_disk_lines))
+        self.assertEqual(2, len(cloudinit_disk_lines))
 
     def test_terraform_returns_correct_number_of_libvirt_domains(self):
         ret = self.client.get(self.terraform_url + '?host=hypervisor99')
@@ -58,3 +60,25 @@ class TestTerraform(TestCase):
         # Note the extra volume in the separate 'storage' pool. The idea is that this
         # can either be on a ramdisk or on the NFS share if so desired.
         self.assertEqual(4, len(libvirt_volume_lines))
+
+    @patch.dict(os.environ, {})
+    def test_terraform_writes_saltmaster_config(self):
+        ret = self.client.get(self.terraform_url + '?host=hypervisor99')
+
+        content_lines = ret.content.decode('utf-8').split('\n')
+        saltmaster_line = [
+            l for l in content_lines if
+            'echo "master: 127.0.0.1" > /etc/salt/minion' in l
+        ]
+        self.assertTrue(saltmaster_line)
+
+    @patch.dict(os.environ, {'VM_SALTMASTER_IP': '1.2.3.4'})
+    def test_terraform_writes_saltmaster_config_for_specified_saltmaster(self):
+        ret = self.client.get(self.terraform_url + '?host=hypervisor99')
+
+        content_lines = ret.content.decode('utf-8').split('\n')
+        saltmaster_line = [
+            l for l in content_lines if
+            'echo "master: 1.2.3.4" > /etc/salt/minion' in l
+        ]
+        self.assertTrue(saltmaster_line)
