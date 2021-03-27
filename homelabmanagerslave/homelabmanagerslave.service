@@ -9,7 +9,8 @@ Type=simple
 Restart=always
 RestartSec=1
 ExecStartPre=/root/ramdisk.sh
-ExecStart=/usr/bin/bash -c "while true; do /root/homelabmanager.sh; sleep 1; done"
+ExecStart=/bin/bash -c "while true; do /root/homelabmanager.sh; sleep 1; done"
+Environment="HOMELABMANAGERHOST=<some_host>"
 
 [Install]
 WantedBy=multi-user.target
