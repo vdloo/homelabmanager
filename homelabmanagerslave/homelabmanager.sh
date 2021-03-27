@@ -20,7 +20,7 @@ if ! cat checksum | md5sum --quiet -c; then
     terraform destroy --auto-approve
     virsh list --all | grep -v debian10 | grep -v ubuntu18 | grep -v focal | grep shut | awk '{print$2}' | xargs -I {} sh -c 'virsh destroy {} || /bin/true; virsh undefine {} || /bin/true' || /bin/true
     cd /var/lib/libvirt/images
-    ls /var/lib/libvirt/images | grep -v bionic-server | grep -v debian-10 | grep -v focal-server-cloudimg | xargs -I {} rm -rf "{}"
+    ls /var/lib/libvirt/images | grep -v bionic-server | grep -v debian-10 | grep -v focal-server-cloudimg | grep -v arch-openstack | xargs -I {} rm -rf "{}"
     cd -
     terraform apply --auto-approve
 fi
