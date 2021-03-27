@@ -131,7 +131,9 @@ Set up libvirt:
 # virsh pool-create /tmp/storage.xml
 # wget -O /var/lib/libvirt/images/focal-server-cloudimg-amd64.img https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img -nc
 ## Or if you want VMs based on Buster
-#  wget -O /var/lib/libvirt/images/debian-10-openstack-amd64.qcow2 http://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2 -nc
+##  wget -O /var/lib/libvirt/images/debian-10-openstack-amd64.qcow2 http://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2 -nc
+## Or based on Archlinux
+##  wget -O /var/lib/libvirt/images/arch-openstack-LATEST-image-bootstrap.qcow2 https://linuximages.de/openstack/arch/arch-openstack-LATEST-image-bootstrap.qcow2
 # qemu-img resize /var/lib/libvirt/images/focal-server-cloudimg-amd64.img +10G
 ```
 
