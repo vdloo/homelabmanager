@@ -26,6 +26,9 @@ data "template_file" "{name}_user_data" {{
 runcmd:
 - |
     set -e
+    apt-get update
+    apt-get install curl -y
+
     # Obviously you should not do this in any real environment
     echo "root:toor" | chpasswd
     echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
@@ -37,9 +40,15 @@ runcmd:
     echo "127.0.0.1\t{name}" >> /etc/hosts
     
     # Resize disk and install SaltStack
-    curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest/salt-archive-keyring.gpg
-    echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg] https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest focal main" > /etc/apt/sources.list.d/salt.list
-    apt-get update -y
+    if lsb_release -c | grep -q focal; then
+        curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest/salt-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg] https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest focal main" > /etc/apt/sources.list.d/salt.list
+    else
+        curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/debian/10/amd64/latest/salt-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg] https://repo.saltproject.io/py3/debian/10/amd64/latest buster main" > /etc/apt/sources.list.d/salt.list
+    fi
+    
+    apt-get update
     apt-get install cloud-guest-utils e2fsprogs salt-minion  -y
     growpart /dev/vda 1 || /bin/true
     resize2fs /dev/vda1 || /bin/true

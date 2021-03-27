@@ -92,45 +92,47 @@ First set up KVM / terraform:
 
 Set up libvirt:
 ```
-mkdir -p /mnt/disk/images
-mkdir -p /mnt/disk/storage
-cat << 'EOF' > /tmp/default.xml
-<pool type='dir'>
-  <name>default</name>
-  <uuid>12345678-1234-1234-1234-123456789012</uuid>
-  <source>
-  </source>
-  <target>
-    <path>/mnt/disk/images</path>
-    <permissions>
-      <mode>0755</mode>
-      <owner>0</owner>
-      <group>0</group>
-    </permissions>
-  </target>
-</pool>
-EOF
-cat << 'EOF' > /tmp/storage.xml
-<pool type='dir'>
-  <name>storage</name>
-  <uuid>22345678-1234-1234-1234-123456789012</uuid>
-  <source>
-  </source>
-  <target>
-    <path>/mnt/disk/storage</path>
-    <permissions>
-      <mode>0755</mode>
-      <owner>0</owner>
-      <group>0</group>
-    </permissions>
-  </target>
-</pool>
-EOF
-virsh pool-destroy default || /bin/true
-virsh pool-create /tmp/default.xml
-virsh pool-create /tmp/storage.xml
-wget -O /var/lib/libvirt/images/focal-server-cloudimg-amd64.img https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img -nc
-qemu-img resize /var/lib/libvirt/images/focal-server-cloudimg-amd64.img +10G
+# mkdir -p /mnt/disk/images
+# mkdir -p /mnt/disk/storage
+# cat << 'EOF' > /tmp/default.xml
+# <pool type='dir'>
+#   <name>default</name>
+#   <uuid>12345678-1234-1234-1234-123456789012</uuid>
+#   <source>
+#   </source>
+#   <target>
+#     <path>/mnt/disk/images</path>
+#     <permissions>
+#       <mode>0755</mode>
+#       <owner>0</owner>
+#       <group>0</group>
+#     </permissions>
+#   </target>
+# </pool>
+# EOF
+# cat << 'EOF' > /tmp/storage.xml
+# <pool type='dir'>
+#   <name>storage</name>
+#   <uuid>22345678-1234-1234-1234-123456789012</uuid>
+#   <source>
+#   </source>
+#   <target>
+#     <path>/mnt/disk/storage</path>
+#     <permissions>
+#       <mode>0755</mode>
+#       <owner>0</owner>
+#       <group>0</group>
+#     </permissions>
+#   </target>
+# </pool>
+# EOF
+# virsh pool-destroy default || /bin/true
+# virsh pool-create /tmp/default.xml
+# virsh pool-create /tmp/storage.xml
+# wget -O /var/lib/libvirt/images/focal-server-cloudimg-amd64.img https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img -nc
+## Or if you want VMs based on Buster
+#  wget -O /var/lib/libvirt/images/debian-10-openstack-amd64.qcow2 http://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2 -nc
+# qemu-img resize /var/lib/libvirt/images/focal-server-cloudimg-amd64.img +10G
 ```
 
 Then install the client
