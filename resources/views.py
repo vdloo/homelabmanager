@@ -20,7 +20,7 @@ provider "libvirt" {
 """
 
 SALT_ROLE = """
-data "template_file" "{name}_user_data" {{
+data "template_file" "{name}_on_{hypervisor}_user_data" {{
   template = <<EOT
 #cloud-config
 runcmd:
@@ -32,9 +32,9 @@ runcmd:
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
     
     # Configure the hostname
-    echo {name} > /etc/hostname
+    echo {name}_on_{hypervisor} > /etc/hostname
     echo "127.0.0.1\tlocalhost" > /etc/hosts
-    echo "127.0.0.1\t{name}" >> /etc/hosts
+    echo "127.0.0.1\t{name}-on-{hypervisor}" >> /etc/hosts
     
     if [ -f "/etc/arch-release" ]; then
         echo 'Server = http://mirror.nl.leaseweb.net/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
@@ -74,24 +74,24 @@ preserve_hostname: True
 EOT
 }}
 
-resource "libvirt_cloudinit_disk" "{name}_commoninit" {{
-  name           = "{name}_commoninit.iso"
-  user_data      = data.template_file.{name}_user_data.rendered
+resource "libvirt_cloudinit_disk" "{name}_on_{hypervisor}_commoninit" {{
+  name           = "{name}_on_{hypervisor}_commoninit.iso"
+  user_data      = data.template_file.{name}_on_{hypervisor}_user_data.rendered
 }}
 """
 
 VOLUME = """
-resource "libvirt_volume" "{name}-qcow2" {{
+resource "libvirt_volume" "{name}_on_{hypervisor}-qcow2" {{
   provider = libvirt
   pool = "default"
-  name = "{name}-qcow2"
+  name = "{name}_on_{hypervisor}-qcow2"
   source = "/var/lib/libvirt/images/{image}"
 }}
 
-resource "libvirt_volume" "{name}-extra-qcow2" {{
+resource "libvirt_volume" "{name}_on_{hypervisor}-extra-qcow2" {{
   provider = libvirt
   pool = "storage"
-  name = "{name}-extra-qcow2"
+  name = "{name}_on_{hypervisor}-extra-qcow2"
   size   = 32212254720
 }}
 
@@ -99,12 +99,12 @@ resource "libvirt_volume" "{name}-extra-qcow2" {{
 """
 
 NODE = """
-resource "libvirt_domain" "{name}" {{
+resource "libvirt_domain" "{name}_on_{hypervisor}" {{
   provider = libvirt
-  name = "{name}"
+  name = "{name}_on_{hypervisor}"
   memory = "{ram}"
   vcpu = {cpu}
-  cloudinit = libvirt_cloudinit_disk.{name}_commoninit.id
+  cloudinit = libvirt_cloudinit_disk.{name}_on_{hypervisor}_commoninit.id
   
   network_interface {{
     macvtap = "{interface}"
@@ -128,10 +128,10 @@ resource "libvirt_domain" "{name}" {{
     dev = ["hd"]
   }}
   disk {{
-    volume_id = libvirt_volume.{name}-qcow2.id
+    volume_id = libvirt_volume.{name}_on_{hypervisor}-qcow2.id
   }}
   disk {{
-    volume_id = libvirt_volume.{name}-extra-qcow2.id
+    volume_id = libvirt_volume.{name}_on_{hypervisor}-extra-qcow2.id
   }}
   graphics {{
     type        = "spice"
@@ -188,11 +188,16 @@ def get_node_and_volumes(hypervisor_name):
     for node in Resource.objects.filter(host=hypervisor_name):
         node_and_vol_config += VOLUME.format(
             name=node.name,
-            image=node.image
+            image=node.image,
+            hypervisor=hypervisor_name
         )
         node_and_vol_config += NODE.format(
-            name=node.name, ram=node.ram_in_mb,
-            interface=node.interface, cpu=node.cpu, role=node.role
+            name=node.name,
+            ram=node.ram_in_mb,
+            interface=node.interface,
+            cpu=node.cpu,
+            role=node.role,
+            hypervisor=hypervisor_name
         )
     return node_and_vol_config
 
