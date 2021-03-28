@@ -109,9 +109,6 @@ resource "libvirt_domain" "{name}_on_{hypervisor}" {{
   network_interface {{
     macvtap = "{interface}"
   }}
-  network_interface {{
-    macvtap = "{interface}"
-  }}
   console {{
     type        = "pty"
     target_port = "0"
