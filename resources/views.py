@@ -32,7 +32,7 @@ runcmd:
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
     
     # Configure the hostname
-    echo {name}_on_{hypervisor} > /etc/hostname
+    echo {name}-on-{hypervisor} > /etc/hostname
     echo "127.0.0.1\tlocalhost" > /etc/hosts
     echo "127.0.0.1\t{name}-on-{hypervisor}" >> /etc/hosts
     
