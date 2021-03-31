@@ -165,7 +165,7 @@ def generate_cloud_init_configuration(hypervisor_name):
     cloud_init_config = ""
     for relevant_resource in relevant_resources:
         cloud_init_config += SALT_ROLE.format(
-            role=relevant_resource.name,
+            role=relevant_resource.role,
             name=relevant_resource.name,
             hypervisor=relevant_resource.host,
             vm_saltmaster=get_vm_saltmaster_ip()
