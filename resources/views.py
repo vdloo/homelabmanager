@@ -92,7 +92,7 @@ resource "libvirt_volume" "{name}_on_{hypervisor}-extra-qcow2" {{
   provider = libvirt
   pool = "storage"
   name = "{name}_on_{hypervisor}-extra-qcow2"
-  size   = 32212254720
+  size   = 8053063680
 }}
 
 
