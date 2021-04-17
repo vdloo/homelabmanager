@@ -81,17 +81,17 @@ resource "libvirt_cloudinit_disk" "{name}_on_{hypervisor}_commoninit" {{
 """
 
 VOLUME = """
-resource "libvirt_volume" "{name}_on_{hypervisor}-qcow2" {{
+resource "libvirt_volume" "{name}_on_{hypervisor}" {{
   provider = libvirt
   pool = "default"
-  name = "{name}_on_{hypervisor}-qcow2"
+  name = "{name}_on_{hypervisor}"
   source = "/var/lib/libvirt/images/{image}"
 }}
 
-resource "libvirt_volume" "{name}_on_{hypervisor}-extra-qcow2" {{
+resource "libvirt_volume" "{name}_on_{hypervisor}-extra" {{
   provider = libvirt
   pool = "storage"
-  name = "{name}_on_{hypervisor}-extra-qcow2"
+  name = "{name}_on_{hypervisor}-extra"
   size   = 8053063680
 }}
 
@@ -125,10 +125,10 @@ resource "libvirt_domain" "{name}_on_{hypervisor}" {{
     dev = ["hd"]
   }}
   disk {{
-    volume_id = libvirt_volume.{name}_on_{hypervisor}-qcow2.id
+    volume_id = libvirt_volume.{name}_on_{hypervisor}.id
   }}
   disk {{
-    volume_id = libvirt_volume.{name}_on_{hypervisor}-extra-qcow2.id
+    volume_id = libvirt_volume.{name}_on_{hypervisor}-extra.id
   }}
   graphics {{
     type        = "spice"
