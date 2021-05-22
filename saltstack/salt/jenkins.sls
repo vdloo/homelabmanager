@@ -29,3 +29,19 @@ symlink_jenkins_home_from_storage:
     - name: /var/lib/jenkins
     - target: /mnt/storage/jenkins
     - force: True
+
+run_jenkins_on_port_80:
+  file.line:
+    - name: /etc/default/jenkins
+    - mode: replace
+    - match: HTTP_PORT=8080
+    - content: HTTP_PORT=80
+  require:
+    - pkg: jenkins
+
+enable jenkins service:
+  service.running:
+    - enable: true
+    - name: jenkins
+    - watch:
+        - file: /etc/default/jenkins
