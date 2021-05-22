@@ -1,0 +1,7 @@
+LABEL=cloudimg-rootfs	/	 ext4	defaults	0 0
+LABEL=UEFI	/boot/efi	vfat	defaults	0 0
+/dev/vdb1	/mnt/disk	ext4	defaults	0 0
+
+{% if pillar.get('nfs_hostname') %}
+{{ pillar['nfs_hostname'] }}:/volume1/storage /mnt/storage nfs noauto,noatime,nodiratime,nocto,rsize=32768,wsize=32768,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
+{% endif %}

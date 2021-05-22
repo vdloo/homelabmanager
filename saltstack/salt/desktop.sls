@@ -1,8 +1,7 @@
 include:
   - shellserver
 
-install desktop packages:
+install_desktop_packages:
   pkg.installed:
     - pkgs:
         - cmatrix
-    - refresh: true
