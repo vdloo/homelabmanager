@@ -6,3 +6,5 @@ install_shellserver_packages:
     - pkgs:
       - curl
       - wget
+      - git
+      - screen

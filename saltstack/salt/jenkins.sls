@@ -26,6 +26,8 @@ jenkins_repository:
 install_jenkins_packages:
   pkg.installed:
     - pkgs:
+      - python3-pip
+      - python3-venv
       - default-jdk
       - jenkins
     - refresh: true
