@@ -6,6 +6,14 @@ create_storage_mount_directory:
     - mode: 755
     - makedirs: true
 
+create_disk_mount_directory:
+  file.directory:
+    - name: /mnt/disk
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: true
+
 install_storage_packages:
   pkg.installed:
     - pkgs:

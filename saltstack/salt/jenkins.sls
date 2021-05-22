@@ -1,6 +1,20 @@
 include:
   - shellserver
 
+configure_firewall_rules_for_jenkins:
+  file.managed:
+    - name: /etc/iptables/rules.v4
+    - source: salt://files/etc/iptables/rules.v4
+    - user: root
+    - group: root
+    - mode: 644
+
+load_jenkins_firewall_rules_on_change:
+  cmd.run:
+    - name: iptables-restore < /etc/iptables/rules.v4
+    - watch:
+      - file: /etc/iptables/rules.v4
+
 jenkins_repository:
   pkgrepo.managed:
     - humanname: Jenkins Repo
@@ -30,18 +44,7 @@ symlink_jenkins_home_from_storage:
     - target: /mnt/storage/jenkins
     - force: True
 
-run_jenkins_on_port_80:
-  file.line:
-    - name: /etc/default/jenkins
-    - mode: replace
-    - match: HTTP_PORT=8080
-    - content: HTTP_PORT=80
-  require:
-    - pkg: jenkins
-
 enable jenkins service:
   service.running:
     - enable: true
     - name: jenkins
-    - watch:
-        - file: /etc/default/jenkins

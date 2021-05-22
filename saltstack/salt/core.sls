@@ -5,6 +5,7 @@ install_core_packages:
       - iftop
       - gnupg2
       - sysstat
+      - iptables-persistent
     - refresh: true
 
 {% if pillar.get('authorized_keys') %}
