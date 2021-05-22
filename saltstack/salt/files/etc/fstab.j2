@@ -1,0 +1,5 @@
+/dev/vda1   /   ext4    defaults    0 1
+
+{% if pillar.get('nfs_hostname') %}
+{{ pillar['nfs_hostname'] }}:/volume1/storage /mnt/storage nfs noauto,nolock,noatime,nodiratime,nocto,rsize=32768,wsize=32768,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
+{% endif %}

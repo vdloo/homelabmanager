@@ -7,3 +7,6 @@ base:
   'role:desktop':
     - match: grain
     - desktop
+  'role:jenkins':
+    - match: grain
+    - jenkins
