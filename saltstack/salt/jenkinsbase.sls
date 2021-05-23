@@ -1,7 +1,7 @@
 include:
   - shellserver
 
-install_jenkinsagent_packages:
+install_jenkinsbase_packages:
   pkg.installed:
     - pkgs:
         - default-jdk
