@@ -1,5 +1,5 @@
 include:
-  - shellserver
+  - jenkinsbase
 
 configure_firewall_rules_for_jenkins:
   file.managed:
@@ -23,12 +23,9 @@ jenkins_repository:
     - gpgcheck: 1
     - key_url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
 
-install_jenkins_packages:
+install_jenkinsci_packages:
   pkg.installed:
     - pkgs:
-      - python3-pip
-      - python3-venv
-      - default-jdk
       - jenkins
     - refresh: true
 
@@ -40,13 +37,56 @@ ensure_jenkins_homedir:
     - mode: 755
     - makedirs: true
 
+ensure_jenkins_ssh_dir:
+  file.directory:
+    - name: /var/lib/jenkins/.ssh
+    - user: jenkins
+    - group: jenkins
+    - mode: 700
+    - makedirs: true
+    - require:
+      - file: /var/lib/jenkins
+
 symlink_jenkins_home_from_storage:
   file.symlink:
     - name: /var/lib/jenkins
     - target: /mnt/storage/jenkins
     - force: True
 
+ensure_jenkins_ssh_key:
+  file.managed:
+    - name: /var/lib/jenkins/.ssh/id_rsa
+    - contents_pillar: private_key
+    - user: jenkins
+    - group: jenkins
+    - mode: 600
+
+run_jenkins_on_port_80:
+  file.line:
+    - name: /etc/default/jenkins
+    - mode: replace
+    - match: HTTP_PORT=8080
+    - content: HTTP_PORT=8321
+  require:
+    - pkg: jenkins
+
 enable jenkins service:
   service.running:
     - enable: true
     - name: jenkins
+    - watch:
+        - file: /etc/default/jenkins
+
+write_clean_up_dead_agents_script:
+  file.managed:
+    - name: /usr/local/bin/clean_up_dead_agents.sh
+    - source: salt://files/usr/local/bin/clean_up_dead_agents.sh
+    - user: root
+    - group: root
+    - mode: 755
+
+clean_up_dead_jenkins_agents_periodically:
+  cron.present:
+    - user: root
+    - minute: '*/10'
+    - name: /usr/local/bin/clean_up_dead_agents.sh
