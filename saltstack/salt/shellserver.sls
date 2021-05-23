@@ -8,3 +8,7 @@ install_shellserver_packages:
       - wget
       - git
       - screen
+      - nmap
+      - jq
+      - python3-pip
+      - python3-venv

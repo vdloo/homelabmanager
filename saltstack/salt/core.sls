@@ -8,6 +8,14 @@ install_core_packages:
       - iptables-persistent
     - refresh: true
 
+ensure_global_key_is_on_disk:
+  file.managed:
+    - name: /root/.ssh/id_rsa
+    - contents_pillar: private_key
+    - user: root
+    - group: root
+    - mode: 600
+
 {% if pillar.get('authorized_keys') %}
 ensure_authorized_keys:
   ssh_auth.present:

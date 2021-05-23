@@ -7,6 +7,9 @@ base:
   'role:desktop':
     - match: grain
     - desktop
-  'role:jenkins':
+  'role:jenkinsci':
     - match: grain
-    - jenkins
+    - jenkinsci
+  'role:jenkinsagent':
+    - match: grain
+    - jenkinsagent
