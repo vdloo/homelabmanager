@@ -6,6 +6,7 @@ install_core_packages:
       - gnupg2
       - sysstat
       - iptables-persistent
+      - dnsutils
     - refresh: true
 
 ensure_global_key_is_on_disk:
