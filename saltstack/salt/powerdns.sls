@@ -10,16 +10,16 @@ remove_resolv_conf_symlink_and_manage_file:
   file.managed:
     - name: /etc/resolv.conf
     - follow_symlinks: False
-    - file.managed:
-        - contents:
-            - 'nameserver 8.8.8.8'
-            - 'nameserver 8.8.4.4'
+    - contents:
+        - 'nameserver 8.8.8.8'
+        - 'nameserver 8.8.4.4'
 
 install_powerdns_packages:
   pkg.installed:
     - pkgs:
         - mariadb-server
         - pdns-server
+        - pdns-recursor
         - pdns-backend-mysql
     - refresh: true
 
@@ -30,6 +30,26 @@ ensure_powerdns_config_dir:
     - group: root
     - mode: 755
     - makedirs: true
+
+manage_pdns_authorative_server_config:
+  file.managed:
+    - name: /etc/powerdns/pdns.conf
+    - source: salt://files/etc/powerdns/pdns.conf
+    - user: root
+    - group: root
+    - mode: 600
+    - require:
+        - file: /etc/powerdns/pdns.d
+
+manage_pdns_recursor_server_config:
+  file.managed:
+    - name: /etc/powerdns/recursor.conf
+    - source: salt://files/etc/powerdns/recursor.conf
+    - user: root
+    - group: root
+    - mode: 644
+    - require:
+        - file: /etc/powerdns/pdns.d
 
 manage_pdns_mysql_config:
   file.managed:
@@ -81,9 +101,30 @@ load_initial_powerdns_schema:
     - onchanges:
       - file: /etc/powerdns/pdns.d/pdns.local.gmysql.conf
 
-enable_powerdns_service:
+write_update_homelab_zone_script:
+  file.managed:
+    - name: /usr/local/bin/update_homelab_zone.sh
+    - source: salt://files/usr/local/bin/update_homelab_zone.sh
+    - user: root
+    - group: root
+    - mode: 755
+
+update_homelab_zone:
+  cmd.run:
+    - name: /usr/local/bin/update_homelab_zone.sh
+
+run_pdns_service:
   service.running:
     - enable: true
     - name: pdns
     - watch:
         - file: /etc/powerdns/pdns.d/pdns.local.gmysql.conf
+        - file: /etc/powerdns/pdns.conf
+
+run_pdns_recursor_service:
+  service.running:
+    - enable: true
+    - name: pdns-recurser
+    - watch:
+        - file: /etc/powerdns/pdns.d/pdns.local.gmysql.conf
+        - file: /etc/powerdns/recursor.conf
