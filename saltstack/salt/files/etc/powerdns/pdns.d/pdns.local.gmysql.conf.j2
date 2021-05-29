@@ -1,0 +1,7 @@
+launch+=gmysql
+gmysql-host={{ pillar['powerdns_mysql_host'] }}
+gmysql-port={{ pillar['powerdns_mysql_port'] }}
+gmysql-dbname=powerdns
+gmysql-user={{ pillar['powerdns_mysql_user'] }}
+gmysql-password={{ pillar['powerdns_mysql_password'] }}
+gmysql-dnssec=yes

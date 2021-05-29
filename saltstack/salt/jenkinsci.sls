@@ -70,7 +70,7 @@ run_jenkins_on_port_80:
   require:
     - pkg: jenkins
 
-enable jenkins service:
+enable_jenkins_service:
   service.running:
     - enable: true
     - name: jenkins
