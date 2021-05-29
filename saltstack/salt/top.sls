@@ -13,3 +13,6 @@ base:
   'role:jenkinsagent':
     - match: grain
     - jenkinsagent
+  'role:powerdns':
+    - match: grain
+    - powerdns

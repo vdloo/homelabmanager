@@ -12,3 +12,5 @@ install_shellserver_packages:
       - jq
       - python3-pip
       - python3-venv
+      - python3-mysqldb
+      - python3-sqlparse
