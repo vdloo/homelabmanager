@@ -124,7 +124,7 @@ run_pdns_service:
 run_pdns_recursor_service:
   service.running:
     - enable: true
-    - name: pdns-recurser
+    - name: pdns-recursor
     - watch:
         - file: /etc/powerdns/pdns.d/pdns.local.gmysql.conf
         - file: /etc/powerdns/recursor.conf
