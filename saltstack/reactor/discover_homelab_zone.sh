@@ -25,9 +25,11 @@ fi
 
 for ACTIVE_ROLE in $ACTIVE_ROLES; do
     IP_ADDRESSES=$(salt -G "role:$ACTIVE_ROLE" grains.item ipv4 --out=json | grep 192.168.1 | cut -d '"' -f2)
-    for IP_ADDRESS in $IP_ADDRESSES; do
-        echo "pdnsutil add-record homelab $ACTIVE_ROLE A $IP_ADDRESS" >> /tmp/update_homelab_zone.sh
-    done
+    if salt -G "role:$ACTIVE_ROLE" test.ping; then
+        for IP_ADDRESS in $IP_ADDRESSES; do
+            echo "pdnsutil add-record homelab $ACTIVE_ROLE A $IP_ADDRESS" >> /tmp/update_homelab_zone.sh
+        done
+    fi
 done
 cp /tmp/update_homelab_zone.sh /srv/salt/files/usr/local/bin/update_homelab_zone.sh
 CHECKSUM_AFTER=$(md5sum "/srv/salt/files/usr/local/bin/update_homelab_zone.sh")
