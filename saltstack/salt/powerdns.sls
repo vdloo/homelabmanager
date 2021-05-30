@@ -112,6 +112,8 @@ write_update_homelab_zone_script:
 update_homelab_zone:
   cmd.run:
     - name: /usr/local/bin/update_homelab_zone.sh
+  require:
+    - pkg: pdns-server
 
 run_pdns_service:
   service.running:
@@ -120,6 +122,9 @@ run_pdns_service:
     - watch:
         - file: /etc/powerdns/pdns.d/pdns.local.gmysql.conf
         - file: /etc/powerdns/pdns.conf
+  require:
+    - pkg: pdns-server
+    - pkg: pdns-recursor
 
 run_pdns_recursor_service:
   service.running:
@@ -128,3 +133,6 @@ run_pdns_recursor_service:
     - watch:
         - file: /etc/powerdns/pdns.d/pdns.local.gmysql.conf
         - file: /etc/powerdns/recursor.conf
+  require:
+    - pkg: pdns-server
+    - pkg: pdns-recursor
