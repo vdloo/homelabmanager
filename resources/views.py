@@ -2,7 +2,7 @@ from os import environ
 from django.http import HttpResponse
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
-from resources.models import Resource
+from resources.models import VirtualMachine
 
 QEMU_CONN = """
 terraform {
@@ -90,9 +90,9 @@ resource "libvirt_volume" "{name}_on_{hypervisor}" {{
 
 resource "libvirt_volume" "{name}_on_{hypervisor}-extra" {{
   provider = libvirt
-  pool = "storage"
+  pool = "{extra_storage_pool}"
   name = "{name}_on_{hypervisor}-extra"
-  size   = 8053063680
+  size   = {extra_storage_in_kb}
 }}
 
 
@@ -159,15 +159,16 @@ def generate_cloud_init_configuration(hypervisor_name):
     :param str hypervisor_name: The name of a hypervisor
     :return str configuration: The configuration segment
     """
-    relevant_resources = Resource.objects.filter(
-        host=hypervisor_name
+    relevant_resources = VirtualMachine.objects.filter(
+        host__name=hypervisor_name,
+        enabled=True
     )
     cloud_init_config = ""
     for relevant_resource in relevant_resources:
         cloud_init_config += SALT_ROLE.format(
             role=relevant_resource.role,
             name=relevant_resource.name,
-            hypervisor=relevant_resource.host,
+            hypervisor=relevant_resource.host.name,
             vm_saltmaster=get_vm_saltmaster_ip()
         )
     return cloud_init_config
@@ -182,16 +183,21 @@ def get_node_and_volumes(hypervisor_name):
     :return str configuration: The configuration segment
     """
     node_and_vol_config = ""
-    for node in Resource.objects.filter(host=hypervisor_name):
+    for node in VirtualMachine.objects.filter(
+        host__name=hypervisor_name,
+        enabled=True
+    ):
         node_and_vol_config += VOLUME.format(
             name=node.name,
             image=node.image,
-            hypervisor=hypervisor_name
+            hypervisor=hypervisor_name,
+            extra_storage_in_kb=node.extra_storage_in_gb * 1024 ** 3,
+            extra_storage_pool=node.extra_storage_pool
         )
         node_and_vol_config += NODE.format(
             name=node.name,
             ram=node.ram_in_mb,
-            interface=node.interface,
+            interface=node.host.interface,
             cpu=node.cpu,
             role=node.role,
             hypervisor=hypervisor_name

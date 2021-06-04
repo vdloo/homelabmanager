@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class ResourcesConfig(AppConfig):
+class VirtualMachineConfig(AppConfig):
     name = 'resources'
