@@ -1,14 +1,25 @@
 import factory
 
-from resources.models import Resource
+from resources.models import VirtualMachine, Hypervisor
 
 
-class ResourceFactory(factory.django.DjangoModelFactory):
+class HypervisorFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Resource
+        model = Hypervisor
+
+    name = factory.sequence(lambda n: "hypervisor{}".format(n))
+    interface = 'eno1'
+
+
+class VirtualMachineFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = VirtualMachine
 
     cpu = 4
     ram_in_mb = 1024
     name = factory.sequence(lambda n: "node_{}".format(n))
     role = factory.sequence(lambda n: "role_{}".format(n))
-    host = factory.sequence(lambda n: "hypervisor{}".format(n))
+    enabled = True
+    host = factory.SubFactory(HypervisorFactory)
+    extra_storage_in_gb = '8'
+    extra_storage_pool = 'default'
