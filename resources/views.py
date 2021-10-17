@@ -40,7 +40,7 @@ runcmd:
         echo 'Server = http://mirror.nl.leaseweb.net/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
         pacman -Syyu salt cloud-utils e2fsprogs --noconfirm --overwrite /usr/bin/growpart
     else
-        apt-get update
+        apt-get update --allow-releaseinfo-change
         apt-get install curl -y
         
         # Resize disk and install SaltStack
