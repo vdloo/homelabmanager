@@ -37,7 +37,7 @@ clone_machine_check_repo:
 
 install_machine_check_system_wide:
   cmd.run:
-    - name: bash -c 'make build; cp /etc/machine-check/out/machine-check /usr/bin/'
+    - name: bash -c 'raco pkg install --deps search-auto; make build; cp /etc/machine-check/out/machine-check /usr/bin/'
     - cwd: /etc/machine-check
     - onchanges:
       - git: clone_machine_check_repo
