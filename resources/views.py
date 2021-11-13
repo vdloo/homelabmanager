@@ -41,7 +41,12 @@ runcmd:
     
     if [ -f "/etc/arch-release" ]; then
         echo 'Server = http://mirror.nl.leaseweb.net/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-        pacman -Syyu salt cloud-utils e2fsprogs --noconfirm --overwrite /usr/bin/growpart
+        rm -rf /etc/pacman.d/gnupg
+        pacman-key --init
+        pacman-key --populate archlinux
+        pacman -Syy
+        pacman -S gnupg archlinux-keyring --noconfirm
+        pacman -Su salt cloud-utils e2fsprogs --noconfirm --overwrite /usr/bin/growpart
     else
         apt-get update --allow-releaseinfo-change
         apt-get install curl -y
