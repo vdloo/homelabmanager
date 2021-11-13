@@ -1,5 +1,11 @@
 from django.db import models
 
+STORAGE_POOL_CHOICES = [
+    ('default', 'default'),
+    ('storage', 'storage'),
+    ('ramdisk', 'ramdisk'),
+]
+
 
 class Hypervisor(models.Model):
     name = models.CharField(max_length=100)
@@ -24,11 +30,7 @@ class VirtualMachine(models.Model):
     )
     extra_storage_pool = models.CharField(
         max_length=255,
-        choices=[
-            ('default', 'default'),
-            ('storage', 'storage'),
-            ('ramdisk', 'ramdisk'),
-        ],
+        choices=STORAGE_POOL_CHOICES,
         default='default',
     )
 
