@@ -36,6 +36,9 @@ runcmd:
     echo "127.0.0.1\tlocalhost" > /etc/hosts
     echo "127.0.0.1\t{name}-on-{hypervisor}" >> /etc/hosts
     
+    # Wait until we have networking before we proceed
+    while ! ping -c 3 8.8.8.8; do sleep 1; done
+    
     if [ -f "/etc/arch-release" ]; then
         echo 'Server = http://mirror.nl.leaseweb.net/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
         pacman -Syyu salt cloud-utils e2fsprogs --noconfirm --overwrite /usr/bin/growpart
