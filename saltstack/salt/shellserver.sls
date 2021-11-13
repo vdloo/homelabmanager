@@ -29,15 +29,19 @@ ensure_machine_check_tests:
     - name: /srv/machine-check
     - file_mode: keep
 
-clone machine check repo:
+clone_machine_check_repo:
   git.latest:
     - target: /etc/machine-check
     - branch: master
     - name: https://github.com/vdloo/machine-check
 
-install machine-check:
+install_machine_check_system_wide:
   cmd.run:
-    - name: raco pkg install --deps search-auto
+    - name: bash -c 'make build; cp /etc/machine-check/out/machine-check /usr/bin/'
     - cwd: /etc/machine-check
     - onchanges:
-      - git: clone machine check repo
+      - git: clone_machine_check_repo
+
+write_applied_states:
+  cmd.run:
+    - name: salt-call state.show_states concurrent=true --out json | jq -r '.local | .[]' > /srv/applied_states
