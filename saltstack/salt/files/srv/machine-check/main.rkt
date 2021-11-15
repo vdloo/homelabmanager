@@ -2,7 +2,7 @@
 ; Directory structure should correspond with the saltstack
 ; state file directories.
 
-(define applied-states (check-output '("/usr/bin/cat" "/srv/applied_states")))
+(define applied-states (file->lines "/srv/applied_states"))
 
 (define-syntax-rule (include-if-needed state path)
   (if (member state applied-states)
