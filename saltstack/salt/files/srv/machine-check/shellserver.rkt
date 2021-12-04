@@ -2,14 +2,15 @@
 (check-packages-installed
  (list
    "curl"
-   "wget"
    "git"
-   "screen"
-   "nmap"
    "jq"
-   "python3-pip"
-   "python3-venv"
+   "nmap"
    "python3-mysqldb"
+   "python3-pip"
    "python3-sqlparse"
+   "python3-venv"
    "racket"
+   "screen"
+   "screenfetch"
+   "wget"
    ))

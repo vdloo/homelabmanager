@@ -5,16 +5,17 @@ install_shellserver_packages:
   pkg.installed:
     - pkgs:
       - curl
-      - wget
       - git
-      - screen
-      - nmap
       - jq
-      - python3-pip
-      - python3-venv
+      - nmap
       - python3-mysqldb
+      - python3-pip
       - python3-sqlparse
+      - python3-venv
       - racket
+      - screen
+      - screenfetch
+      - wget
 
 ensure_machine_check_tests_dir:
   file.directory:
