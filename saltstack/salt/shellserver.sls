@@ -13,6 +13,7 @@ install_shellserver_packages:
       - nmap
       - racket
       - screen
+      - screenfetch
       - wget
 
 {% if grains.os_family == 'Arch' %}
