@@ -56,6 +56,9 @@ install_shellserver_packages_for_archlinux:
 install_shellserver_packages_for_debian:
   pkg.installed:
     - pkgs:
+      - automake
+      - autoconf
+      - m4
       - build-essential
       - python3-mysqldb
       - python3-pip

@@ -17,7 +17,6 @@
 			      "screenfetch"
 			      "sudo"
 			      "wget"
-			      "which"
 			      )))
   (check-packages-installed
     (if (equal? detected-os "arch")
