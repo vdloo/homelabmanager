@@ -14,7 +14,7 @@
 			      "nmap"
 			      "racket"
 			      "screen"
-			      "screenfetch"
+			      "neofetch"
 			      "sudo"
 			      "wget"
 			      )))
