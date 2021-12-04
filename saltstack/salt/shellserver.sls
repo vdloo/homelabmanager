@@ -20,6 +20,7 @@ install_shellserver_packages:
 install_shellserver_packages_for_archlinux:
   pkg.installed:
     - pkgs:
+      - cronie
       - python-mysqlclient
       - python-pip
       - python-sqlparse
@@ -51,11 +52,11 @@ install_shellserver_packages_for_archlinux:
       - sudo
       - texinfo
       - which
-
 {% else %}
 install_shellserver_packages_for_debian:
   pkg.installed:
     - pkgs:
+      - cron
       - automake
       - autoconf
       - m4
@@ -65,6 +66,18 @@ install_shellserver_packages_for_debian:
       - python3-sqlparse
       - python3-venv
       - vim-nox
+{% endif %}
+
+{% if grains.os_family == 'Arch' %}
+ensure_cron_running_for_archlinux:
+  service.running:
+    - enable: true
+    - name: cronie
+{% else %}
+ensure_cron_running_for_debian:
+  service.running:
+    - enable: true
+    - name: cron
 {% endif %}
 
 ensure_machine_check_tests_dir:

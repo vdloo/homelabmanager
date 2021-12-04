@@ -23,6 +23,7 @@
       ; Archlinux packages
       (append shellserver-packages
 	      (list
+	        "cronie"
 	        "python-mysqlclient"
 	        "python-pip"
 	        "python-sqlparse"
@@ -32,6 +33,7 @@
       ; Debian packages
       (append shellserver-packages
 	      (list
+	        "cron"
 	        "python3-mysqldb"
 	        "python3-pip"
 	        "python3-sqlparse"
