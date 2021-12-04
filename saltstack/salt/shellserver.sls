@@ -24,6 +24,7 @@ install_shellserver_packages_for_archlinux:
       - python-pip
       - python-sqlparse
       - python-virtualenv
+      - vim
 
       # This is base-devel Salt doesn't work well with Archlinux package groups
       - autoconf
@@ -60,6 +61,7 @@ install_shellserver_packages_for_debian:
       - python3-pip
       - python3-sqlparse
       - python3-venv
+      - vim-nox
 {% endif %}
 
 ensure_machine_check_tests_dir:
