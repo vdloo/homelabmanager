@@ -93,6 +93,14 @@ install_machine_check_system_wide:
     - onchanges:
       - git: clone_machine_check_repo
 
+install_unprivileged_user:
+  user.present:
+    - name: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - fullname: {{ pillar['shellserver_unprivileged_user_full_name'] }}
+    - password: {{ pillar['shellserver_unprivileged_user_password_hash'] }}
+    - createhome: true
+    - shell: /bin/bash
+
 write_applied_states:
   cmd.run:
     - name: salt-call state.show_states concurrent=true --out json | jq -r '.local | .[]' > /srv/applied_states
