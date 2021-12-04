@@ -8,11 +8,12 @@ install_shellserver_packages:
   pkg.installed:
     - pkgs:
       - curl
-      - wget
       - git
-      - screen
-      - nmap
       - jq
+      - nmap
+      - racket
+      - screen
+      - wget
 
 {% if grains.os_family == 'Arch' %}
 install_shellserver_packages_for_archlinux:
@@ -22,16 +23,42 @@ install_shellserver_packages_for_archlinux:
       - python-pip
       - python-sqlparse
       - python-virtualenv
-      - racket-minimal
+
+      # This is base-devel Salt doesn't work well with Archlinux package groups
+      - autoconf
+      - automake
+      - binutils
+      - bison
+      - fakeroot
+      - file
+      - findutils
+      - flex
+      - gawk
+      - gcc
+      - gettext
+      - grep
+      - groff
+      - gzip
+      - libtool
+      - m4
+      - make
+      - pacman
+      - patch
+      - pkgconf
+      - sed
+      - sudo
+      - texinfo
+      - which
+
 {% else %}
 install_shellserver_packages_for_debian:
   pkg.installed:
     - pkgs:
+      - build-essential
       - python3-mysqldb
       - python3-pip
       - python3-sqlparse
       - python3-venv
-      - racket
 {% endif %}
 
 ensure_machine_check_tests_dir:
