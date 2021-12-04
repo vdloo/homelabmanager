@@ -1,3 +1,6 @@
+#!jinja|yaml
+---
+
 create_storage_mount_directory:
   file.directory:
     - name: /mnt/storage
@@ -14,10 +17,17 @@ create_disk_mount_directory:
     - mode: 755
     - makedirs: true
 
-install_storage_packages:
+{% if grains.os_family == 'Arch' %}
+install_storage_packages_for_archlinux:
+  pkg.installed:
+    - pkgs:
+      - nfs-utils
+{% else %}
+install_storage_packages_for_debian:
   pkg.installed:
     - pkgs:
       - nfs-common
+{% endif %}
 
 manage_fstab:
   file.managed:

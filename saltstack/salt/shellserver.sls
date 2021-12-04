@@ -1,3 +1,6 @@
+#!jinja|yaml
+---
+
 include:
   - storage
 
@@ -5,17 +8,31 @@ install_shellserver_packages:
   pkg.installed:
     - pkgs:
       - curl
+      - wget
       - git
-      - jq
+      - screen
       - nmap
+      - jq
+
+{% if grains.os_family == 'Arch' %}
+install_shellserver_packages_for_archlinux:
+  pkg.installed:
+    - pkgs:
+      - python-mysqlclient
+      - python-pip
+      - python-sqlparse
+      - python-virtualenv
+      - racket-minimal
+{% else %}
+install_shellserver_packages_for_debian:
+  pkg.installed:
+    - pkgs:
       - python3-mysqldb
       - python3-pip
       - python3-sqlparse
       - python3-venv
       - racket
-      - screen
-      - screenfetch
-      - wget
+{% endif %}
 
 ensure_machine_check_tests_dir:
   file.directory:

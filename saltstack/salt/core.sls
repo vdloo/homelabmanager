@@ -1,13 +1,29 @@
+#!jinja|yaml
+---
+
 install_core_packages:
   pkg.installed:
     - pkgs:
       - htop
       - iftop
-      - gnupg2
       - sysstat
-      - iptables-persistent
-      - dnsutils
     - refresh: true
+
+{% if grains.os_family == 'Arch' %}
+install_core_packages_for_archlinux:
+  pkg.installed:
+    - pkgs:
+      - bind
+      - gnupg
+      - iptables
+{% else %}
+install_core_packages_for_debian:
+  pkg.installed:
+    - pkgs:
+      - dnsutils
+      - gnupg2
+      - iptables-persistent
+{% endif %}
 
 ensure_global_key_is_on_disk:
   file.managed:
