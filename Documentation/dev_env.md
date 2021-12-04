@@ -85,7 +85,7 @@ First set up KVM / terraform:
 # apt-get update
 
 # apt-get install moreutils qemu-kvm libvirt-daemon-system libvirt-clients libvirt-dev virt-manager bridge-utils terraform mkisofs terraform-provider-libvirt -y
-# echo "security_driver = "none" > /etc/libvirt/qemu.conf
+# echo 'security_driver = "none"' > /etc/libvirt/qemu.conf
 # systemctl restart libvirtd
 # systemctl enable libvirtd
 ```
