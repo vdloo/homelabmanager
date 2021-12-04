@@ -8,12 +8,13 @@ install_shellserver_packages:
   pkg.installed:
     - pkgs:
       - curl
+      - figlet
       - git
       - jq
+      - neofetch
       - nmap
       - racket
       - screen
-      - neofetch
       - wget
 
 {% if grains.os_family == 'Arch' %}
@@ -79,6 +80,20 @@ ensure_cron_running_for_debian:
     - enable: true
     - name: cron
 {% endif %}
+
+write_update_motd_script:
+  file.managed:
+    - name: /usr/local/bin/update_motd.sh
+    - source: salt://files/usr/local/bin/update_motd.sh
+    - user: root
+    - group: root
+    - mode: 755
+
+update_motd_periodically:
+  cron.present:
+    - user: root
+    - minute: '*'
+    - name: /usr/local/bin/update_motd.sh
 
 ensure_machine_check_tests_dir:
   file.directory:
