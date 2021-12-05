@@ -116,10 +116,11 @@ clone_machine_check_repo:
 
 install_machine_check_system_wide:
   cmd.run:
-    - name: bash -c 'raco pkg install --deps search-auto; make build; cp /etc/machine-check/out/machine-check /usr/bin/'
+    - name: bash -c 'rm -rf /etc/machine-check/out; raco pkg install --deps search-auto; make build; cp /etc/machine-check/out/machine-check /usr/bin/'
     - cwd: /etc/machine-check
     - onchanges:
       - git: clone_machine_check_repo
+      - file: /srv/machine-check
 
 install_unprivileged_user:
   user.present:
@@ -128,6 +129,36 @@ install_unprivileged_user:
     - password: {{ pillar['shellserver_unprivileged_user_password_hash'] }}
     - createhome: true
     - shell: /bin/bash
+
+clone_dotfiles_repo:
+  git.latest:
+    - target: /etc/dotfiles
+    - branch: master
+    - name: https://github.com/vdloo/dotfiles
+
+symlink_bashrc_to_root_user_home:
+  file.symlink:
+    - name: /root/.bashrc
+    - target: /etc/dotfiles/.bashrc
+    - force: true
+
+symlink_bashrc_to_unprivileged_user_home:
+  file.symlink:
+    - name: /home/{{ pillar['shellserver_unprivileged_user_name'] }}/.bashrc
+    - target: /etc/dotfiles/.bashrc
+    - force: true
+
+symlink_profile_to_root_user_home:
+  file.symlink:
+    - name: /root/.profile
+    - target: /etc/dotfiles/.profile
+    - force: true
+
+symlink_profile_to_unprivileged_user_home:
+  file.symlink:
+    - name: /home/{{ pillar['shellserver_unprivileged_user_name'] }}/.profile
+    - target: /etc/dotfiles/.profile
+    - force: true
 
 write_applied_states:
   cmd.run:
