@@ -101,6 +101,7 @@ resource "libvirt_volume" "{name}_on_{hypervisor}-extra" {{
   pool = "{extra_storage_pool}"
   name = "{name}_on_{hypervisor}-extra"
   size   = {extra_storage_in_kb}
+  format = "raw"
 }}
 
 
