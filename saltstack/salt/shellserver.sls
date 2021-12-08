@@ -144,11 +144,26 @@ generate_locales:
     - onchanges:
       - file: write_locale_gen_file
 
+configure_root_user:
+  user.present:
+    - name: root
+    - fullname: root
+{% if grains.os_family == 'Arch' %}
+    - password: {{ pillar['shellserver_unprivileged_user_archlinux_password_hash'] }}
+{% else %}
+    - password: {{ pillar['shellserver_unprivileged_user_debian_password_hash'] }}
+{% endif %}
+    - shell: /bin/bash
+
 install_unprivileged_user:
   user.present:
     - name: {{ pillar['shellserver_unprivileged_user_name'] }}
     - fullname: {{ pillar['shellserver_unprivileged_user_full_name'] }}
-    - password: {{ pillar['shellserver_unprivileged_user_password_hash'] }}
+{% if grains.os_family == 'Arch' %}
+    - password: {{ pillar['shellserver_unprivileged_user_archlinux_password_hash'] }}
+{% else %}
+    - password: {{ pillar['shellserver_unprivileged_user_debian_password_hash'] }}
+{% endif %}
     - createhome: true
     - shell: /bin/bash
 
