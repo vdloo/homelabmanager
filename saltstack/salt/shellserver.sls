@@ -122,6 +122,28 @@ install_machine_check_system_wide:
       - git: clone_machine_check_repo
       - file: /srv/machine-check
 
+write_locale_file:
+  file.managed:
+    - name: /etc/default/locale
+    - source: salt://files/etc/default/locale
+    - user: root
+    - group: root
+    - mode: 644
+
+write_locale_gen_file:
+  file.managed:
+    - name: /etc/locale.gen
+    - source: salt://files/etc/locale.gen
+    - user: root
+    - group: root
+    - mode: 644
+
+generate_locales:
+  cmd.run:
+    - name: locale-gen
+    - onchanges:
+      - file: write_locale_gen_file
+
 install_unprivileged_user:
   user.present:
     - name: {{ pillar['shellserver_unprivileged_user_name'] }}
