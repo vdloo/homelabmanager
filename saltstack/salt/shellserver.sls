@@ -222,6 +222,40 @@ create_htop_config_directory_for_unprivileged_user:
     - mode: 0700
     - makedirs: true
 
+clone_vundle_repo:
+  git.latest:
+    - target: /etc/vundle
+    - branch: master
+    - name: https://github.com/VundleVim/Vundle.vim
+
+install_configure_vim_script:
+  file.managed:
+    - name: /usr/local/bin/configure_vim.sh
+    - source: salt://files/usr/local/bin/configure_vim.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+configure_vim_if_needed:
+  cmd.run:
+    - name: /usr/local/bin/configure_vim.sh
+    - onchanges:
+        - file: /usr/local/bin/configure_vim.sh
+        - git: clone_vundle_repo
+
+symlink_vimrc_to_root_user_home:
+  file.symlink:
+    - name: /root/.vimrc
+    - target: /etc/dotfiles/.vimrc
+    - force: true
+
+symlink_vimrc_to_unprivileged_user_home:
+  file.symlink:
+    - name: /home/{{ pillar['shellserver_unprivileged_user_name'] }}/.vimrc
+    - target: /etc/dotfiles/.vimrc
+    - force: true
+
 copy_initial_htop_config_for_root_user:
   cmd.run:
     - name: cp --no-clobber /etc/dotfiles/.config/htop/htoprc /root/.config/htop/htoprc
