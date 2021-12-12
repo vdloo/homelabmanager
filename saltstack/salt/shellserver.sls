@@ -239,10 +239,23 @@ install_configure_vim_script:
 
 configure_vim_if_needed:
   cmd.run:
-    - name: /usr/local/bin/configure_vim.sh
+    - name: /usr/local/bin/configure_vim.sh > /tmp/configure_vim_log 2>&1 &
     - onchanges:
         - file: /usr/local/bin/configure_vim.sh
         - git: clone_vundle_repo
+
+install_clone_development_projects_script:
+  file.managed:
+    - name: /usr/local/bin/clone_development_projects.sh
+    - source: salt://files/usr/local/bin/clone_development_projects.sh
+    - user: root
+    - group: root
+    - mode: 755
+
+clone_development_projects:
+  cmd.run:
+    - name: /usr/local/bin/clone_development_projects.sh > /tmp/clone_development_projects 2>&1 &
+    - runas: {{ pillar['shellserver_unprivileged_user_name'] }}
 
 symlink_vimrc_to_root_user_home:
   file.symlink:
@@ -264,6 +277,14 @@ copy_initial_htop_config_for_unprivileged_user_user:
   cmd.run:
     - name: cp --no-clobber /etc/dotfiles/.config/htop/htoprc /home/{{  pillar['shellserver_unprivileged_user_name'] }}/.config/htop/htoprc
 
+install_write_applied_states_script:
+  file.managed:
+    - name: /usr/local/bin/write_applied_states.sh
+    - source: salt://files/usr/local/bin/write_applied_states.sh
+    - user: root
+    - group: root
+    - mode: 755
+
 write_applied_states:
   cmd.run:
-    - name: salt-call state.show_states concurrent=true --out json | jq -r '.local | .[]' > /srv/applied_states
+    - name: /usr/local/bin/write_applied_states.sh > /tmp/write_applied_states_log 2>&1 &

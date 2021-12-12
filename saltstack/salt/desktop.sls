@@ -52,7 +52,7 @@ write_build_dwm_script:
 
 build_dwm_if_needed:
   cmd.run:
-    - name: /usr/local/bin/build_dwm.sh
+    - name: /usr/local/bin/build_dwm.sh > /tmp/build_dwm_log 2>&1 &
     - onchanges:
         - git: clone_dwm_repo
         - git: clone_dotfiles_repo

@@ -111,7 +111,7 @@ write_update_homelab_zone_script:
 
 update_homelab_zone:
   cmd.run:
-    - name: /usr/local/bin/update_homelab_zone.sh
+    - name: /usr/local/bin/update_homelab_zone.sh > /tmp/update_homelab_zone_log 2>&1 &
   require:
     - pkg: pdns-server
 
