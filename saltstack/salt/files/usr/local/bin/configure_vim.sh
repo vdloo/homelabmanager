@@ -25,6 +25,6 @@ chown -R $UNPRIVILEGED_USER:$UNPRIVILEGED_USER /home/$UNPRIVILEGED_USER/.vimrc
 chown -R $UNPRIVILEGED_USER:$UNPRIVILEGED_USER /home/$UNPRIVILEGED_USER/.vim/
 
 echo "Install Vundle dependencies as the unprivileged user"
-echo | su $UNPRIVILEGED_USER -c vim +PluginInstall +qall &>/dev/null
+sudo -i -u $UNPRIVILEGED_USER /bin/bash -c 'echo | vim +PluginInstall +qall &>/dev/null'
 echo "Install Vundle dependencies as the root user"
 echo | vim +PluginInstall +qall &>/dev/null
