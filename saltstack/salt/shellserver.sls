@@ -167,6 +167,15 @@ install_unprivileged_user:
     - createhome: true
     - shell: /bin/bash
 
+passwordless_sudo_for_unprivileged_user:
+  file.managed:
+    - name: /etc/sudoers.d/nopassword
+    - source: salt://files/etc/sudoers.d/nopassword
+    - user: root
+    - group: root
+    - mode: 440
+    - template: jinja
+
 clone_dotfiles_repo:
   git.latest:
     - target: /etc/dotfiles
