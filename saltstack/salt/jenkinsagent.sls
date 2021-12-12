@@ -33,3 +33,9 @@ clean_up_dead_saltmaster_agent_minions_periodically:
     - user: root
     - minute: '*/3'
     - name: salt-run manage.down removekeys=True > /dev/null 2>&1
+
+continuously_salt_agent_minions:
+  cron.present:
+    - user: root
+    - minute: '*'
+    - name: salt '*' state.apply > /dev/null 2>&1
