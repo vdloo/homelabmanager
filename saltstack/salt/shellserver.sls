@@ -206,6 +206,34 @@ symlink_profile_to_unprivileged_user_home:
     - target: /etc/dotfiles/.profile
     - force: true
 
+create_root_ssh_config_d_directory:
+  file.directory:
+    - name: /root/.ssh/config.d
+    - user: root
+    - group: root
+    - mode: 0700
+    - makedirs: true
+
+create_unprivileged_user_ssh_config_d_directory:
+  file.directory:
+    - name: /home/{{ pillar['shellserver_unprivileged_user_name'] }}/.ssh/config.d
+    - user: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - group: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - mode: 0700
+    - makedirs: true
+
+symlink_ssh_config_to_root_user:
+  file.symlink:
+    - name: /root/.ssh/config
+    - target: /etc/dotfiles/.ssh/config
+    - force: true
+
+symlink_ssh_config_to_unprivileged_user_home:
+  file.symlink:
+    - name: /home/{{ pillar['shellserver_unprivileged_user_name'] }}/.ssh/config
+    - target: /etc/dotfiles/.ssh/config
+    - force: true
+
 create_htop_config_directory_for_root_user:
   file.directory:
     - name: /root/.config/htop/
