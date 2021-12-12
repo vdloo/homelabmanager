@@ -173,7 +173,7 @@ passwordless_sudo_for_unprivileged_user:
     - source: salt://files/etc/sudoers.d/nopassword
     - user: root
     - group: root
-    - mode: 440
+    - mode: 0440
     - template: jinja
 
 clone_dotfiles_repo:
@@ -205,6 +205,30 @@ symlink_profile_to_unprivileged_user_home:
     - name: /home/{{ pillar['shellserver_unprivileged_user_name'] }}/.profile
     - target: /etc/dotfiles/.profile
     - force: true
+
+create_htop_config_directory_for_root_user:
+  file.directory:
+    - name: /root/.config/htop/
+    - user: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - group: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - mode: 0700
+    - makedirs: true
+
+create_htop_config_directory_for_unprivileged_user:
+  file.directory:
+    - name: /home/{{ pillar['shellserver_unprivileged_user_name'] }}/.config/htop/
+    - user: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - group: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - mode: 0700
+    - makedirs: true
+
+copy_initial_htop_config_for_root_user:
+  cmd.run:
+    - name: cp --no-clobber /etc/dotfiles/.config/htop/htoprc /root/.config/htop/htoprc
+
+copy_initial_htop_config_for_unprivileged_user_user:
+  cmd.run:
+    - name: cp --no-clobber /etc/dotfiles/.config/htop/htoprc /home/{{  pillar['shellserver_unprivileged_user_name'] }}/.config/htop/htoprc
 
 write_applied_states:
   cmd.run:

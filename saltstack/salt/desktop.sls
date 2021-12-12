@@ -75,7 +75,6 @@ create_terminator_config_directory:
     - user: {{ pillar['shellserver_unprivileged_user_name'] }}
     - group: {{ pillar['shellserver_unprivileged_user_name'] }}
     - mode: 0755
-    - makedirs: true
 
 symlink_terminator_config_to_unprivileged_user_home:
   file.symlink:
