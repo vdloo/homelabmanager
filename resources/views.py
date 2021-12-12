@@ -67,6 +67,10 @@ runcmd:
     growpart /dev/vda 1 || /bin/true
     resize2fs /dev/vda1 || /bin/true
     echo "master: {vm_saltmaster}" > /etc/salt/minion
+    echo "tcp_keepalive: True" >> /etc/salt/minion
+    echo "tcp_keepalive_idle: 30" >> /etc/salt/minion
+    echo "tcp_keepalive_cnt: 5" >> /etc/salt/minion
+    echo "tcp_keepalive_intvl: 30" >> /etc/salt/minion
     echo "role: {role}" > /etc/salt/grains
     echo "hypervisor: {hypervisor}" >> /etc/salt/grains
     systemctl stop salt-minion || /bin/true
