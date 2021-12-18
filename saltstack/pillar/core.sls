@@ -6,6 +6,8 @@ powerdns_mysql_port: 3306
 powerdns_mysql_dbname: 'powerdns'
 powerdns_mysql_user: 'insecure_powerdns_user'
 powerdns_mysql_password: 'insecure_powerdns_mysql_password'
+powerdns_upstream_nameserver_1: '8.8.8.8'
+powerdns_upstream_nameserver_2: '8.8.4.4'
 shellserver_unprivileged_user_name: 'notroot'
 shellserver_unprivileged_user_full_name: 'Not Root'
 # Insecure default password is 'notroot'. Overwrite this in your own pillar.
