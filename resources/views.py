@@ -58,6 +58,17 @@ runcmd:
         else
             curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/debian/10/amd64/latest/salt-archive-keyring.gpg
             echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg] https://repo.saltproject.io/py3/debian/10/amd64/latest buster main" > /etc/apt/sources.list.d/salt.list
+            echo "deb http://deb.debian.org/debian/ buster main" > /etc/apt/sources.list
+            echo "deb-src http://deb.debian.org/debian/ buster main" >> /etc/apt/sources.list
+            echo "deb http://deb.debian.org/debian/ buster-updates main" >> /etc/apt/sources.list
+            echo "deb-src http://deb.debian.org/debian/ buster-updates main" >> /etc/apt/sources.list
+            echo "deb http://deb.debian.org/debian/ buster-backports main" >> /etc/apt/sources.list
+            echo "deb-src http://deb.debian.org/debian/ buster-backports main" >> /etc/apt/sources.list
+            echo "deb http://security.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list
+            echo "deb-src http://security.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list
+            echo "Package: racket" > /etc/apt/preferences.d/buster_backports
+            echo "Pin: release a=buster-backports" >> /etc/apt/preferences.d/buster_backports
+            echo "Pin-Priority: 1001" >> /etc/apt/preferences.d/buster_backports
         fi
         
         apt-get update
