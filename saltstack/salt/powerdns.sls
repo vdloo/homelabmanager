@@ -121,6 +121,7 @@ write_update_homelab_zone_script:
     - user: root
     - group: root
     - mode: 755
+    - template: jinja
 
 update_homelab_zone:
   cmd.run:
