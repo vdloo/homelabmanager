@@ -12,3 +12,4 @@
 (include-if-needed "core" "core.rkt")
 (include-if-needed "desktop" "desktop.rkt")
 (include-if-needed "shellserver" "shellserver.rkt")
+(include-if-needed "devenv" "devenv.rkt")

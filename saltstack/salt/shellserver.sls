@@ -133,6 +133,7 @@ ensure_machine_check_tests:
     - source: salt://files/srv/machine-check
     - name: /srv/machine-check
     - file_mode: keep
+    - template: jinja
 
 clone_machine_check_repo:
   git.latest:
