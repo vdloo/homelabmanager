@@ -114,10 +114,17 @@ clone_machine_check_repo:
     - branch: master
     - name: https://github.com/vdloo/machine-check
 
-install_machine_check_system_wide:
+write_install_machine_check_system_wide_script:
+  file.managed:
+    - name: /usr/local/bin/install_machine_check_system_wide.sh
+    - source: salt://files/usr/local/bin/install_machine_check_system_wide.sh
+    - user: root
+    - group: root
+    - mode: 755
+
+install_machine_check_system_wide_if_needed:
   cmd.run:
-    - name: bash -c 'rm -rf /etc/machine-check/out; raco pkg install --deps search-auto; make build; cp /etc/machine-check/out/machine-check /usr/bin/'
-    - cwd: /etc/machine-check
+    - name: /usr/local/bin/install_machine_check_system_wide.sh > /tmp/install_machine_check_log 2>&1 &
     - onchanges:
       - git: clone_machine_check_repo
       - file: /srv/machine-check
@@ -269,8 +276,8 @@ configure_vim_if_needed:
   cmd.run:
     - name: /usr/local/bin/configure_vim.sh > /tmp/configure_vim_log 2>&1 &
     - onchanges:
-        - file: /usr/local/bin/configure_vim.sh
-        - git: clone_vundle_repo
+      - file: /usr/local/bin/configure_vim.sh
+      - git: clone_vundle_repo
 
 install_clone_development_projects_script:
   file.managed:
