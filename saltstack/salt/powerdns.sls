@@ -63,6 +63,7 @@ manage_pdns_recursor_server_config:
     - mode: 644
     - require:
         - file: /etc/powerdns/pdns.d
+    - template: jinja
 
 manage_pdns_mysql_config:
   file.managed:
