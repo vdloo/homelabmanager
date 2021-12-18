@@ -14,6 +14,19 @@ remove_resolv_conf_symlink_and_manage_file:
         - "nameserver {{ pillar['powerdns_upstream_nameserver_1'] }}"
         - "nameserver {{ pillar['powerdns_upstream_nameserver_2'] }}"
 
+install_update_nameservers_script:
+  file.managed:
+    - name: /usr/local/bin/update_nameservers.sh
+    - source: salt://files/usr/local/bin/update_nameservers.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+update_nameservers:
+  cmd.run:
+    - name: /usr/local/bin/update_nameservers.sh
+
 install_powerdns_packages:
   pkg.installed:
     - pkgs:

@@ -77,6 +77,29 @@ runcmd:
     systemctl enable salt-minion || /bin/true
     rm -f /etc/salt/minion_id
     
+    if [ ! -z "{static_ip}" ]; then
+        if [ -f "/etc/arch-release" ]; then
+            rm -rf /etc/systemd/network/eth0-dhcp.network
+            echo "[Match]" > /etc/systemd/network/eth0.network
+            echo "Name=eth0" >> /etc/systemd/network/eth0.network
+            echo "[Network]" >> /etc/systemd/network/eth0.network
+            echo "Address={static_ip}/24" >> /etc/systemd/network/eth0.network
+            echo "Gateway=192.168.1.1" >> /etc/systemd/network/eth0.network
+            echo "DNS=8.8.8.8" >> /etc/systemd/network/eth0.network
+            echo "DNS=8.8.4.4" >> /etc/systemd/network/eth0.network
+            
+        else
+            echo "auto lo" > /etc/network/interfaces
+            echo "iface lo inet loopback" >> /etc/network/interfaces
+            echo "auto eth0" >> /etc/network/interfaces
+            echo "iface eth0 inet static" >> /etc/network/interfaces
+            echo "  address {static_ip}" >> /etc/network/interfaces
+            echo "  netmask 255.255.255.0" >> /etc/network/interfaces
+            echo "  gateway 192.168.1.1" >> /etc/network/interfaces
+            echo "  dns-nameservers 8.8.8.8 8.8.4.4" >> /etc/network/interfaces
+        fi
+    fi
+    
     # Delete the cloud-config config and reboot
     rm -f /etc/cloud/cloud.cfg
     reboot
@@ -215,6 +238,7 @@ def generate_cloud_init_configuration(hypervisor_name):
         cloud_init_config += SALT_ROLE.format(
             role=relevant_resource.role,
             name=relevant_resource.name,
+            static_ip=relevant_resource.static_ip or '',
             hypervisor=relevant_resource.host.name,
             vm_saltmaster=get_vm_saltmaster_ip()
         )
