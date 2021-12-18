@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 set -e
 
-if [ -d ~/code/projects ]; then
+if [ -d ~/code/projects/homelabmanager ]; then
     echo "Development projects already set up, skipping"
     exit 0
 fi
