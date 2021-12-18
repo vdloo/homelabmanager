@@ -41,3 +41,5 @@
 	        "python3-venv"
 	        "vim-nox"
 	      )))))
+(check-file-mode "/root/.ssh/config.d" 448)
+(check-file-mode "/home/{{ pillar['shellserver_unprivileged_user_name'] }}/.ssh/config.d" 448)
