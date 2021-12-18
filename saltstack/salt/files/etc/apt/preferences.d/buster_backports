@@ -1,0 +1,27 @@
+Package: racket
+Pin: release a=buster-backports
+Pin-Priority: 1001
+
+Package: racket-common
+Pin: release a=buster-backports
+Pin-Priority: 1001
+
+Package: racket-doc
+Pin: release a=buster-backports
+Pin-Priority: 1001
+
+Package: libpangocairo-1.0-0
+Pin: release a=buster-backports
+Pin-Priority: 1001
+
+Package: libjpeg62-turbo
+Pin: release a=buster-backports
+Pin-Priority: 1001
+
+Package: libgtk2.0-0
+Pin: release a=buster-backports
+Pin-Priority: 1001
+
+Package: libgdk-pixbuf2.0-0
+Pin: release a=buster-backports
+Pin-Priority: 1001

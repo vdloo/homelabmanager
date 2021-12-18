@@ -4,6 +4,16 @@
 include:
   - storage
 
+{% if grains.oscodename == 'buster' %}
+write_racket_apt_preference_for_backport:
+  file.managed:
+    - name: /etc/apt/preferences.d/buster_backports
+    - source: salt://files/etc/apt/preferences.d/buster_backports
+    - user: root
+    - group: root
+    - mode: 644
+{% endif %}
+
 install_shellserver_packages:
   pkg.installed:
     - pkgs:
@@ -16,6 +26,7 @@ install_shellserver_packages:
       - racket
       - screen
       - wget
+    - refresh: true
 
 {% if grains.os_family == 'Arch' %}
 install_shellserver_packages_for_archlinux:
