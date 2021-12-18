@@ -11,8 +11,8 @@ remove_resolv_conf_symlink_and_manage_file:
     - name: /etc/resolv.conf
     - follow_symlinks: False
     - contents:
-        - 'nameserver 8.8.8.8'
-        - 'nameserver 8.8.4.4'
+        - "nameserver {{ pillar['powerdns_upstream_nameserver_1'] }}"
+        - "nameserver {{ pillar['powerdns_upstream_nameserver_2'] }}"
 
 install_powerdns_packages:
   pkg.installed:
