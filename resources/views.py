@@ -80,14 +80,13 @@ runcmd:
     if [ ! -z "{static_ip}" ]; then
         if [ -f "/etc/arch-release" ]; then
             rm -rf /etc/systemd/network/eth0-dhcp.network
-            echo "[Match]" > /etc/systemd/network/eth0.network
-            echo "Name=eth0" >> /etc/systemd/network/eth0.network
-            echo "[Network]" >> /etc/systemd/network/eth0.network
-            echo "Address={static_ip}/24" >> /etc/systemd/network/eth0.network
-            echo "Gateway=192.168.1.1" >> /etc/systemd/network/eth0.network
-            echo "DNS=8.8.8.8" >> /etc/systemd/network/eth0.network
-            echo "DNS=8.8.4.4" >> /etc/systemd/network/eth0.network
-            
+            echo "[Match]" > /etc/systemd/network/01-static.network
+            echo "Name=eth0" >> /etc/systemd/network/01-static.network
+            echo "[Network]" >> /etc/systemd/network/01-static.network
+            echo "Address={static_ip}/24" >> /etc/systemd/network/01-static.network
+            echo "Gateway=192.168.1.1" >> /etc/systemd/network/01-static.network
+            echo "DNS=8.8.8.8" >> /etc/systemd/network/01-static.network
+            echo "DNS=8.8.4.4" >> /etc/systemd/network/01-static.network
         else
             echo "auto lo" > /etc/network/interfaces
             echo "iface lo inet loopback" >> /etc/network/interfaces
