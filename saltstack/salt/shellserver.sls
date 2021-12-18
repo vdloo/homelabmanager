@@ -95,6 +95,21 @@ update_motd_periodically:
     - minute: '*'
     - name: /usr/local/bin/update_motd.sh
 
+install_use_powerdns_if_up_script:
+  file.managed:
+    - name: /usr/local/bin/use_powerdns_if_up.sh
+    - source: salt://files/usr/local/bin/use_powerdns_if_up.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+run_use_powerdns_if_up_periodically:
+  cron.present:
+    - user: root
+    - minute: '*'
+    - name: /usr/local/bin/use_powerdns_if_up.sh
+
 ensure_machine_check_tests_dir:
   file.directory:
     - name: /srv/machine-check
