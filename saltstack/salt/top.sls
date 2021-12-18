@@ -4,6 +4,9 @@ base:
   'role:shellserver':
     - match: grain
     - shellserver
+  'role:devenv':
+    - match: grain
+    - devenv
   'role:desktop':
     - match: grain
     - desktop

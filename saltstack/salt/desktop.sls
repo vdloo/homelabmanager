@@ -1,5 +1,5 @@
 include:
-  - shellserver
+  - devenv
 
 install_desktop_packages:
   pkg.installed:
