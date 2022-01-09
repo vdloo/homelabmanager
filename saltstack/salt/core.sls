@@ -16,6 +16,7 @@ install_core_packages_for_archlinux:
       - bind
       - gnupg
       - iptables
+      - inetutils
 {% else %}
 install_core_packages_for_debian:
   pkg.installed:
