@@ -14,6 +14,7 @@
 			      "make"
 			      "neofetch"
 			      "nmap"
+			      "prometheus-node-exporter"
 			      "racket"
 			      "screen"
 			      "sudo"

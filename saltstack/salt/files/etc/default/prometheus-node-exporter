@@ -1,0 +1,5 @@
+{% if grains.os_family == 'Arch' %}
+NODE_EXPORTER_ARGS="--web.listen-address='0.0.0.0:19100'"
+{% else %}
+ARGS="--web.listen-address='0.0.0.0:19100'"
+{% endif %}

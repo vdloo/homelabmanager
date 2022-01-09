@@ -14,6 +14,19 @@ write_racket_apt_preference_for_backport:
     - mode: 644
 {% endif %}
 
+place_prometheus_node_exporter_config:
+  file.managed:
+{% if grains.os_family == 'Arch' %}
+  - name: /etc/conf.d/prometheus-node-exporter
+{% else %}
+  - name: /etc/default/prometheus-node-exporter
+{% endif %}
+  - source: salt://files/etc/default/prometheus-node-exporter
+  - user: root
+  - group: root
+  - mode: 644
+  - template: jinja
+
 install_shellserver_packages:
   pkg.installed:
     - pkgs:
@@ -23,6 +36,7 @@ install_shellserver_packages:
       - jq
       - neofetch
       - nmap
+      - prometheus-node-exporter
       - racket
       - screen
       - wget
@@ -120,6 +134,21 @@ run_use_powerdns_if_up_periodically:
     - user: root
     - minute: '*'
     - name: /usr/local/bin/use_powerdns_if_up.sh
+
+install_use_prometheus_if_up_script:
+  file.managed:
+    - name: /usr/local/bin/use_prometheus_if_up.sh
+    - source: salt://files/usr/local/bin/use_prometheus_if_up.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+run_use_prometheus_if_up_periodically:
+  cron.present:
+    - user: root
+    - minute: '*'
+    - name: /usr/local/bin/use_prometheus_if_up.sh
 
 ensure_machine_check_tests_dir:
   file.directory:

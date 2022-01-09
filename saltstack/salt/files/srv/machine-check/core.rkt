@@ -1,6 +1,6 @@
 ; Install core packages
 (let ((detected-os (detect-os))
-      (shellserver-packages 
+      (shellserver-packages
         (list
           "htop"
           "iftop"
@@ -10,7 +10,7 @@
     (if (equal? detected-os "arch")
       ; Archlinux packages
       (append shellserver-packages
-        (list 
+        (list
           "bind"
           "gnupg"
           "inetutils"
