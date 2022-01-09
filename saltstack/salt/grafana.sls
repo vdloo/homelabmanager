@@ -38,7 +38,7 @@ install_grafana_packages:
 
 configure_grafana_settings:
   cmd.run:
-    - name: cat /etc/grafana/homelabe_settings.ini | crudini --merge /etc/grafana/grafana.ini
+    - name: cat /etc/grafana/homelab_settings.ini | crudini --merge /etc/grafana/grafana.ini
   require:
     - pkg: grafana
     - file: /etc/grafana/noauth.ini
