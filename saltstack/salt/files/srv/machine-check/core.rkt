@@ -12,9 +12,10 @@
       (append shellserver-packages
         (list 
           "bind"
-          "iptables"
-          "inetutils"
           "gnupg"
+          "inetutils"
+          "iptables"
+          "net-tools"
 	      ))
       ; Debian packages
       (append shellserver-packages
