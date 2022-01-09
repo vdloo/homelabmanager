@@ -10,6 +10,7 @@ powerdns_upstream_nameserver_1: '8.8.8.8'
 powerdns_upstream_nameserver_2: '8.8.4.4'
 powerdns_static_ip: '192.168.1.241'
 prometheus_static_ip: '192.168.1.249'
+grafana_static_ip: '192.168.1.250'
 shellserver_unprivileged_user_name: 'notroot'
 shellserver_unprivileged_user_full_name: 'Not Root'
 # Insecure default password is 'notroot'. Overwrite this in your own pillar.

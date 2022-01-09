@@ -14,3 +14,4 @@
 (include-if-needed "devenv" "devenv.rkt")
 (include-if-needed "prometheus" "prometheus.rkt")
 (include-if-needed "shellserver" "shellserver.rkt")
+(include-if-needed "grafana" "grafana.rkt")

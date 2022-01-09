@@ -36,6 +36,7 @@
       (append shellserver-packages
 	      (list
 	        "cron"
+	        "crudini"
 	        "python3-mysqldb"
 	        "python3-pip"
 	        "python3-sqlparse"
