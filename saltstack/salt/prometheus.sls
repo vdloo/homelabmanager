@@ -1,7 +1,7 @@
 include:
   - shellserver
 
-allow_unprivileged_to_bind_privileged_ports:
+allow_unprivileged_to_bind_privileged_ports_on_prometheus:
   sysctl.present:
     - name: net.ipv4.ip_unprivileged_port_start
     - value: 1

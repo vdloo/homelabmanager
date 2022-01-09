@@ -83,6 +83,7 @@ install_shellserver_packages_for_debian:
   pkg.installed:
     - pkgs:
       - cron
+      - crudini
       - automake
       - autoconf
       - m4

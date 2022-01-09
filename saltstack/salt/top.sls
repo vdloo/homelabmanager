@@ -22,3 +22,6 @@ base:
   'role:prometheus':
     - match: grain
     - prometheus
+  'role:grafana':
+    - match: grain
+    - grafana

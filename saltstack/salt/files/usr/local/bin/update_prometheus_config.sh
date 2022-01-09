@@ -24,7 +24,7 @@ scrape_configs:
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
-      - targets: ['{{ pillar['prometheus_static_ip'] }}:9090']
+      - targets: ['{{ pillar['prometheus_static_ip'] }}:80']
 
   - job_name: node
     static_configs:
