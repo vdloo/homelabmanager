@@ -19,3 +19,6 @@ base:
   'role:powerdns':
     - match: grain
     - powerdns
+  'role:prometheus':
+    - match: grain
+    - prometheus
