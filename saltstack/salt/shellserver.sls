@@ -350,7 +350,7 @@ symlink_vimrc_to_unprivileged_user_home:
 
 copy_initial_htop_config_for_root_user:
   cmd.run:
-    - name: cp --no-clobber /etc/dotfiles/.config/htop/htoprc /root/.config/htop/htoprc
+    - name: cp /etc/dotfiles/.config/htop/htoprc /root/.config/htop/htoprc
 
 copy_initial_htop_config_for_unprivileged_user_user:
   cmd.run:
