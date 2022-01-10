@@ -30,6 +30,7 @@
 	        "python-pip"
 	        "python-sqlparse"
 	        "python-virtualenv"
+	        "python-wheel"
 	        "vim"
 	      ))
       ; Debian packages
@@ -41,6 +42,7 @@
 	        "python3-pip"
 	        "python3-sqlparse"
 	        "python3-venv"
+	        "python3-wheel"
 	        "vim-nox"
 	      )))))
 (check-file-mode "/root/.ssh/config.d" 448)

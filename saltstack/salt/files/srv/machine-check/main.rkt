@@ -15,3 +15,4 @@
 (include-if-needed "prometheus" "prometheus.rkt")
 (include-if-needed "shellserver" "shellserver.rkt")
 (include-if-needed "grafana" "grafana.rkt")
+(include-if-needed "booksbooksbooks" "booksbooksbooks.rkt")

@@ -1,0 +1,14 @@
+[Unit]
+Description=Booksbooksbooks
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+User=root
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/etc/booksbooksbooks/venv/bin/python /etc/booksbooksbooks/manage.py runserver 0.0.0.0:80
+
+[Install]
+WantedBy=multi-user.target
