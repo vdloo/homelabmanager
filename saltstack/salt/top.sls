@@ -25,3 +25,6 @@ base:
   'role:grafana':
     - match: grain
     - grafana
+  'role:booksbooksbooks':
+    - match: grain
+    - booksbooksbooks
