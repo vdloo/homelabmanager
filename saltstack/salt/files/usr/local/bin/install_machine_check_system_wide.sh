@@ -1,7 +1,11 @@
 #!/usr/bin/bash
 set -e
 cd /etc/machine-check
-rm -rf /etc/machine-check/out
 raco pkg install --deps search-auto
-make build
-cp /etc/machine-check/out/machine-check /usr/bin/
+cp /srv/machine-check/* checks-to-perform/
+cat << EOF > /sbin/machine-check
+#!/usr/bin/bash
+cd /etc/machine-check
+racket main.rkt
+EOF
+chmod +x /sbin/machine-check
