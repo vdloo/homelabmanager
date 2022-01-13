@@ -12,7 +12,7 @@ Origin: Debian Buster updates
 Label: Buster updates
 Suite: buster-updates
 Codename: buster-updates
-Description: Debian Buster mirror
+Description: Debian Buster updates mirror
 Architectures: amd64
 Components: main
 Update: buster-updates
@@ -22,8 +22,18 @@ Origin: Debian Buster backports
 Label: Buster backports
 Suite: buster-backports
 Codename: buster-backports
-Description: Debian Buster mirror
+Description: Debian Buster backports mirror
 Architectures: amd64
 Components: main
-Update: buster-updates
+Update: buster-backports
 Log: /var/log/reprepro/buster-backports.log
+
+Origin: Debian Buster security
+Label: Buster security
+Suite: buster/updates
+Codename: buster-security
+Description: Debian Buster security mirror
+Architectures: amd64
+Components: main
+Update: buster/updates
+Log: /var/log/reprepro/buster-security.log
