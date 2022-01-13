@@ -18,3 +18,10 @@ Suite: buster-backports
 Components: main
 Architectures: amd64
 VerifyRelease: blindtrust
+
+Name: buster/updates
+Method: http://security.debian.org/debian-security
+Suite: buster/updates
+Components: main
+Architectures: amd64
+VerifyRelease: blindtrust
