@@ -27,6 +27,7 @@
       			      "nmap"
       			      "prometheus-node-exporter"
       			      "racket"
+      			      "rsync"
       			      "screen"
       			      "sudo"
       			      "wget"

@@ -38,6 +38,7 @@ install_shellserver_packages:
       - nmap
       - prometheus-node-exporter
       - racket
+      - rsync
       - screen
       - wget
     - refresh: true
