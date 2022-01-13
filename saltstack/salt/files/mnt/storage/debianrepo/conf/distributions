@@ -1,0 +1,29 @@
+Origin: Debian Buster
+Label: Buster
+Suite: buster
+Codename: buster
+Description: Debian Buster mirror
+Architectures: amd64
+Components: main
+Update: buster
+Log: /var/log/reprepro/buster.log
+
+Origin: Debian Buster updates
+Label: Buster updates
+Suite: buster-updates
+Codename: buster-updates
+Description: Debian Buster mirror
+Architectures: amd64
+Components: main
+Update: buster-updates
+Log: /var/log/reprepro/buster-updates.log
+
+Origin: Debian Buster backports
+Label: Buster backports
+Suite: buster-backports
+Codename: buster-backports
+Description: Debian Buster mirror
+Architectures: amd64
+Components: main
+Update: buster-updates
+Log: /var/log/reprepro/buster-backports.log

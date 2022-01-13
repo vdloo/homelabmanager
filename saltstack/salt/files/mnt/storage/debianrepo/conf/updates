@@ -1,0 +1,20 @@
+Name: buster
+Method: https://debian.snt.utwente.nl/debian
+Suite: buster
+Components: main
+Architectures: amd64
+VerifyRelease: blindtrust
+
+Name: buster-updates
+Method: https://debian.snt.utwente.nl/debian
+Suite: buster-updates
+Components: main
+Architectures: amd64
+VerifyRelease: blindtrust
+
+Name: buster-backports
+Method: https://debian.snt.utwente.nl/debian
+Suite: buster-backports
+Components: main
+Architectures: amd64
+VerifyRelease: blindtrust
