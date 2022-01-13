@@ -11,15 +11,15 @@ server {
     autoindex on;
   }
 
-  location ~ /(.*)/conf {
+  location ~ /conf {
     deny all;
   }
 
-  location ~ /(.*)/db {
+  location ~ /db {
     deny all;
   }
 
-  location ~ /(.*)/.gnupg {
+  location ~ /.gnupg {
     deny all;
   }
 }
