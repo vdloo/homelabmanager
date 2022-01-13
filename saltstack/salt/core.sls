@@ -1,6 +1,21 @@
 #!jinja|yaml
 ---
 
+{% if grains.oscodename == 'buster' %}
+write_detect_debian_repo_script:
+  file.managed:
+    - name: /usr/local/bin/detect_debian_repo.sh
+    - source: salt://files/usr/local/bin/detect_debian_repo.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+detect_debian_repo:
+  cmd.run:
+    - name: /usr/local/bin/detect_debian_repo.sh > /tmp/detect_debian_repo_log 2>&1 &
+{% endif %}
+
 install_core_packages:
   pkg.installed:
     - pkgs:
