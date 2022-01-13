@@ -139,6 +139,14 @@ run_use_powerdns_if_up_periodically:
     - minute: '*'
     - name: /usr/local/bin/use_powerdns_if_up.sh
 
+{% if grains.oscodename == 'buster' %}
+run_detect_debian_repo_periodically:
+  cron.present:
+    - user: root
+    - minute: '*'
+    - name: /usr/local/bin/detect_debian_repo.sh
+{% endif %}
+
 install_use_prometheus_if_up_script:
   file.managed:
     - name: /usr/local/bin/use_prometheus_if_up.sh
