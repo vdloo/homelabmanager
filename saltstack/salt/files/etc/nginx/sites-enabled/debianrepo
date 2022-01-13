@@ -1,0 +1,25 @@
+server {
+  listen 80 default_server;
+  server_name debianrepo.homelab;
+
+  access_log /var/log/nginx/debianrepo-access.log;
+  error_log /var/log/nginx/debianrepo-error.log;
+
+  location / {
+    root /srv/reprepro;
+    index index.html;
+    autoindex on;
+  }
+
+  location ~ /(.*)/conf {
+    deny all;
+  }
+
+  location ~ /(.*)/db {
+    deny all;
+  }
+
+  location ~ /(.*)/.gnupg {
+    deny all;
+  }
+}

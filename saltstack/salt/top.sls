@@ -28,3 +28,6 @@ base:
   'role:booksbooksbooks':
     - match: grain
     - booksbooksbooks
+  'role:debianrepo':
+    - match: grain
+    - debianrepo

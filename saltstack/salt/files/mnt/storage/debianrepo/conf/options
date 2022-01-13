@@ -1,0 +1,3 @@
+basedir /srv/reprepro/
+gnupghome /srv/reprepro/.gnupg
+keepunreferencedfiles
