@@ -28,6 +28,7 @@
       	        "libxinerama"
       	        "ttf-dejavu"
       	        "xorg-server"
+      	        "xorg-xbacklight"
       	        "xorg-xinit"
       	        "xorg-xrandr"
       	        "xorg-xsetroot"
@@ -40,6 +41,7 @@
       	        "libxinerama-dev:amd64"
       	        "suckless-tools"
       	        "x11-xserver-utils"
+      	        "xbacklight"
       	        "xinit"
       	        "xorg"
       	      ))))))
