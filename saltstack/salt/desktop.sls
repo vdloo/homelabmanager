@@ -18,6 +18,7 @@ install_desktop_packages_for_archlinux:
         - libxft
         - libxinerama
         - xorg-server
+        - xorg-xbacklight
         - xorg-xinit
         - xorg-xrandr
         - xorg-xsetroot
@@ -30,8 +31,9 @@ install_desktop_packages_for_debian:
         - libx11-dev
         - libxft-dev
         - libxinerama-dev
-        - xorg
+        - xbacklight
         - xinit
+        - xorg
         - x11-xserver-utils
 {% endif %}
 
