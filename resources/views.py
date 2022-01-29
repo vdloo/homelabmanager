@@ -38,6 +38,9 @@ runcmd:
     
     # Wait until we have networking before we proceed
     while ! ping -c 3 8.8.8.8; do sleep 1; done
+
+    # Giving the system a minute to settle down before proceeding
+    sleep 60
     
     if [ -f "/etc/arch-release" ]; then
         echo 'Server = http://mirror.nl.leaseweb.net/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
