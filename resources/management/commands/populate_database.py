@@ -5,7 +5,7 @@ HYPERVISORS = [
     ('h52', 'eth0'),
     ('h54', 'enp3s0'),
     ('h56', 'eno1'),
-    ('h59', 'enp0s29u1u2'),
+    ('h59', 'ens3f3'),
     ('h60', 'enp0s29u1u1'),
     ('h61', 'eno1')
 ]
