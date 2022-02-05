@@ -28,5 +28,5 @@ Pin-Priority: 1001
 
 # To prevent 'Failed sending HTTP2 data', see https://stackoverflow.com/a/68582412/4158804
 Package: libcurl3-gnutls:amd64
-Pin: release a=stable
+Pin: release a=buster
 Pin-Priority: 1001
