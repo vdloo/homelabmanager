@@ -20,6 +20,7 @@
       			      "gcc"
       			      "git"
       			      "gzip"
+      			      "irssi"
       			      "jq"
       			      "m4"
       			      "make"

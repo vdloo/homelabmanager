@@ -31,3 +31,6 @@ base:
   'role:debianrepo':
     - match: grain
     - debianrepo
+  'role:irc':
+    - match: grain
+    - irc
