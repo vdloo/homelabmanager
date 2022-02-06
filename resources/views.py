@@ -26,6 +26,38 @@ data "template_file" "{name}_on_{hypervisor}_user_data" {{
 runcmd:
 - |
     set -e
+    
+    if [ -f "/etc/arch-release" ]; then
+        rm -rf /etc/systemd/network/eth0-dhcp.network
+        echo "[Match]" > /etc/systemd/network/01-homelab.network
+        echo "Name=eth0" >> /etc/systemd/network/01-homelab.network
+        echo "[Network]" >> /etc/systemd/network/01-homelab.network
+        if [ ! -z "{static_ip}" ]; then
+            echo "Address={static_ip}/24" >> /etc/systemd/network/01-homelab.network
+            echo "Gateway=192.168.1.1" >> /etc/systemd/network/01-homelab.network
+            echo "DNS=8.8.8.8" >> /etc/systemd/network/01-homelab.network
+            echo "DNS=8.8.4.4" >> /etc/systemd/network/01-homelab.network
+        else
+            echo "DHCP=yes" >> /etc/systemd/network/01-homelab.network
+        fi
+    else
+        echo "auto lo" > /etc/network/interfaces
+        echo "iface lo inet loopback" >> /etc/network/interfaces
+        echo "auto eth0" >> /etc/network/interfaces
+        if [ ! -z "{static_ip}" ]; then
+            echo "iface eth0 inet static" >> /etc/network/interfaces
+            echo "  address {static_ip}" >> /etc/network/interfaces
+            echo "  netmask 255.255.255.0" >> /etc/network/interfaces
+            echo "  gateway 192.168.1.1" >> /etc/network/interfaces
+            echo "  dns-nameservers 8.8.8.8 8.8.4.4" >> /etc/network/interfaces
+        else
+            echo "iface eth0 inet dhcp" >> /etc/network/interfaces
+        fi
+    fi
+    
+    # Wait until we have network
+    while ! ping -c 3 8.8.8.8; do sleep 1; done
+    
     # Obviously you should not do this in any real environment
     echo "root:toor" | chpasswd
     echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
@@ -35,12 +67,6 @@ runcmd:
     echo {name}-on-{hypervisor} > /etc/hostname
     echo "127.0.0.1\tlocalhost" > /etc/hosts
     echo "127.0.0.1\t{name}-on-{hypervisor}" >> /etc/hosts
-    
-    # Wait until we have networking before we proceed
-    while ! ping -c 3 8.8.8.8; do sleep 1; done
-
-    # Giving the system a minute to settle down before proceeding
-    sleep 60
     
     if [ -f "/etc/arch-release" ]; then
         echo 'Server = http://mirror.nl.leaseweb.net/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
@@ -88,34 +114,14 @@ runcmd:
     systemctl enable salt-minion || /bin/true
     rm -f /etc/salt/minion_id
     
-    if [ ! -z "{static_ip}" ]; then
-        if [ -f "/etc/arch-release" ]; then
-            rm -rf /etc/systemd/network/eth0-dhcp.network
-            echo "[Match]" > /etc/systemd/network/01-static.network
-            echo "Name=eth0" >> /etc/systemd/network/01-static.network
-            echo "[Network]" >> /etc/systemd/network/01-static.network
-            echo "Address={static_ip}/24" >> /etc/systemd/network/01-static.network
-            echo "Gateway=192.168.1.1" >> /etc/systemd/network/01-static.network
-            echo "DNS=8.8.8.8" >> /etc/systemd/network/01-static.network
-            echo "DNS=8.8.4.4" >> /etc/systemd/network/01-static.network
-        else
-            echo "auto lo" > /etc/network/interfaces
-            echo "iface lo inet loopback" >> /etc/network/interfaces
-            echo "auto eth0" >> /etc/network/interfaces
-            echo "iface eth0 inet static" >> /etc/network/interfaces
-            echo "  address {static_ip}" >> /etc/network/interfaces
-            echo "  netmask 255.255.255.0" >> /etc/network/interfaces
-            echo "  gateway 192.168.1.1" >> /etc/network/interfaces
-            echo "  dns-nameservers 8.8.8.8 8.8.4.4" >> /etc/network/interfaces
-        fi
-    fi
-    
     # Delete the cloud-config config and reboot
     rm -f /etc/cloud/cloud.cfg
     reboot
 
 manage_etc_hosts: False
 preserve_hostname: True
+network:
+  config: disabled
 EOT
 }}
 
