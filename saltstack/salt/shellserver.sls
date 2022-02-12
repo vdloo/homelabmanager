@@ -33,6 +33,7 @@ install_shellserver_packages:
       - curl
       - figlet
       - git
+      - irssi
       - jq
       - neofetch
       - nmap
@@ -366,6 +367,22 @@ copy_initial_htop_config_for_root_user:
 copy_initial_htop_config_for_unprivileged_user_user:
   cmd.run:
     - name: cp --no-clobber /etc/dotfiles/.config/htop/htoprc /home/{{  pillar['shellserver_unprivileged_user_name'] }}/.config/htop/htoprc
+
+create_root_irrsi_config_directory:
+  file.directory:
+    - name: /root/.irssi
+    - user: root
+    - group: root
+    - mode: 0700
+
+install_root_irssi_config_file:
+  file.managed:
+    - name: /root/.irssi/config
+    - source: salt://files/root/.irrsi/config
+    - user: root
+    - group: root
+    - mode: 0640
+    - template: jinja
 
 install_write_applied_states_script:
   file.managed:
