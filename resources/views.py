@@ -108,6 +108,12 @@ runcmd:
     echo "tcp_keepalive_idle: 30" >> /etc/salt/minion
     echo "tcp_keepalive_cnt: 5" >> /etc/salt/minion
     echo "tcp_keepalive_intvl: 30" >> /etc/salt/minion
+    echo "recon_default: 1000" >> /etc/salt/minion
+    echo "recon_max: 59000" >> /etc/salt/minion
+    echo "recon_randomize: True" >> /etc/salt/minion
+    echo "acceptance_wait_time: 120" >> /etc/salt/minion
+    echo "random_reauth_delay: 90" >> /etc/salt/minion
+    echo "auth_timeout: 120" >> /etc/salt/minion
     echo "role: {role}" > /etc/salt/grains
     echo "hypervisor: {hypervisor}" >> /etc/salt/grains
     systemctl stop salt-minion || /bin/true
