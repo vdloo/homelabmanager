@@ -50,6 +50,14 @@ ensure_global_key_is_on_disk:
     - group: root
     - mode: 600
 
+ensure_global_public_key_is_on_disk:
+  file.managed:
+    - name: /root/.ssh/id_rsa.pub
+    - contents_pillar: public_key
+    - user: root
+    - group: root
+    - mode: 644
+
 {% if pillar.get('authorized_keys') %}
 ensure_authorized_keys:
   ssh_auth.present:

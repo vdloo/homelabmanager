@@ -1,6 +1,7 @@
 nfs_hostname: ''
 authorized_keys: []
 private_key: ''
+public_key: ''
 powerdns_mysql_host: 'localhost'
 powerdns_mysql_port: 3306
 powerdns_mysql_dbname: 'powerdns'
