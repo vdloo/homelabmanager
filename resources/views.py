@@ -87,14 +87,18 @@ runcmd:
         else
             curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/debian/10/amd64/latest/salt-archive-keyring.gpg
             echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg] https://repo.saltproject.io/py3/debian/10/amd64/latest buster main" > /etc/apt/sources.list.d/salt.list
-            echo "deb http://deb.debian.org/debian/ buster main" > /etc/apt/sources.list
-            echo "deb-src http://deb.debian.org/debian/ buster main" >> /etc/apt/sources.list
-            echo "deb http://deb.debian.org/debian/ buster-updates main" >> /etc/apt/sources.list
-            echo "deb-src http://deb.debian.org/debian/ buster-updates main" >> /etc/apt/sources.list
-            echo "deb http://deb.debian.org/debian/ buster-backports main" >> /etc/apt/sources.list
-            echo "deb-src http://deb.debian.org/debian/ buster-backports main" >> /etc/apt/sources.list
-            echo "deb http://security.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list
-            echo "deb-src http://security.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list
+            if timeout 1 bash -c "</dev/tcp/192.168.1.252/80"; then
+                echo "deb [trusted=yes] http://192.168.1.252 buster main" > /tmp/temp_apt_sources.list
+                echo "deb [trusted=yes] http://192.168.1.252 buster-updates main" >> /tmp/temp_apt_sources.list
+                echo "deb [trusted=yes] http://192.168.1.252 buster-backports main" >> /tmp/temp_apt_sources.list
+                echo "deb [trusted=yes] http://192.168.1.252 buster-security main" >> /tmp/temp_apt_sources.list
+            else
+                echo "deb http://deb.debian.org/debian/ buster main" > /tmp/temp_apt_sources.list
+                echo "deb http://deb.debian.org/debian/ buster-updates main" >> /tmp/temp_apt_sources.list
+                echo "deb http://deb.debian.org/debian/ buster-backports main" >> /tmp/temp_apt_sources.list
+                echo "deb http://security.debian.org/debian-security buster/updates main" >> /tmp/temp_apt_sources.list
+            fi
+            mv /tmp/temp_apt_sources.list /etc/apt/sources.list
         fi
         
         apt-get update
