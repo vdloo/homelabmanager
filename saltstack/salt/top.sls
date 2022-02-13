@@ -34,6 +34,6 @@ base:
   'role:irc':
     - match: grain
     - irc
-  'role:saltmaster':
+  'role:vmsaltmaster':
     - match: grain
     - vmsaltmaster

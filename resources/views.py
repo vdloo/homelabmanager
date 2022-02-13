@@ -262,7 +262,7 @@ def generate_cloud_init_configuration(hypervisor_name):
             name=relevant_resource.name,
             static_ip=relevant_resource.static_ip or '',
             hypervisor=relevant_resource.host.name,
-            vm_saltmaster=get_vm_saltmaster_ip()
+            vm_saltmaster=relevant_resource.saltmaster_ip or get_vm_saltmaster_ip()
         )
     return cloud_init_config
 

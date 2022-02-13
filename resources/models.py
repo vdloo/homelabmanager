@@ -25,6 +25,7 @@ class VirtualMachine(models.Model):
     profile = models.CharField(max_length=100)
     image = models.CharField(max_length=100)
     static_ip = models.GenericIPAddressField(blank=True, null=True)
+    saltmaster_ip = models.GenericIPAddressField(blank=True, null=True)
     enabled = models.BooleanField(default=False)
     extra_storage_in_gb = models.PositiveSmallIntegerField(
         default=1
