@@ -14,6 +14,7 @@ prometheus_static_ip: '192.168.1.249'
 debianrepo_static_ip: '192.168.1.252'
 grafana_static_ip: '192.168.1.250'
 irc_static_ip: '192.168.1.240'
+vmsaltmaster_static_ip: '192.168.1.239'
 shellserver_unprivileged_user_name: 'notroot'
 shellserver_unprivileged_user_full_name: 'Not Root'
 # Insecure default password is 'notroot'. Overwrite this in your own pillar.

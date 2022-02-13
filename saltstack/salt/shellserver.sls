@@ -368,7 +368,7 @@ copy_initial_htop_config_for_unprivileged_user_user:
   cmd.run:
     - name: cp --no-clobber /etc/dotfiles/.config/htop/htoprc /home/{{  pillar['shellserver_unprivileged_user_name'] }}/.config/htop/htoprc
 
-create_root_irrsi_config_directory:
+create_root_irssi_config_directory:
   file.directory:
     - name: /root/.irssi
     - user: root
@@ -378,7 +378,7 @@ create_root_irrsi_config_directory:
 install_root_irssi_config_file:
   file.managed:
     - name: /root/.irssi/config
-    - source: salt://files/root/.irrsi/config
+    - source: salt://files/root/.irssi/config
     - user: root
     - group: root
     - mode: 0640
