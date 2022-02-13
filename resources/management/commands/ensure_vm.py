@@ -12,7 +12,8 @@ DEFAULT_EXTRA_STORAGE_POOL = STORAGE_POOL_CHOICES[0][0]
 
 def ensure_vm_exists(
         name, ram, cpu, hypervisor, role, profile, image,
-        enabled, extra_storage_in_gb, extra_storage_pool
+        enabled, extra_storage_in_gb, extra_storage_pool,
+        saltmaster_ip
 ):
     vm, created = VirtualMachine.objects.get_or_create(
         name=name,
@@ -24,7 +25,8 @@ def ensure_vm_exists(
         image=image,
         enabled=enabled,
         extra_storage_in_gb=extra_storage_in_gb,
-        extra_storage_pool=extra_storage_pool
+        extra_storage_pool=extra_storage_pool,
+        saltmaster_ip=saltmaster_ip
     )
     created_message = f"Created new VM '{name}'"
     exists_message = f"VM '{name}' already exists"
@@ -93,6 +95,11 @@ class Command(BaseCommand):
             choices=[x for (x, _) in STORAGE_POOL_CHOICES],
             default=DEFAULT_EXTRA_STORAGE_POOL
         )
+        parser.add_argument(
+            '--saltmaster-ip',
+            help=f"The saltmaster the vm should listen to. Defaults to 'VM_SALTMASTER_IP' in the environment",
+            default=None
+        )
 
     def handle(self, *args, **options):
         ensure_vm_exists(
@@ -105,5 +112,6 @@ class Command(BaseCommand):
             image=options['image'],
             enabled=options['enabled'],
             extra_storage_in_gb=options['extra_storage_in_gb'],
-            extra_storage_pool=options['extra_storage_pool']
+            extra_storage_pool=options['extra_storage_pool'],
+            saltmaster_ip=options['saltmaster_ip'],
         )
