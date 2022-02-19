@@ -3,4 +3,3 @@ auto_accept: True
 reactor:
   - 'salt/minion/*/start':
     - /srv/reactor/salt.sls
-log_level: debug

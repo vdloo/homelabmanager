@@ -1,0 +1,16 @@
+[Unit]
+Description=ii irc fifo
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+StandardOutput=null
+StandardError=null
+User=root
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/usr/local/bin/configure_ii_irc_fifo.sh
+
+[Install]
+WantedBy=multi-user.target

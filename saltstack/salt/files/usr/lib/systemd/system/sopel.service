@@ -1,0 +1,22 @@
+[Unit]
+Description=Sopel
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+StandardOutput=null
+StandardError=null
+User={{ pillar['shellserver_unprivileged_user_name'] }}
+Type=simple
+Restart=always
+RestartSec=1
+
+{% if grains.os_family == 'Arch' %}
+ExecStart=/sbin/sopel
+{% else %}
+ExecStart=/usr/local/bin/sopel
+{% endif %}
+
+
+[Install]
+WantedBy=multi-user.target
