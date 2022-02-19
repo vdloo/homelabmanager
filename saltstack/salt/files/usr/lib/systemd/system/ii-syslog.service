@@ -4,6 +4,8 @@ After=network.target
 StartLimitIntervalSec=0
 
 [Service]
+StandardOutput=null
+StandardError=null
 User=root
 Type=simple
 Restart=always

@@ -4,6 +4,8 @@ After=network.target
 StartLimitIntervalSec=0
 
 [Service]
+StandardOutput=null
+StandardError=null
 User={{ pillar['shellserver_unprivileged_user_name'] }}
 Type=simple
 Restart=always
