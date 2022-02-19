@@ -6,7 +6,7 @@ set -e
 # See https://tools.suckless.org/ii/bots/ for how this works.
 
 while true; do
-    ii -i /tmp/homelabirc -s {{ pillar['irc_static_ip'] }} -n "$(hostname)-log" -f "$(hostname)-log" &
+    ii -i /tmp/homelabirc -s {{ pillar['irc_static_ip'] }} -n "$(hostname)-$(date +'%s')-log" -f "$(hostname)-$(date +'%s')-log" &
     iipid="$!"
     sleep 10
     printf "/j %s\n" "#homelabstatus" > /tmp/homelabirc/{{ pillar['irc_static_ip'] }}/in
