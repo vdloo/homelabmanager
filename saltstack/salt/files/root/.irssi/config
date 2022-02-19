@@ -1,5 +1,5 @@
 servers = (
-  { address = "192.168.1.240"; chatnet = "homelab"; port = "6667"; autoconnect = "Yes"; },
+  { address = "{{ pillar['irc_static_ip'] }}"; chatnet = "homelab"; port = "6667"; autoconnect = "Yes"; },
 );
 
 chatnets = {
