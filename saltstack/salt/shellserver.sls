@@ -454,34 +454,6 @@ ensure_ii_running:
     - enable: true
     - name: ii
 
-install_pipe_syslog_to_ii_irc_script:
-  file.managed:
-    - name: /usr/local/bin/pipe_syslog_to_ii_irc.sh
-    - source: salt://files/usr/local/bin/pipe_syslog_to_ii_irc.sh
-    - user: root
-    - group: root
-    - mode: 755
-    - template: jinja
-
-write_ii_syslog_service_unit:
-  file.managed:
-    - name: /usr/lib/systemd/system/ii-syslog.service
-    - source: salt://files/usr/lib/systemd/system/ii-syslog.service
-    - user: root
-    - group: root
-    - mode: 644
-
-daemon_reload_if_ii_syslog_unit_changed:
-  cmd.run:
-    - name: systemctl daemon-reload
-    - onchanges:
-        - file: /usr/lib/systemd/system/ii-syslog.service
-
-ensure_ii_syslog_running:
-  service.running:
-    - enable: true
-    - name: ii-syslog
-
 install_write_applied_states_script:
   file.managed:
     - name: /usr/local/bin/write_applied_states.sh
