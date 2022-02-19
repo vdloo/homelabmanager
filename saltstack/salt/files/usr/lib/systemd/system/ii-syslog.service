@@ -1,0 +1,14 @@
+[Unit]
+Description=ii syslog to irc
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+User=root
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/usr/local/bin/pipe_syslog_to_ii_irc.sh
+
+[Install]
+WantedBy=multi-user.target

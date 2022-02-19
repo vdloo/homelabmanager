@@ -33,6 +33,7 @@ install_shellserver_packages:
       - curl
       - figlet
       - git
+      - ii
       - irssi
       - jq
       - neofetch
@@ -425,6 +426,62 @@ ensure_sopel_running:
     - enable: true
     - name: sopel
 
+install_configure_ii_irc_fifo:
+  file.managed:
+    - name: /usr/local/bin/configure_ii_irc_fifo.sh
+    - source: salt://files/usr/local/bin/configure_ii_irc_fifo.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+write_ii_service_unit:
+  file.managed:
+    - name: /usr/lib/systemd/system/ii.service
+    - source: salt://files/usr/lib/systemd/system/ii.service
+    - user: root
+    - group: root
+    - mode: 644
+
+daemon_reload_if_ii_unit_changed:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - onchanges:
+        - file: /usr/lib/systemd/system/ii.service
+
+ensure_ii_running:
+  service.running:
+    - enable: true
+    - name: ii
+
+install_pipe_syslog_to_ii_irc_script:
+  file.managed:
+    - name: /usr/local/bin/pipe_syslog_to_ii_irc.sh
+    - source: salt://files/usr/local/bin/pipe_syslog_to_ii_irc.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+write_ii_syslog_service_unit:
+  file.managed:
+    - name: /usr/lib/systemd/system/ii-syslog.service
+    - source: salt://files/usr/lib/systemd/system/ii-syslog.service
+    - user: root
+    - group: root
+    - mode: 644
+
+daemon_reload_if_ii_syslog_unit_changed:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - onchanges:
+        - file: /usr/lib/systemd/system/ii-syslog.service
+
+ensure_ii_syslog_running:
+  service.running:
+    - enable: true
+    - name: ii-syslog
+
 install_write_applied_states_script:
   file.managed:
     - name: /usr/local/bin/write_applied_states.sh
@@ -432,6 +489,7 @@ install_write_applied_states_script:
     - user: root
     - group: root
     - mode: 755
+    - template: jinja
 
 write_applied_states:
   cmd.run:
