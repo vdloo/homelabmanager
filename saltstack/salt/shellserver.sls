@@ -385,6 +385,7 @@ install_root_irssi_config_file:
     - mode: 0640
     - template: jinja
 
+{% if grains.os_family != 'Arch' %}
 install_sopel_irc_bot:
   pip.installed:
     - name: sopel
@@ -453,6 +454,7 @@ ensure_ii_running:
   service.running:
     - enable: true
     - name: ii
+{% endif %}
 
 install_write_applied_states_script:
   file.managed:
