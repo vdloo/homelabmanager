@@ -20,7 +20,6 @@
       			      "gcc"
       			      "git"
       			      "gzip"
-      			      "ii"
       			      "irssi"
       			      "jq"
       			      "m4"
@@ -40,6 +39,7 @@
             (append shellserver-packages
       	      (list
       	        "cronie"
+      	        "go"
       	        "python-mysqlclient"
       	        "python-pip"
       	        "python-sqlparse"
@@ -50,8 +50,10 @@
             ; Debian packages
             (append shellserver-packages
       	      (list
+      	        "ii"
       	        "cron"
       	        "crudini"
+      	        "golang-go"
       	        "python3-mysqldb"
       	        "python3-pip"
       	        "python3-sqlparse"

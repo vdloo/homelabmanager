@@ -33,7 +33,6 @@ install_shellserver_packages:
       - curl
       - figlet
       - git
-      - ii
       - irssi
       - jq
       - neofetch
@@ -50,6 +49,7 @@ install_shellserver_packages_for_archlinux:
   pkg.installed:
     - pkgs:
       - cronie
+      - go
       - python-mysqlclient
       - python-pip
       - python-sqlparse
@@ -86,12 +86,14 @@ install_shellserver_packages_for_archlinux:
 install_shellserver_packages_for_debian:
   pkg.installed:
     - pkgs:
+      - autoconf
+      - automake
+      - build-essential
       - cron
       - crudini
-      - automake
-      - autoconf
+      - golang
+      - ii
       - m4
-      - build-essential
       - python3-mysqldb
       - python3-pip
       - python3-sqlparse
@@ -198,6 +200,21 @@ install_machine_check_system_wide_if_needed:
     - onchanges:
       - git: clone_machine_check_repo
       - file: /srv/machine-check
+
+clone_yggdrasil_repo:
+  git.latest:
+    - target: /etc/yggdrasil-go
+    - branch: master
+    - name: https://github.com/yggdrasil-network/yggdrasil-go
+
+write_install_yggdrasil_system_wide_script:
+  file.managed:
+    - name: /usr/local/bin/install_yggdrasil_system_wide.sh
+    - source: salt://files/usr/local/bin/install_yggdrasil_system_wide.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
 
 write_locale_file:
   file.managed:
@@ -455,6 +472,32 @@ ensure_ii_running:
     - enable: true
     - name: ii
 {% endif %}
+
+install_yggdrasil_system_wide_if_needed:
+  cmd.run:
+    - name: /usr/local/bin/install_yggdrasil_system_wide.sh > /tmp/install_yggdrasil_log 2>&1 &
+    - onchanges:
+      - git: clone_yggdrasil_repo
+
+write_yggdrasil_service_unit:
+  file.managed:
+    - name: /usr/lib/systemd/system/yggdrasil.service
+    - source: salt://files/usr/lib/systemd/system/yggdrasil.service
+    - user: root
+    - group: root
+    - mode: 644
+
+daemon_reload_if_yggdrasil_unit_changed:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - onchanges:
+        - file: /usr/lib/systemd/system/yggdrasil.service
+
+ensure_yggdrasil_running:
+  service.running:
+    - enable: true
+    - name: yggdrasil
+
 
 install_write_applied_states_script:
   file.managed:
