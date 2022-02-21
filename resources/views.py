@@ -119,8 +119,11 @@ runcmd:
     echo "random_reauth_delay: 90" >> /etc/salt/minion
     echo "auth_timeout: 120" >> /etc/salt/minion
     echo "role: {role}" > /etc/salt/grains
-    echo "ipv6_overlay: {ipv6_overlay}" >> /etc/salt/grains
     echo "hypervisor: {hypervisor}" >> /etc/salt/grains
+    echo "ipv6_overlay: {ipv6_overlay}" >> /etc/salt/grains
+    echo "ipv6_pubkey: {ipv6_pubkey}" >> /etc/salt/grains
+    echo "ipv6_privkey: {ipv6_privkey}" >> /etc/salt/grains
+    echo "ipv6_allowed_keys: {ipv6_allowed_keys}" >> /etc/salt/grains
     systemctl stop salt-minion || /bin/true
     systemctl enable salt-minion || /bin/true
     rm -f /etc/salt/minion_id
@@ -268,7 +271,10 @@ def generate_cloud_init_configuration(hypervisor_name):
             static_ip=relevant_resource.static_ip or '',
             hypervisor=relevant_resource.host.name,
             vm_saltmaster=relevant_resource.saltmaster_ip or get_vm_saltmaster_ip(),
-            ipv6_overlay=str(relevant_resource.ipv6_overlay).lower()
+            ipv6_overlay=str(relevant_resource.ipv6_overlay).lower(),
+            ipv6_pubkey=relevant_resource.ipv6_pubkey or '',
+            ipv6_privkey=relevant_resource.ipv6_privkey or '',
+            ipv6_allowed_keys=','.join([v.ipv6_pubkey for v in VirtualMachine.objects.filter(ipv6_overlay=True)])
         )
     return cloud_init_config
 

@@ -21,11 +21,10 @@ if [ -f /etc/yggdrasil.conf ]; then
     echo "yggdrasil is already configured, doing nothing"
 else
     echo "configuring yggdrasil"
-    yggdrasil -genconf -json > /tmp/yggdrasil.conf
-    NEW_PUBLIC_KEY=$(grep '"PublicKey"' /tmp/yggdrasil.conf | cut -d '"' -f4)
-    NEW_PRIVATE_KEY=$(grep '"PrivateKey"' /tmp/yggdrasil.conf | cut -d '"' -f4)
+    NODE_PUBLIC_KEY=$(grep ipv6_pubkey /etc/salt/grains | cut -d ' ' -f2)
+    NODE_PRIVATE_KEY=$(grep ipv6_privkey /etc/salt/grains | cut -d ' ' -f2)
     IP_ADDRESS_TO_BIND_ON=$(ip -f inet addr show eth0 | grep 'inet ' | head -n 1 | cut -d '/' -f1 | awk '{print$NF}')
-    cat << EOF > /etc/yggdrasil.conf
+    cat << EOF > /tmp/tmp_yggdrasil.conf
 {
   "Peers": [
     "tls://{{ pillar['powerdns_static_ip'] }}:5432",
@@ -43,9 +42,12 @@ else
   "MulticastInterfaces": [
   ],
   "AllowedPublicKeys": [
+EOF
+    grep ipv6_allowed_keys /etc/salt/grains | cut -d ' ' -f2 | tr ',' '\n'  | awk '{ printf "    \"%s\",\n", $0 }' | sed '$s/,$//' >> /tmp/tmp_yggdrasil.conf
+    cat << EOF >> /tmp/tmp_yggdrasil.conf
   ],
-  "PublicKey": "$NEW_PUBLIC_KEY",
-  "PrivateKey": "$NEW_PRIVATE_KEY",
+  "PublicKey": "$NODE_PUBLIC_KEY",
+  "PrivateKey": "$NODE_PRIVATE_KEY",
   "IfName": "auto",
   "IfMTU": 65535,
   "NodeInfoPrivacy": false,
@@ -55,4 +57,5 @@ else
   }
 }
 EOF
+    mv /tmp/tmp_yggdrasil.conf /etc/yggdrasil.conf
 fi
