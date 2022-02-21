@@ -23,6 +23,7 @@
             ; Archlinux packages
             (append shellserver-packages
               (list
+      	        "cronie"
                 "bind"
                 "gnupg"
                 "inetutils"
@@ -32,9 +33,10 @@
             ; Debian packages
             (append shellserver-packages
               (list
+      	        "cron"
                 "dnsutils"
-                "iptables-persistent"
                 "gnupg2"
+                "iptables-persistent"
       	      )))))
       (check-file-mode "/root/.ssh/id_rsa" 384)
       (check-file-mode "/root/.ssh/authorized_keys" 384))

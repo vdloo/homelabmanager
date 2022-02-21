@@ -38,7 +38,6 @@
             ; Archlinux packages
             (append shellserver-packages
       	      (list
-      	        "cronie"
       	        "go"
       	        "python-mysqlclient"
       	        "python-pip"
@@ -51,7 +50,6 @@
             (append shellserver-packages
       	      (list
       	        "ii"
-      	        "cron"
       	        "crudini"
       	        "golang-go"
       	        "python3-mysqldb"

@@ -22,6 +22,7 @@ install_core_packages:
       - htop
       - iftop
       - sysstat
+      - cron
     - refresh: true
 
 {% if grains.os_family == 'Arch' %}
@@ -29,6 +30,7 @@ install_core_packages_for_archlinux:
   pkg.installed:
     - pkgs:
       - bind
+      - cronie
       - gnupg
       - inetutils
       - iptables
@@ -37,6 +39,7 @@ install_core_packages_for_archlinux:
 install_core_packages_for_debian:
   pkg.installed:
     - pkgs:
+      - cron
       - dnsutils
       - gnupg2
       - iptables-persistent

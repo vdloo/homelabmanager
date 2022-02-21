@@ -3,6 +3,26 @@
 
 include:
   - storage
+  -
+{% if grains.os_family == 'Arch' %}
+ensure_cron_running_for_archlinux:
+  service.running:
+    - enable: true
+    - name: cronie
+{% else %}
+ensure_cron_running_for_debian:
+  service.running:
+    - enable: true
+    - name: cron
+{% endif %}
+
+{% if grains.oscodename == 'buster' %}
+run_detect_debian_repo_periodically:
+  cron.present:
+    - user: root
+    - minute: '*'
+    - name: /usr/local/bin/detect_debian_repo.sh
+{% endif %}
 
 {% if grains.oscodename == 'buster' %}
 write_racket_apt_preference_for_backport:
@@ -38,7 +58,6 @@ install_shellserver_packages:
       - neofetch
       - nmap
       - prometheus-node-exporter
-      - racket
       - rsync
       - screen
       - wget
@@ -48,7 +67,6 @@ install_shellserver_packages:
 install_shellserver_packages_for_archlinux:
   pkg.installed:
     - pkgs:
-      - cronie
       - go
       - python-mysqlclient
       - python-pip
@@ -89,7 +107,6 @@ install_shellserver_packages_for_debian:
       - autoconf
       - automake
       - build-essential
-      - cron
       - crudini
       - golang
       - ii
@@ -100,18 +117,6 @@ install_shellserver_packages_for_debian:
       - python3-venv
       - python3-wheel
       - vim-nox
-{% endif %}
-
-{% if grains.os_family == 'Arch' %}
-ensure_cron_running_for_archlinux:
-  service.running:
-    - enable: true
-    - name: cronie
-{% else %}
-ensure_cron_running_for_debian:
-  service.running:
-    - enable: true
-    - name: cron
 {% endif %}
 
 write_update_motd_script:
@@ -143,14 +148,6 @@ run_use_powerdns_if_up_periodically:
     - minute: '*'
     - name: /usr/local/bin/use_powerdns_if_up.sh
 
-{% if grains.oscodename == 'buster' %}
-run_detect_debian_repo_periodically:
-  cron.present:
-    - user: root
-    - minute: '*'
-    - name: /usr/local/bin/detect_debian_repo.sh
-{% endif %}
-
 install_use_prometheus_if_up_script:
   file.managed:
     - name: /usr/local/bin/use_prometheus_if_up.sh
@@ -165,41 +162,6 @@ run_use_prometheus_if_up_periodically:
     - user: root
     - minute: '*'
     - name: /usr/local/bin/use_prometheus_if_up.sh
-
-ensure_machine_check_tests_dir:
-  file.directory:
-    - name: /srv/machine-check
-    - user: root
-    - group: root
-    - mode: 755
-
-ensure_machine_check_tests:
-  file.recurse:
-    - source: salt://files/srv/machine-check
-    - name: /srv/machine-check
-    - file_mode: keep
-    - template: jinja
-
-clone_machine_check_repo:
-  git.latest:
-    - target: /etc/machine-check
-    - branch: master
-    - name: https://github.com/vdloo/machine-check
-
-write_install_machine_check_system_wide_script:
-  file.managed:
-    - name: /usr/local/bin/install_machine_check_system_wide.sh
-    - source: salt://files/usr/local/bin/install_machine_check_system_wide.sh
-    - user: root
-    - group: root
-    - mode: 755
-
-install_machine_check_system_wide_if_needed:
-  cmd.run:
-    - name: /usr/local/bin/install_machine_check_system_wide.sh > /tmp/install_machine_check_log 2>&1 &
-    - onchanges:
-      - git: clone_machine_check_repo
-      - file: /srv/machine-check
 
 clone_yggdrasil_repo:
   git.latest:
@@ -499,6 +461,46 @@ ensure_yggdrasil_running:
     - enable: true
     - name: yggdrasil
 {% endif %}
+
+install_machine_check_packages:
+  pkg.installed:
+    - pkgs:
+        - racket
+
+ensure_machine_check_tests_dir:
+  file.directory:
+    - name: /srv/machine-check
+    - user: root
+    - group: root
+    - mode: 755
+
+ensure_machine_check_tests:
+  file.recurse:
+    - source: salt://files/srv/machine-check
+    - name: /srv/machine-check
+    - file_mode: keep
+    - template: jinja
+
+clone_machine_check_repo:
+  git.latest:
+    - target: /etc/machine-check
+    - branch: master
+    - name: https://github.com/vdloo/machine-check
+
+write_install_machine_check_system_wide_script:
+  file.managed:
+    - name: /usr/local/bin/install_machine_check_system_wide.sh
+    - source: salt://files/usr/local/bin/install_machine_check_system_wide.sh
+    - user: root
+    - group: root
+    - mode: 755
+
+install_machine_check_system_wide_if_needed:
+  cmd.run:
+    - name: /usr/local/bin/install_machine_check_system_wide.sh > /tmp/install_machine_check_log 2>&1 &
+    - onchanges:
+        - git: clone_machine_check_repo
+        - file: /srv/machine-check
 
 install_write_applied_states_script:
   file.managed:
