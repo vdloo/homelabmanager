@@ -3,7 +3,7 @@
 
 include:
   - storage
-  -
+
 {% if grains.os_family == 'Arch' %}
 ensure_cron_running_for_archlinux:
   service.running:
