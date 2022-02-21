@@ -24,11 +24,11 @@ class TestEnsureVmExists(TestCase):
             'role': 'default',
             'profile': 'default',
             'image': 'debian-10-openstack-amd64.qcow2',
-            'static_ip': None,
             'saltmaster_ip': None,
             'enabled': True,
             'extra_storage_in_gb': 1,
-            'extra_storage_pool': 'default'
+            'extra_storage_pool': 'default',
+            'ipv6_overlay': True
         }
 
     def test_ensure_vm_exists_creates_vm_idempotently(self):

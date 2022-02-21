@@ -30,3 +30,7 @@ Pin-Priority: 1001
 Package: libcurl3-gnutls:amd64
 Pin: release a=buster
 Pin-Priority: 1001
+
+Package: golang*
+Pin: release a=buster-backports
+Pin-Priority: 1001
