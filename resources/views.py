@@ -28,6 +28,11 @@ runcmd:
     set -e
     
     if [ -f "/etc/arch-release" ]; then
+        systemctl stop systemd-resolved || /bin/true
+        systemctl disable systemd-resolved || /bin/true
+        rm -rf /etc/resolv.conf
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
         rm -rf /etc/systemd/network/eth0-dhcp.network
         echo "[Match]" > /etc/systemd/network/01-homelab.network
         echo "Name=eth0" >> /etc/systemd/network/01-homelab.network
