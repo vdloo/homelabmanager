@@ -104,7 +104,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--no-ipv6-overlay',
             help="Pass --no-ipv6-overlay to disable the ipv6 overlay on this new VM",
-            action='store_false'
+            action='store_true'
         )
 
     def handle(self, *args, **options):

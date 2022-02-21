@@ -119,7 +119,7 @@ runcmd:
     echo "random_reauth_delay: 90" >> /etc/salt/minion
     echo "auth_timeout: 120" >> /etc/salt/minion
     echo "role: {role}" > /etc/salt/grains
-    echo "ipv6_overlay: {ipv6_overlay}" > /etc/salt/grains
+    echo "ipv6_overlay: {ipv6_overlay}" >> /etc/salt/grains
     echo "hypervisor: {hypervisor}" >> /etc/salt/grains
     systemctl stop salt-minion || /bin/true
     systemctl enable salt-minion || /bin/true

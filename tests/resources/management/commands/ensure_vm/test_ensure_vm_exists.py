@@ -24,7 +24,6 @@ class TestEnsureVmExists(TestCase):
             'role': 'default',
             'profile': 'default',
             'image': 'debian-10-openstack-amd64.qcow2',
-            'static_ip': None,
             'saltmaster_ip': None,
             'enabled': True,
             'extra_storage_in_gb': 1,

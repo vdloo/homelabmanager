@@ -18,7 +18,9 @@ class TestCommand(TestCase):
             'image': 'debian-10-openstack-amd64.qcow2',
             'enabled': True,
             'extra_storage_in_gb': 1,
-            'extra_storage_pool': 'default'
+            'extra_storage_pool': 'default',
+            'saltmaster_ip': '1.2.3.4',
+            'no_ipv6_overlay': True,
         }
         Hypervisor.objects.create(
             name='h1',
@@ -47,7 +49,9 @@ class TestCommand(TestCase):
             image='debian-10-openstack-amd64.qcow2',
             enabled=True,
             extra_storage_in_gb=1,
-            extra_storage_pool='default'
+            extra_storage_pool='default',
+            saltmaster_ip='1.2.3.4',
+            ipv6_overlay=False
         )
 
     def test_command_adds_correct_arguments(self):
@@ -113,6 +117,15 @@ class TestCommand(TestCase):
                 choices=[x for (x, _) in STORAGE_POOL_CHOICES],
                 default=STORAGE_POOL_CHOICES[0][0]
             ),
-
+            call(
+                '--saltmaster-ip',
+                help=ANY,
+                default=None
+            ),
+            call(
+                '--no-ipv6-overlay',
+                help=ANY,
+                action='store_true'
+            ),
         ]
         self.assertSequenceEqual(expected_calls, parser.add_argument.mock_calls)

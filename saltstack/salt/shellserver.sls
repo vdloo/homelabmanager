@@ -201,7 +201,6 @@ install_machine_check_system_wide_if_needed:
       - git: clone_machine_check_repo
       - file: /srv/machine-check
 
-{% if grains.ipv6_overlay %}
 clone_yggdrasil_repo:
   git.latest:
     - target: /etc/yggdrasil-go
@@ -222,7 +221,6 @@ install_yggdrasil_system_wide_if_needed:
     - name: /usr/local/bin/install_yggdrasil_system_wide.sh > /tmp/install_yggdrasil_log 2>&1 &
     - onchanges:
       - git: clone_yggdrasil_repo
-{% endif %}
 
 write_locale_file:
   file.managed:
