@@ -265,6 +265,9 @@ def generate_cloud_init_configuration(hypervisor_name):
     )
     cloud_init_config = ""
     for relevant_resource in relevant_resources:
+        allowed_keys = ','.join(
+            [v.ipv6_pubkey for v in VirtualMachine.objects.filter(ipv6_overlay=True)]
+        ) if relevant_resource.ipv6_overlay else '"{}"'.format(relevant_resource.ipv6_pubkey)
         cloud_init_config += SALT_ROLE.format(
             role=relevant_resource.role,
             name=relevant_resource.name,
@@ -274,7 +277,7 @@ def generate_cloud_init_configuration(hypervisor_name):
             ipv6_overlay=str(relevant_resource.ipv6_overlay).lower(),
             ipv6_pubkey=relevant_resource.ipv6_pubkey or '',
             ipv6_privkey=relevant_resource.ipv6_privkey or '',
-            ipv6_allowed_keys=','.join([v.ipv6_pubkey for v in VirtualMachine.objects.filter(ipv6_overlay=True)])
+            ipv6_allowed_keys=allowed_keys
         )
     return cloud_init_config
 
