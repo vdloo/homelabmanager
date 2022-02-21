@@ -119,6 +119,7 @@ runcmd:
     echo "random_reauth_delay: 90" >> /etc/salt/minion
     echo "auth_timeout: 120" >> /etc/salt/minion
     echo "role: {role}" > /etc/salt/grains
+    echo "ipv6_overlay: {ipv6_overlay}" > /etc/salt/grains
     echo "hypervisor: {hypervisor}" >> /etc/salt/grains
     systemctl stop salt-minion || /bin/true
     systemctl enable salt-minion || /bin/true
@@ -266,7 +267,8 @@ def generate_cloud_init_configuration(hypervisor_name):
             name=relevant_resource.name,
             static_ip=relevant_resource.static_ip or '',
             hypervisor=relevant_resource.host.name,
-            vm_saltmaster=relevant_resource.saltmaster_ip or get_vm_saltmaster_ip()
+            vm_saltmaster=relevant_resource.saltmaster_ip or get_vm_saltmaster_ip(),
+            ipv6_overlay=str(relevant_resource.ipv6_overlay).lower()
         )
     return cloud_init_config
 

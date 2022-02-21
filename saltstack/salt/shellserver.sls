@@ -201,6 +201,7 @@ install_machine_check_system_wide_if_needed:
       - git: clone_machine_check_repo
       - file: /srv/machine-check
 
+{% if grains.ipv6_overlay %}
 clone_yggdrasil_repo:
   git.latest:
     - target: /etc/yggdrasil-go
@@ -215,6 +216,13 @@ write_install_yggdrasil_system_wide_script:
     - group: root
     - mode: 755
     - template: jinja
+
+install_yggdrasil_system_wide_if_needed:
+  cmd.run:
+    - name: /usr/local/bin/install_yggdrasil_system_wide.sh > /tmp/install_yggdrasil_log 2>&1 &
+    - onchanges:
+      - git: clone_yggdrasil_repo
+{% endif %}
 
 write_locale_file:
   file.managed:
@@ -473,12 +481,7 @@ ensure_ii_running:
     - name: ii
 {% endif %}
 
-install_yggdrasil_system_wide_if_needed:
-  cmd.run:
-    - name: /usr/local/bin/install_yggdrasil_system_wide.sh > /tmp/install_yggdrasil_log 2>&1 &
-    - onchanges:
-      - git: clone_yggdrasil_repo
-
+{% if grains.ipv6_overlay %}
 write_yggdrasil_service_unit:
   file.managed:
     - name: /usr/lib/systemd/system/yggdrasil.service
@@ -497,7 +500,7 @@ ensure_yggdrasil_running:
   service.running:
     - enable: true
     - name: yggdrasil
-
+{% endif %}
 
 install_write_applied_states_script:
   file.managed:

@@ -27,6 +27,7 @@ class VirtualMachine(models.Model):
     static_ip = models.GenericIPAddressField(blank=True, null=True)
     saltmaster_ip = models.GenericIPAddressField(blank=True, null=True)
     enabled = models.BooleanField(default=False)
+    ipv6_overlay = models.BooleanField(default=True)
     extra_storage_in_gb = models.PositiveSmallIntegerField(
         default=1
     )

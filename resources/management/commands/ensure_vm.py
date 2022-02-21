@@ -13,7 +13,7 @@ DEFAULT_EXTRA_STORAGE_POOL = STORAGE_POOL_CHOICES[0][0]
 def ensure_vm_exists(
         name, ram, cpu, hypervisor, role, profile, image,
         enabled, extra_storage_in_gb, extra_storage_pool,
-        saltmaster_ip
+        saltmaster_ip, ipv6_overlay
 ):
     vm, created = VirtualMachine.objects.get_or_create(
         name=name,
@@ -26,7 +26,8 @@ def ensure_vm_exists(
         enabled=enabled,
         extra_storage_in_gb=extra_storage_in_gb,
         extra_storage_pool=extra_storage_pool,
-        saltmaster_ip=saltmaster_ip
+        saltmaster_ip=saltmaster_ip,
+        ipv6_overlay=ipv6_overlay
     )
     created_message = f"Created new VM '{name}'"
     exists_message = f"VM '{name}' already exists"
@@ -100,6 +101,11 @@ class Command(BaseCommand):
             help=f"The saltmaster the vm should listen to. Defaults to 'VM_SALTMASTER_IP' in the environment",
             default=None
         )
+        parser.add_argument(
+            '--no-ipv6-overlay',
+            help="Pass --no-ipv6-overlay to disable the ipv6 overlay on this new VM",
+            action='store_false'
+        )
 
     def handle(self, *args, **options):
         ensure_vm_exists(
@@ -114,4 +120,5 @@ class Command(BaseCommand):
             extra_storage_in_gb=options['extra_storage_in_gb'],
             extra_storage_pool=options['extra_storage_pool'],
             saltmaster_ip=options['saltmaster_ip'],
+            ipv6_overlay=not options['no_ipv6_overlay']
         )
