@@ -1,0 +1,26 @@
+[Unit]
+Description=IPv4 Packet Filtering Framework
+Before=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+{% if grains.os_family == 'Arch' %}
+ExecStart=/usr/bin/iptables-restore /etc/iptables/iptables.rules
+{% else %}
+ExecStart=/sbin/iptables-restore /etc/iptables/iptables.rules
+{% endif %}
+{% if grains.os_family == 'Arch' %}
+ExecReload=/usr/bin/iptables-restore /etc/iptables/iptables.rules
+{% else %}
+ExecReload=/sbin/iptables-restore /etc/iptables/iptables.rules
+{% endif %}
+{% if grains.os_family == 'Arch' %}
+ExecStop=/usr/lib/systemd/scripts/iptables-flush
+{% else %}
+ExecStop=/sbin/iptables -F
+{% endif %}
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

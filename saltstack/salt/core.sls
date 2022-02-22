@@ -22,7 +22,6 @@ install_core_packages:
       - htop
       - iftop
       - sysstat
-      - cron
     - refresh: true
 
 {% if grains.os_family == 'Arch' %}
