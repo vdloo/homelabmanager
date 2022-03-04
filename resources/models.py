@@ -27,6 +27,15 @@ def generate_ip6_keypair():
     return new_config['PublicKey'], new_config['PrivateKey']
 
 
+def get_ipv6_ip_by_pubkey(pubkey):
+    """
+    Get the IPv6 overlay IP from the pubkey
+    :param str pubkey: The pubkey
+    :return str ipv6_address: The IPv6 address
+    """
+    return check_output(["/usr/local/bin/addrforkey", pubkey]).decode('utf-8').split(' ')[1].strip()
+
+
 class VirtualMachine(models.Model):
     create = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=100)
@@ -42,6 +51,7 @@ class VirtualMachine(models.Model):
     ipv6_overlay = models.BooleanField(default=True)
     ipv6_pubkey = models.CharField(max_length=256, default=None, null=True, blank=True)
     ipv6_privkey = models.CharField(max_length=256, default=None, null=True, blank=True)
+    ipv6_ip = models.CharField(max_length=256, default=None, null=True, blank=True)
     extra_storage_in_gb = models.PositiveSmallIntegerField(
         default=1
     )
@@ -56,6 +66,7 @@ class VirtualMachine(models.Model):
         unique_together = ('name', 'profile')
 
     def save(self, *args, **kwargs):
-        if self.ipv6_overlay and not self.ipv6_pubkey or not self.ipv6_privkey:
+        if self.ipv6_overlay and (not self.ipv6_pubkey or not self.ipv6_privkey or not self.ipv6_ip):
             self.ipv6_pubkey, self.ipv6_privkey = generate_ip6_keypair()
+            self.ipv6_ip = get_ipv6_ip_by_pubkey(self.ipv6_pubkey)
         super(VirtualMachine, self).save(*args, **kwargs)

@@ -1,20 +1,6 @@
 include:
   - jenkinsbase
 
-configure_firewall_rules_for_jenkins:
-  file.managed:
-    - name: /etc/iptables/rules.v4
-    - source: salt://files/etc/iptables/rules.v4
-    - user: root
-    - group: root
-    - mode: 644
-
-load_jenkins_firewall_rules_on_change:
-  cmd.run:
-    - name: iptables-restore < /etc/iptables/rules.v4
-    - watch:
-      - file: /etc/iptables/rules.v4
-
 jenkins_repository:
   pkgrepo.managed:
     - humanname: Jenkins Repo

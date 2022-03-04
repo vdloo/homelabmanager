@@ -1,0 +1,27 @@
+[Unit]
+Description=IPv6 Packet Filtering Framework
+Before=network-pre.target
+Wants=network-pre.target
+After=iptables.service
+
+[Service]
+Type=oneshot
+{% if grains.os_family == 'Arch' %}
+ExecStart=/usr/bin/ip6tables-restore /etc/iptables/ip6tables.rules
+{% else %}
+ExecStart=/sbin/ip6tables-restore /etc/iptables/ip6tables.rules
+{% endif %}
+{% if grains.os_family == 'Arch' %}
+ExecReload=/usr/bin/ip6tables-restore /etc/iptables/ip6tables.rules
+{% else %}
+ExecReload=/sbin/ip6tables-restore /etc/iptables/ip6tables.rules
+{% endif %}
+{% if grains.os_family == 'Arch' %}
+ExecStop=/usr/lib/systemd/scripts/iptables-flush 6
+{% else %}
+ExecStop=/sbin/ip6tables -F
+{% endif %}
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

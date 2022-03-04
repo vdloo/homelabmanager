@@ -27,16 +27,16 @@ else
     cat << EOF > /tmp/tmp_yggdrasil.conf
 {
   "Peers": [
-    "tls://{{ pillar['powerdns_static_ip'] }}:5432",
-    "tls://{{ pillar['prometheus_static_ip'] }}:5432",
-    "tls://{{ pillar['debianrepo_static_ip'] }}:5432",
-    "tls://{{ pillar['grafana_static_ip'] }}:5432",
-    "tls://{{ pillar['irc_static_ip'] }}:5432",
-    "tls://{{ pillar['vmsaltmaster_static_ip'] }}:5432"
+    "tls://{{ pillar['powerdns_static_ip'] }}:5544",
+    "tls://{{ pillar['prometheus_static_ip'] }}:5544",
+    "tls://{{ pillar['debianrepo_static_ip'] }}:5544",
+    "tls://{{ pillar['grafana_static_ip'] }}:5544",
+    "tls://{{ pillar['irc_static_ip'] }}:5544",
+    "tls://{{ pillar['vmsaltmaster_static_ip'] }}:5544"
   ],
   "InterfacePeers": {},
   "Listen": [
-    "tls://$IP_ADDRESS_TO_BIND_ON:5432"
+    "tls://$IP_ADDRESS_TO_BIND_ON:5544"
   ],
   "AdminListen": "unix:///var/run/yggdrasil.sock",
   "MulticastInterfaces": [
