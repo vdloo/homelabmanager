@@ -8,8 +8,8 @@ else
   echo "Creating new booksbooksbooks venv"
   python3 -m venv venv
   . venv/bin/activate
-  pip install wheel
-  pip install -r requirements/dev.txt
+  pip3 install wheel
+  pip3 install -r requirements/dev.txt
   ./manage.py migrate
   systemctl enable booksbooksbooks
   systemctl restart booksbooksbooks
