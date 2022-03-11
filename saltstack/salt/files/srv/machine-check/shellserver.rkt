@@ -14,6 +14,7 @@
             (shellserver-packages (list
       			      "autoconf"
       			      "automake"
+      			      "consul"
       			      "curl"
       			      "fakeroot"
       			      "figlet"

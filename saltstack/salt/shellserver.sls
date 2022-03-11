@@ -108,6 +108,7 @@ install_shellserver_packages:
   pkg.installed:
     - pkgs:
       - curl
+      - consul
       - figlet
       - git
       - irssi
@@ -518,6 +519,45 @@ ensure_yggdrasil_running:
     - enable: true
     - name: yggdrasil
 {% endif %}
+
+{% if grains.os_family == 'Arch' %}
+create_consul_config_directory:
+  file.directory:
+    - name: /opt/consul
+    - user: consul
+    - group: consul
+    - mode: 0755
+{% endif %}
+
+install_uuid_from_string_script:
+  file.managed:
+    - name: /usr/local/bin/uuid_from_string.py
+    - source: salt://files/usr/local/bin/uuid_from_string.py
+    - user: root
+    - group: root
+    - mode: 755
+
+install_configure_consul_script:
+  file.managed:
+    - name: /usr/local/bin/configure_consul.sh
+    - source: salt://files/usr/local/bin/configure_consul.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+configure_consul_if_needed:
+  cmd.run:
+    - name: /usr/local/bin/configure_consul.sh > /tmp/configure_consul_log 2>&1 &
+    - onchanges:
+      - file: /usr/local/bin/configure_consul.sh
+
+start_and_enable_consul:
+  service.running:
+    - enable: true
+    - name: consul
+    - watch:
+        - file: /usr/local/bin/configure_consul.sh
 
 install_machine_check_packages:
   pkg.installed:
