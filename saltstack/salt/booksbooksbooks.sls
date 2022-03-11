@@ -40,3 +40,5 @@ install_books_books_books_if_needed:
     - name: /usr/local/bin/install_books_books_books.sh > /tmp/install_books_books_books_log 2>&1 &
     - onchanges:
       - git: clone_books_books_books_repo
+  require:
+    - pkg: libffi-dev
