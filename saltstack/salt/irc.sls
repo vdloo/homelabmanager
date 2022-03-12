@@ -1,5 +1,6 @@
 include:
   - shellserver
+  - sopel
 
 install_irc_server_packages:
   pkg.installed:
