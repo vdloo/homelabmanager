@@ -2,7 +2,7 @@ from os import environ
 from django.http import HttpResponse
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
-from resources.models import VirtualMachine, get_ipv6_ip_by_pubkey
+from resources.models import VirtualMachine, Profile, get_ipv6_ip_by_pubkey
 
 QEMU_CONN = """
 terraform {
@@ -267,15 +267,22 @@ def generate_cloud_init_configuration(hypervisor_name):
     """
     relevant_resources = VirtualMachine.objects.filter(
         host__name=hypervisor_name,
-        enabled=True
+        enabled=True,
+        profile=Profile.objects.filter(enabled=True).first()
     )
     cloud_init_config = ""
     for relevant_resource in relevant_resources:
         allowed_keys = ','.join(
-            [v.ipv6_pubkey for v in VirtualMachine.objects.filter(ipv6_overlay=True)]
+            [v.ipv6_pubkey for v in VirtualMachine.objects.filter(
+                ipv6_overlay=True,
+                profile=Profile.objects.filter(enabled=True).first()
+            )]
         ) if relevant_resource.ipv6_overlay else relevant_resource.ipv6_pubkey
         allowed_ips = ','.join(
-            [get_ipv6_ip_by_pubkey(v.ipv6_pubkey) for v in VirtualMachine.objects.filter(ipv6_overlay=True)]
+            [get_ipv6_ip_by_pubkey(v.ipv6_pubkey) for v in VirtualMachine.objects.filter(
+                ipv6_overlay=True,
+                profile=Profile.objects.filter(enabled=True).first()
+            )]
         ) if relevant_resource.ipv6_overlay else get_ipv6_ip_by_pubkey(relevant_resource.ipv6_pubkey)
         cloud_init_config += SALT_ROLE.format(
             role=relevant_resource.role,
@@ -303,7 +310,8 @@ def get_node_and_volumes(hypervisor_name):
     node_and_vol_config = ""
     for node in VirtualMachine.objects.filter(
         host__name=hypervisor_name,
-        enabled=True
+        enabled=True,
+        profile=Profile.objects.filter(enabled=True).first()
     ):
         node_and_vol_config += VOLUME.format(
             name=node.name,
