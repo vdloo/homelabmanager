@@ -22,6 +22,10 @@ ensure_jenkins_homedir:
     - group: jenkins
     - mode: 755
     - makedirs: true
+    - recurse:
+      - user
+      - group
+      - mode
 
 ensure_jenkins_ssh_dir:
   file.directory:
