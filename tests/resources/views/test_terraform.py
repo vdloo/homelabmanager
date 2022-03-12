@@ -1,25 +1,50 @@
 import os
-from django.test import TestCase
+from tests.testcase import TestCase
 from django.urls import reverse
 from unittest.mock import patch
 
-from resources.factory import VirtualMachineFactory, HypervisorFactory
+from resources.factory import VirtualMachineFactory, HypervisorFactory, ProfileFactory
 
 
 class TestTerraform(TestCase):
     def setUp(self):
+        generate_ipv6_keypair = self.set_up_patch(
+            'resources.models.generate_ipv6_keypair'
+        )
+        generate_ipv6_keypair.return_value = ('pubkey', 'privkey')
+        self.set_up_patch(
+            'resources.models.get_ipv6_ip_by_pubkey',
+            return_value='1:2:3:4:5:6:7:8'
+        )
+        self.set_up_patch(
+            'resources.views.get_ipv6_ip_by_pubkey',
+            return_value='1:2:3:4:5:6:7:8'
+        )
+        self.profile = ProfileFactory.create(enabled=True)
         self.hypervisor_1 = HypervisorFactory.create(name='hypervisor88')
         self.hypervisor_2 = HypervisorFactory.create(name='hypervisor99')
-        self.virtual_machine_1 = VirtualMachineFactory.create()
-        self.virtual_machine_2 = VirtualMachineFactory.create()
+        self.virtual_machine_1 = VirtualMachineFactory.create(
+            profile=self.profile
+        )
+        self.virtual_machine_2 = VirtualMachineFactory.create(
+            profile=self.profile
+        )
         self.virtual_machine_3 = VirtualMachineFactory.create(
-            role='shellserver', host=self.hypervisor_1
+            role='shellserver', host=self.hypervisor_1,
+            profile=self.profile
         )
         self.virtual_machine_4 = VirtualMachineFactory.create(
-            role='shellserver', host=self.hypervisor_1
+            role='shellserver', host=self.hypervisor_1,
+            profile=self.profile
         )
-        self.virtual_machine_5 = VirtualMachineFactory.create(host=self.hypervisor_2)
-        self.virtual_machine_6 = VirtualMachineFactory.create(host=self.hypervisor_2)
+        self.virtual_machine_5 = VirtualMachineFactory.create(
+            host=self.hypervisor_2,
+            profile=self.profile
+        )
+        self.virtual_machine_6 = VirtualMachineFactory.create(
+            host=self.hypervisor_2,
+            profile=self.profile
+        )
         self.terraform_url = reverse('terraform')
 
     def test_terraform_returns_bad_request_if_no_hypervisor_name_specified(self):

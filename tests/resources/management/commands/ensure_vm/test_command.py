@@ -1,7 +1,7 @@
 from unittest.mock import Mock, call, ANY
 
 from resources.management.commands.ensure_vm import Command
-from resources.models import Hypervisor, STORAGE_POOL_CHOICES
+from resources.models import Hypervisor, Profile, STORAGE_POOL_CHOICES
 from tests.testcase import TestCase
 
 
@@ -25,6 +25,9 @@ class TestCommand(TestCase):
         Hypervisor.objects.create(
             name='h1',
             interface='eth0'
+        )
+        Profile.objects.create(
+            name='default'
         )
 
     def test_command_has_correct_help_message(self):
@@ -93,7 +96,8 @@ class TestCommand(TestCase):
             call(
                 '--profile',
                 help=ANY,
-                default='default'
+                choices=[p.name for p in Profile.objects.all()],
+                default=Profile.objects.first().name
             ),
             call(
                 '--image',
