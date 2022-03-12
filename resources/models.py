@@ -18,7 +18,25 @@ class Hypervisor(models.Model):
         return self.name
 
 
-def generate_ip6_keypair():
+class Profile(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    enabled = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.enabled:
+            all_profiles = Profile.objects.exclude(
+                name=self.name
+            )
+            for profile in all_profiles:
+                profile.enabled = False
+                profile.save()
+        super(Profile, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+def generate_ipv6_keypair():
     raw_new_config = check_output(
         "/usr/local/bin/yggdrasil --genconf --json",
         shell=True
@@ -43,7 +61,7 @@ class VirtualMachine(models.Model):
     cpu = models.PositiveSmallIntegerField()
     host = models.ForeignKey('Hypervisor', on_delete=models.CASCADE)
     role = models.CharField(max_length=100)
-    profile = models.CharField(max_length=100)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
     image = models.CharField(max_length=100)
     static_ip = models.GenericIPAddressField(blank=True, null=True)
     saltmaster_ip = models.GenericIPAddressField(blank=True, null=True)
@@ -67,6 +85,6 @@ class VirtualMachine(models.Model):
 
     def save(self, *args, **kwargs):
         if self.ipv6_overlay and (not self.ipv6_pubkey or not self.ipv6_privkey or not self.ipv6_ip):
-            self.ipv6_pubkey, self.ipv6_privkey = generate_ip6_keypair()
+            self.ipv6_pubkey, self.ipv6_privkey = generate_ipv6_keypair()
             self.ipv6_ip = get_ipv6_ip_by_pubkey(self.ipv6_pubkey)
         super(VirtualMachine, self).save(*args, **kwargs)

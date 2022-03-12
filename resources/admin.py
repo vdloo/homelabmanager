@@ -1,5 +1,5 @@
 from django.contrib import admin
-from resources.models import VirtualMachine, Hypervisor
+from resources.models import VirtualMachine, Hypervisor, Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
@@ -16,7 +16,14 @@ class HypervisorAdmin(admin.ModelAdmin):
     search_fields = ('name', 'interface')
 
 
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'enabled')
+    list_filter = ('name', 'enabled')
+    search_fields = ('name', 'enabled')
+
+
 admin.site.register(VirtualMachine, VirtualMachineAdmin)
 admin.site.register(Hypervisor, HypervisorAdmin)
+admin.site.register(Profile, ProfileAdmin)
 admin.site.unregister(User)
 admin.site.unregister(Group)

@@ -1,10 +1,22 @@
 from resources.management.commands.ensure_vm import ensure_vm_exists
-from resources.models import VirtualMachine, Hypervisor
+from resources.models import VirtualMachine, Hypervisor, Profile
 from tests.testcase import TestCase
 
 
 class TestEnsureVmExists(TestCase):
     def setUp(self):
+        generate_ipv6_keypair = self.set_up_patch(
+            'resources.models.generate_ipv6_keypair'
+        )
+        generate_ipv6_keypair.return_value = ('pubkey', 'privkey')
+        self.set_up_patch(
+            'resources.models.get_ipv6_ip_by_pubkey',
+            return_value='1:2:3:4:5:6:7:8'
+        )
+        self.set_up_patch(
+            'resources.views.get_ipv6_ip_by_pubkey',
+            return_value='1:2:3:4:5:6:7:8'
+        )
         self.set_up_patch(
             'resources.management.commands.ensure_vm.print'
         )
@@ -15,6 +27,9 @@ class TestEnsureVmExists(TestCase):
             name='h1',
             interface='eth0'
         )
+        Profile.objects.create(
+            name='default'
+        )
 
         self.kwargs = {
             'name': 'vm1',
@@ -22,7 +37,7 @@ class TestEnsureVmExists(TestCase):
             'cpu': 2,
             'hypervisor': 'h1',
             'role': 'default',
-            'profile': 'default',
+            'profile': Profile.objects.get(name='default'),
             'image': 'debian-10-openstack-amd64.qcow2',
             'saltmaster_ip': None,
             'enabled': True,
@@ -36,10 +51,12 @@ class TestEnsureVmExists(TestCase):
         ensure_vm_exists(**self.kwargs)
 
         hypervisor = self.kwargs.pop('hypervisor')
+        profile = self.kwargs.pop('profile')
         ram_in_mb = self.kwargs.pop('ram')
         VirtualMachine.objects.get(
             ram_in_mb=ram_in_mb,
             host=Hypervisor.objects.get(name=hypervisor),
+            profile=Profile.objects.get(name=profile),
             **self.kwargs
         )
 

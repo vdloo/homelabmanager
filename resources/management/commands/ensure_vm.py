@@ -2,7 +2,7 @@ from pprint import pprint
 from django.forms.models import model_to_dict
 from django.core.management import BaseCommand
 
-from resources.models import VirtualMachine, Hypervisor, STORAGE_POOL_CHOICES
+from resources.models import VirtualMachine, Hypervisor, Profile, STORAGE_POOL_CHOICES
 
 DEFAULT_PROFILE = 'default'
 DEFAULT_IMAGE = 'debian-10-openstack-amd64.qcow2'
@@ -40,6 +40,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         default_hypervisor = Hypervisor.objects.first().name
+        default_profile = Profile.objects.first().name
 
         parser.add_argument(
             '--name',
@@ -71,8 +72,9 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             '--profile',
-            help=f"What profile to assign for the VM. Defaults to '{DEFAULT_PROFILE}'",
-            default='default'
+            help=f"What profile to assign for the VM. Defaults to '{default_profile}'",
+            choices=[p.name for p in Profile.objects.all()],
+            default=default_profile
         )
         parser.add_argument(
             '--image',

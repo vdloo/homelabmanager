@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from resources.models import VirtualMachine, Hypervisor
+from resources.models import VirtualMachine, Hypervisor, Profile
 
 
 class VirtualMachineSerializer(serializers.ModelSerializer):
@@ -12,3 +12,9 @@ class HypervisorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hypervisor
         fields = ('id', 'name', 'interface')
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('id', 'name')

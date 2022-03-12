@@ -1,5 +1,5 @@
 from django.core.management import BaseCommand
-from resources.models import Hypervisor
+from resources.models import Hypervisor, Profile
 
 HYPERVISORS = [
     ('h52', 'eth0'),
@@ -8,11 +8,16 @@ HYPERVISORS = [
     ('h56', 'eno1'),
     ('h59', 'ens3f3'),
     ('h60', 'enp5s0f3'),
-    ('h61', 'eno1')
+    ('h61', 'eno1'),
+    ('h63', 'enp2s0')
 ]
 
 
 def create_hypervisors():
+    Profile.objects.create(
+        name='default',
+        enabled=True
+    )
     for name, interface in HYPERVISORS:
         _, created = Hypervisor.objects.get_or_create(
             name=name,
