@@ -181,6 +181,7 @@ resource "libvirt_domain" "{name}_on_{hypervisor}" {{
   name = "{name}_on_{hypervisor}"
   memory = "{ram}"
   vcpu = {cpu}
+
   cloudinit = libvirt_cloudinit_disk.{name}_on_{hypervisor}_commoninit.id
   
   {nic_config}
@@ -195,6 +196,10 @@ resource "libvirt_domain" "{name}_on_{hypervisor}" {{
     type        = "pty"
     target_type = "virtio"
     target_port = "1"
+  }}
+
+  cpu {{
+    mode = "host-passthrough"
   }}
 
   boot_device {{
