@@ -170,6 +170,11 @@ resource "libvirt_volume" "{name}_on_{hypervisor}-extra" {{
 
 """
 
+NODE_NIC = """
+  network_interface {{
+    macvtap = "{interface}"
+  }}
+"""
 NODE = """
 resource "libvirt_domain" "{name}_on_{hypervisor}" {{
   provider = libvirt
@@ -178,9 +183,8 @@ resource "libvirt_domain" "{name}_on_{hypervisor}" {{
   vcpu = {cpu}
   cloudinit = libvirt_cloudinit_disk.{name}_on_{hypervisor}_commoninit.id
   
-  network_interface {{
-    macvtap = "{interface}"
-  }}
+  {nic_config}
+
   console {{
     type        = "pty"
     target_port = "0"
@@ -320,11 +324,12 @@ def get_node_and_volumes(hypervisor_name):
             extra_storage_in_kb=node.extra_storage_in_gb * 1024 ** 3,
             extra_storage_pool=node.extra_storage_pool
         )
+        nic_config = NODE_NIC.format(interface=node.host.interface) * node.network_interface_count
         node_and_vol_config += NODE.format(
             name=node.name,
             ram=node.ram_in_mb,
-            interface=node.host.interface,
             cpu=node.cpu,
+            nic_config=nic_config,
             role=node.role,
             hypervisor=hypervisor_name
         )
