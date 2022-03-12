@@ -21,7 +21,7 @@ def ensure_vm_exists(
         cpu=cpu,
         host=Hypervisor.objects.filter(name=hypervisor).first(),
         role=role,
-        profile=profile,
+        profile=Profile.objects.filter(name=profile).first(),
         image=image,
         enabled=enabled,
         extra_storage_in_gb=extra_storage_in_gb,
