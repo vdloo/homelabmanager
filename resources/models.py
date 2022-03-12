@@ -73,6 +73,9 @@ class VirtualMachine(models.Model):
     extra_storage_in_gb = models.PositiveSmallIntegerField(
         default=1
     )
+    network_interface_count = models.PositiveSmallIntegerField(
+        default=1
+    )
     extra_storage_pool = models.CharField(
         max_length=255,
         choices=STORAGE_POOL_CHOICES,
