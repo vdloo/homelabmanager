@@ -3,7 +3,7 @@ from resources.models import Hypervisor, Profile
 
 HYPERVISORS = [
     ('h52', 'eth0'),
-    ('h54', 'enp3s0'),
+    ('h54', 'enp2s0'),
     ('h55', 'enp2s0'),
     ('h56', 'eno1'),
     ('h59', 'ens3f3'),
