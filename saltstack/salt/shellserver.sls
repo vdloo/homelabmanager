@@ -224,7 +224,7 @@ run_use_prometheus_if_up_periodically:
 clone_yggdrasil_repo:
   git.latest:
     - target: /etc/yggdrasil-go
-    - branch: master
+    - branch: cli-tool-to-convert-pubkey-to-ip
     - name: https://github.com/vdloo/yggdrasil-go
 
 write_install_yggdrasil_system_wide_script:

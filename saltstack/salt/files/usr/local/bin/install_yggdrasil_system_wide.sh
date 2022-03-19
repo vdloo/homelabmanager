@@ -6,14 +6,17 @@ if [ -f /usr/local/bin/yggdrasil ]; then
 else
     echo "installing yggdrasil"
     cd /etc/yggdrasil-go
-    git checkout master
-    git reset --hard origin/master
+    git fetch --all
+    git checkout cli-tool-to-convert-pubkey-to-ip
+    git reset --hard origin/cli-tool-to-convert-pubkey-to-ip
     export GOPATH=/tmp/go
     export GOCACHE=/tmp/.cache/go
     ./build
+    go build -o addrforkey cmd/addrforkey/main.go
     rm -rf /tmp/go /tmp/.cache/go
     cp yggdrasil /usr/local/bin/yggdrasil
     cp yggdrasilctl /usr/local/bin/yggdrasilctl
+    cp addrforkey /usr/local/bin/addrforkey
     echo "yggdrasil is now installed in /usr/local/bin/yggdrasil"
 fi
 
