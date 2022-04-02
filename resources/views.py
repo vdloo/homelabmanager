@@ -27,25 +27,7 @@ runcmd:
 - |
     set -e
     
-    if [ -f "/etc/arch-release" ]; then
-        systemctl stop systemd-resolved || /bin/true
-        systemctl disable systemd-resolved || /bin/true
-        rm -rf /etc/resolv.conf
-        echo "nameserver 8.8.8.8" > /etc/resolv.conf
-        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
-        rm -rf /etc/systemd/network/eth0-dhcp.network
-        echo "[Match]" > /etc/systemd/network/01-homelab.network
-        echo "Name=eth0" >> /etc/systemd/network/01-homelab.network
-        echo "[Network]" >> /etc/systemd/network/01-homelab.network
-        if [ ! -z "{static_ip}" ]; then
-            echo "Address={static_ip}/24" >> /etc/systemd/network/01-homelab.network
-            echo "Gateway=192.168.1.1" >> /etc/systemd/network/01-homelab.network
-            echo "DNS=8.8.8.8" >> /etc/systemd/network/01-homelab.network
-            echo "DNS=8.8.4.4" >> /etc/systemd/network/01-homelab.network
-        else
-            echo "DHCP=yes" >> /etc/systemd/network/01-homelab.network
-        fi
-    else
+    if lsb_release -d | grep -q Debian; then
         echo "auto lo" > /etc/network/interfaces
         echo "iface lo inet loopback" >> /etc/network/interfaces
         echo "auto eth0" >> /etc/network/interfaces
@@ -57,6 +39,28 @@ runcmd:
             echo "  dns-nameservers 8.8.8.8 8.8.4.4" >> /etc/network/interfaces
         else
             echo "iface eth0 inet dhcp" >> /etc/network/interfaces
+        fi
+    else
+        systemctl stop systemd-resolved || /bin/true
+        systemctl disable systemd-resolved || /bin/true
+        rm -rf /etc/resolv.conf
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        IFACE_NAME="ens3"
+        if [ -f "/etc/arch-release" ]; then
+            IFACE_NAME="eth0"
+        fi
+        rm -rf /etc/systemd/network/$IFACE_NAME-dhcp.network
+        echo "[Match]" > /etc/systemd/network/01-homelab.network
+        echo "Name=$IFACE_NAME" >> /etc/systemd/network/01-homelab.network
+        echo "[Network]" >> /etc/systemd/network/01-homelab.network
+        if [ ! -z "{static_ip}" ]; then
+            echo "Address={static_ip}/24" >> /etc/systemd/network/01-homelab.network
+            echo "Gateway=192.168.1.1" >> /etc/systemd/network/01-homelab.network
+            echo "DNS=8.8.8.8" >> /etc/systemd/network/01-homelab.network
+            echo "DNS=8.8.4.4" >> /etc/systemd/network/01-homelab.network
+        else
+            echo "DHCP=yes" >> /etc/systemd/network/01-homelab.network
         fi
     fi
     
