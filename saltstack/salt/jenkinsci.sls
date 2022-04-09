@@ -41,7 +41,7 @@ symlink_jenkins_home_from_storage:
   file.symlink:
     - name: /var/lib/jenkins
     - target: /mnt/storage/jenkins
-    - force: True
+    - force: true
 
 ensure_jenkins_ssh_key:
   file.managed:

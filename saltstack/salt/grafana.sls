@@ -10,7 +10,7 @@ symlink_grafana_state_from_storage:
   file.symlink:
     - name: /var/lib/grafana
     - target: /mnt/storage/grafana
-    - force: True
+    - force: true
 
 write_grafana_homelab_settings_configuration_file:
   file.managed:

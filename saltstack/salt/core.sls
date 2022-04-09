@@ -81,6 +81,7 @@ reboot_on_hung_tasks_to_deal_with_nfs_problems:
     - value: 180
 
 {% if grains.role != 'openstack' %}
+route_traffic_to_openstack_vms_over_static_ip:
   cmd.run:
-    - name: "ip route add 172.24.4.0/24 via {{ pillar['openstack_static_ip']  }}"
+    - name: "ip route | grep -q 172.24.4.0/42 || ip route add 172.24.4.0/24 via {{ pillar['openstack_static_ip']  }} || /bin/true"
 {% endif %}

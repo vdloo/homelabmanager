@@ -228,7 +228,7 @@ clone_yggdrasil_repo:
     - target: /etc/yggdrasil-go
     - branch: cli-tool-to-convert-pubkey-to-ip
     - name: https://github.com/vdloo/yggdrasil-go
-    - force_reset: True
+    - force_reset: true
 
 write_install_yggdrasil_system_wide_script:
   file.managed:

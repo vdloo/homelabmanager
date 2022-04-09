@@ -24,3 +24,5 @@ shellserver_unprivileged_user_archlinux_password_hash: '$6$SMIAJVy53kXVw9Us$BwgZ
 consul_secret: 'DC9Ih2OmseIrY04XKivB9Q=='
 openstack_static_ip: '192.168.1.248'
 openstack_stack_password: 'insecure_openstack_password'
+rancher_secret: insecure_rancher_secret
+rancher_static_ip: '192.168.1.247'
