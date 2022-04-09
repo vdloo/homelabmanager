@@ -37,3 +37,6 @@ base:
   'role:vmsaltmaster':
     - match: grain
     - vmsaltmaster
+  'role:openstack':
+    - match: grain
+    - openstack

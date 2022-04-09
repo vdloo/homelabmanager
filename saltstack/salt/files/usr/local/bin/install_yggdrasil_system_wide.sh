@@ -20,13 +20,18 @@ else
     echo "yggdrasil is now installed in /usr/local/bin/yggdrasil"
 fi
 
+INTERFACE_TO_BIND_ON=eth0
+if hostname | grep -q "ens3:"; then
+    INTERFACE_TO_BIND_ON=ens3
+fi
+
 if [ -f /etc/yggdrasil.conf ]; then
     echo "yggdrasil is already configured, doing nothing"
 else
     echo "configuring yggdrasil"
     NODE_PUBLIC_KEY=$(grep ipv6_pubkey /etc/salt/grains | cut -d ' ' -f2)
     NODE_PRIVATE_KEY=$(grep ipv6_privkey /etc/salt/grains | cut -d ' ' -f2)
-    IP_ADDRESS_TO_BIND_ON=$(ip -f inet addr show eth0 | grep 'inet ' | head -n 1 | cut -d '/' -f1 | awk '{print$NF}')
+    IP_ADDRESS_TO_BIND_ON=$(ip -f inet addr show $INTERFACE_TO_BIND_ON | grep 'inet ' | head -n 1 | cut -d '/' -f1 | awk '{print$NF}')
     cat << EOF > /tmp/tmp_yggdrasil.conf
 {
   "Peers": [
@@ -35,7 +40,8 @@ else
     "tls://{{ pillar['debianrepo_static_ip'] }}:5544",
     "tls://{{ pillar['grafana_static_ip'] }}:5544",
     "tls://{{ pillar['irc_static_ip'] }}:5544",
-    "tls://{{ pillar['vmsaltmaster_static_ip'] }}:5544"
+    "tls://{{ pillar['vmsaltmaster_static_ip'] }}:5544",
+    "tls://{{ pillar['openstack_static_ip'] }}:5544"
   ],
   "InterfacePeers": {},
   "Listen": [

@@ -15,6 +15,7 @@ pdnsutil add-record homelab grafana A {{ pillar['grafana_static_ip'] }}
 pdnsutil add-record homelab prometheus A {{ pillar['prometheus_static_ip'] }}
 pdnsutil add-record homelab irc A {{ pillar['irc_static_ip'] }}
 pdnsutil add-record homelab vmsaltmaster A {{ pillar['vmsaltmaster_static_ip'] }}
+pdnsutil add-record homelab openstack A {{ pillar['openstack_static_ip'] }}
 
 cat << 'EOF' > /tmp/set_records_for_yggdrasil_peers.py
 #!/usr/bin/env python3
