@@ -22,3 +22,5 @@ shellserver_unprivileged_user_debian_password_hash: '$6$Fa4ELMtlTwOvhG50$JNbroT9
 shellserver_unprivileged_user_archlinux_password_hash: '$6$SMIAJVy53kXVw9Us$BwgZeqK/qSbL.e.nC.J8afnQGWHov1YalGUWXNd6vmoWjMHlSgIeXkW0QWuxXLzVX//5XAz7GiudxvCT16XP9.'
 # Insecure default consul secret. Overwrite this in your own pillar.
 consul_secret: 'DC9Ih2OmseIrY04XKivB9Q=='
+openstack_static_ip: '192.168.1.248'
+openstack_stack_password: 'insecure_openstack_password'

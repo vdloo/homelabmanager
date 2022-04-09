@@ -79,3 +79,8 @@ reboot_on_hung_tasks_to_deal_with_nfs_problems:
   sysctl.present:
     - name: kernel.hung_task_timeout_secs
     - value: 180
+
+{% if grains.role != 'openstack' %}
+  cmd.run:
+    - name: "ip route add 172.24.4.0/24 via {{ pillar['openstack_static_ip']  }}"
+{% endif %}
