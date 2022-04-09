@@ -40,3 +40,6 @@ base:
   'role:openstack':
     - match: grain
     - openstack
+  'role:rancher':
+    - match: grain
+    - rancher

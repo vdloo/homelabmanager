@@ -1,5 +1,5 @@
-open_mode: True
-auto_accept: True
+open_mode: true
+auto_accept: true
 reactor:
   - 'salt/minion/*/start':
     - /srv/reactor/salt.sls
