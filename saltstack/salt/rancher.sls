@@ -21,6 +21,15 @@ enable_docker_service:
     - enable: true
     - name: docker
 
-run_rancher:
+write_configure_rancher_script:
+  file.managed:
+    - name: /usr/local/bin/configure_rancher.sh
+    - source: salt://files/usr/local/bin/configure_rancher.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+configure_rancher:
   cmd.run:
-    - name: docker run --name rancher-server -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged rancher/rancher:stable
+    - name: /usr/local/bin/configure_rancher.sh >> /tmp/configure_rancher_log 2>&1 &
