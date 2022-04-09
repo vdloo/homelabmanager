@@ -22,10 +22,22 @@ install_ipv6_firewall_rules:
     - mode: 644
     - template: jinja
 
+symlink_ipv4_firewall_to_rules_file:
+  file.symlink:
+    - name: /etc/iptables/rules.v4
+    - target: /etc/iptables/iptables.rules
+    - force: true
+
+symlink_ipv6_firewall_to_rules_file:
+  file.symlink:
+    - name: /etc/iptables/rules.v6
+    - target: /etc/iptables/ip6tables.rules
+    - force: true
+
 install_ipv4_firewall_service:
   file.managed:
-    - name: /usr/lib/systemd/system/iptables.service
-    - source: salt://files/usr/lib/systemd/system/iptables.service
+    - name: /lib/systemd/system/iptables.service
+    - source: salt://files/lib/systemd/system/iptables.service
     - user: root
     - group: root
     - mode: 644
@@ -33,8 +45,8 @@ install_ipv4_firewall_service:
 
 install_ipv6_firewall_service:
   file.managed:
-    - name: /usr/lib/systemd/system/ip6tables.service
-    - source: salt://files/usr/lib/systemd/system/ip6tables.service
+    - name: /lib/systemd/system/ip6tables.service
+    - source: salt://files/lib/systemd/system/ip6tables.service
     - user: root
     - group: root
     - mode: 644
@@ -44,22 +56,22 @@ daemon_reload_if_firewall_unit_changed:
   cmd.run:
     - name: systemctl daemon-reload
     - onchanges:
-        - file: /usr/lib/systemd/system/iptables.service
-        - file: /usr/lib/systemd/system/ip6tables.service
+        - file: /lib/systemd/system/iptables.service
+        - file: /lib/systemd/system/ip6tables.service
 
 start_and_enable_ipv4_firewall:
   service.running:
     - enable: true
     - name: iptables
     - watch:
-        - file: /usr/lib/systemd/system/iptables.service
+        - file: /lib/systemd/system/iptables.service
 
 start_and_enable_ipv6_firewall:
   service.running:
     - enable: true
     - name: ip6tables
     - watch:
-        - file: /usr/lib/systemd/system/ip6tables.service
+        - file: /lib/systemd/system/ip6tables.service
 
 {% if grains.os_family == 'Arch' %}
 ensure_cron_running_for_archlinux:
