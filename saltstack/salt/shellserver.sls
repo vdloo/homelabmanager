@@ -30,6 +30,7 @@ install_ipv4_firewall_service:
     - group: root
     - mode: 644
     - template: jinja
+    - follow_symlinks: False
 
 install_ipv6_firewall_service:
   file.managed:
@@ -39,6 +40,7 @@ install_ipv6_firewall_service:
     - group: root
     - mode: 644
     - template: jinja
+    - follow_symlinks: False
 
 daemon_reload_if_firewall_unit_changed:
   cmd.run:
