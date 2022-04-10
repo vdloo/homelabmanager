@@ -25,6 +25,10 @@ ADMIN_PASSWORD={{ pillar['openstack_stack_password'] }}
 DATABASE_PASSWORD={{ pillar['openstack_stack_password'] }}
 RABBIT_PASSWORD={{ pillar['openstack_stack_password'] }}
 SERVICE_PASSWORD={{ pillar['openstack_stack_password'] }}
+[[post-config|$NOVA_CONF]]
+[DEFAULT]
+disk_allocation_ratio=2.0
+ram_allocation_ratio=2.0
 EOF
 
 FORCE=yes ./stack.sh && echo "Stacking is done!"
@@ -70,10 +74,5 @@ nova quota-update --cores 1000 $(openstack project list | grep -v alt_demo | gre
 openstack quota set --volumes 1000 $(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
 openstack quota set --floating-ips 1000 $(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
 openstack quota set --ports 1000 $(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
-
-echo "Increasing overallocation ratios and reload nova"
-sed -i '1 a cpu_allocation_ratio = 16' /etc/nova/nova.conf
-sed -i '1 a ram_allocation_ratio = 1.5' /etc/nova/nova.conf
-pkill -HUP nova || /bin/true
 
 echo "All done! Go to http://{{ pillar['openstack_static_ip'] }} to log in."
