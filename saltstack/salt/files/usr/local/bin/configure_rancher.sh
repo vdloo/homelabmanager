@@ -79,7 +79,7 @@ cat << EOF > /tmp/node_template.json
     "domainName": "default",
     "endpointType": "",
     "flavorId": "",
-    "flavorName": "ds2G",
+    "flavorName": "ds4G",
     "floatingipPool": "public",
     "imageId": "",
     "imageName": "focal-server-cloudimg-amd64",
