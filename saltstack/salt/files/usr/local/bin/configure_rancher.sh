@@ -18,7 +18,7 @@ docker run -d --restart=unless-stopped -p 80:80 -p 443:443 \
     --privileged rancher/rancher:latest
 
 echo "Giving the container some time to start"
-sleep 15
+sleep 5
 
 echo "Waiting for login token.."
 LOGIN_TOKEN=""
@@ -38,7 +38,7 @@ echo "Retrieved API token: $API_TOKEN"
 
 echo "Enabling OpenStack Node Driver"
 curl -H "Authorization: Bearer $API_TOKEN" -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/nodeDrivers/openstack?action=activate' --insecure
-sleep 15
+sleep 5
 
 echo "Importing nodeTemplate"
 cat << EOF > /tmp/node_template.json
@@ -120,121 +120,147 @@ cat << EOF > /tmp/node_template.json
 }
 EOF
 curl -H "Authorization: Bearer $API_TOKEN" -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/nodeTemplates' --insecure -d @/tmp/node_template.json
-sleep 15
+sleep 5
 
 echo "Creating cluster"
 cat << 'EOF' > /tmp/cluster.json
 {
-  "answers": {},
-  "docker_root_dir": "/var/lib/docker",
-  "enable_cluster_alerting": false,
-  "enable_cluster_monitoring": false,
-  "enable_network_policy": false,
-  "fleet_workspace_name": "fleet-default",
-  "local_cluster_auth_endpoint": {
-    "enabled": true
-  },
+  "dockerRootDir": "/var/lib/docker",
+  "enableClusterAlerting": false,
+  "enableClusterMonitoring": false,
+  "enableNetworkPolicy": false,
+  "windowsPreferedCluster": false,
+  "type": "cluster",
   "name": "homelab",
-  "rancher_kubernetes_engine_config": {
-    "addon_job_timeout": 45,
+  "rancherKubernetesEngineConfig": {
+    "addonJobTimeout": 45,
+    "enableCriDockerd": false,
+    "ignoreDockerVersion": true,
+    "rotateEncryptionKey": false,
+    "sshAgentAuth": false,
+    "type": "rancherKubernetesEngineConfig",
+    "kubernetesVersion": "v1.22.7-rancher1-2",
     "authentication": {
-      "strategy": "x509|webhook"
+      "strategy": "x509",
+      "type": "authnConfig"
     },
-    "authorization": {},
-    "bastion_host": {
-      "ignore_proxy_env_vars": false,
-      "ssh_agent_auth": false
-    },
-    "cloud_provider": {},
     "dns": {
-      "linear_autoscaler_params": {},
-      "node_selector": null,
+      "type": "dnsConfig",
       "nodelocal": {
+        "type": "nodelocal",
+        "ip_address": "",
         "node_selector": null,
-        "update_strategy": {
-          "rolling_update": {}
-        }
-      },
-      "options": null,
-      "reversecidrs": null,
-      "stubdomains": null,
-      "tolerations": null,
-      "update_strategy": {},
-      "upstreamnameservers": null
-    },
-    "enable_cri_dockerd": false,
-    "ignore_docker_version": true,
-    "ingress": {
-      "default_backend": false,
-      "default_ingress_class": true,
-      "http_port": 0,
-      "https_port": 0,
-      "provider": "nginx"
-    },
-    "kubernetes_version": "v1.22.7-rancher1-2",
-    "monitoring": {
-      "provider": "metrics-server",
-      "replicas": 1
+        "update_strategy": {}
+      }
     },
     "network": {
       "mtu": 0,
+      "plugin": "canal",
+      "type": "networkConfig",
       "options": {
         "flannel_backend_type": "vxlan"
-      },
-      "plugin": "canal"
+      }
     },
-    "restore": {
-      "restore": false
+    "ingress": {
+      "defaultBackend": false,
+      "defaultIngressClass": true,
+      "httpPort": 0,
+      "httpsPort": 0,
+      "provider": "nginx",
+      "type": "ingressConfig"
     },
-    "rotate_encryption_key": false,
+    "monitoring": {
+      "provider": "metrics-server",
+      "replicas": 1,
+      "type": "monitoringConfig"
+    },
     "services": {
+      "type": "rkeConfigServices",
+      "kubeApi": {
+        "alwaysPullImages": false,
+        "podSecurityPolicy": false,
+        "serviceNodePortRange": "30000-32767",
+        "type": "kubeAPIService",
+        "secretsEncryptionConfig": {
+          "enabled": false,
+          "type": "secretsEncryptionConfig"
+        }
+      },
       "etcd": {
-        "backup_config": {
-          "enabled": true,
-          "interval_hours": 12,
-          "retention": 6,
-          "safe_timestamp": false,
-          "timeout": 300
-        },
         "creation": "12h",
-        "extra_args": {
-          "election-timeout": "5000",
-          "heartbeat-interval": "500"
+        "extraArgs": {
+          "heartbeat-interval": 500,
+          "election-timeout": 5000
         },
         "gid": 0,
         "retention": "72h",
         "snapshot": false,
-        "uid": 0
-      },
-      "kube-api": {
-        "always_pull_images": false,
-        "pod_security_policy": false,
-        "secrets_encryption_config": {
-          "enabled": false
-        },
-        "service_node_port_range": "30000-32767"
-      },
-      "kube-controller": {},
-      "kubelet": {
-        "fail_swap_on": false,
-        "generate_serving_certificate": false
-      },
-      "kubeproxy": {},
-      "scheduler": {}
-    },
-    "ssh_agent_auth": false,
-    "upgrade_strategy": {
-      "max_unavailable_controlplane": "1",
-      "max_unavailable_worker": "10%",
-      "node_drain_input": {
-        "delete_local_data": false,
-        "force": false,
-        "grace_period": -1,
-        "ignore_daemon_sets": true,
-        "timeout": 120
+        "uid": 0,
+        "type": "etcdService",
+        "backupConfig": {
+          "enabled": true,
+          "intervalHours": 12,
+          "retention": 6,
+          "safeTimestamp": false,
+          "timeout": 300,
+          "type": "backupConfig"
+        }
       }
+    },
+    "upgradeStrategy": {
+      "maxUnavailableControlplane": "1",
+      "maxUnavailableWorker": "10%",
+      "drain": "false",
+      "nodeDrainInput": {
+        "deleteLocalData": false,
+        "force": false,
+        "gracePeriod": -1,
+        "ignoreDaemonSets": true,
+        "timeout": 120,
+        "type": "nodeDrainInput"
+      },
+      "maxUnavailableUnit": "percentage"
     }
+  },
+  "localClusterAuthEndpoint": {
+    "enabled": true,
+    "type": "localClusterAuthEndpoint"
+  },
+  "labels": {},
+  "annotations": {},
+  "agentEnvVars": [],
+  "scheduledClusterScan": {
+    "enabled": false,
+    "scheduleConfig": null,
+    "scanConfig": null
   }
 }
 EOF
-curl -H "Authorization: Bearer $API_TOKEN" -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/clusters' --insecure -d @/tmp/cluster.json
+curl -H "Authorization: Bearer $API_TOKEN" -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/clusters?_replace=true' --insecure -d @/tmp/cluster.json
+sleep 5
+
+echo "Getting the ID of the newly created cluster"
+CLUSTER_ID_WITH_QUOTES=$(curl -s -H "Authorization: Bearer $API_TOKEN" -X GET -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/clusters' --insecure  | jq '.data | map({key: .name, value: .id}) | .[].value' | grep -v local | head -n 1)
+sleep 5
+
+echo "Getting the ID of the OpenStack NodeTemplate that we created before"
+NODE_TEMPLATE_ID_WITH_QUOTES=$(curl -s -H "Authorization: Bearer $API_TOKEN" -X GET -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/nodeTemplate' --insecure | jq '.data | .[].id')
+sleep 5
+
+echo "Creating nodepool for cluster"
+cat << EOF > /tmp/nodepool.json
+{
+  "controlPlane": true,
+  "deleteNotReadyAfterSecs": 0,
+  "drainBeforeDelete": false,
+  "etcd": true,
+  "quantity": 5,
+  "worker": true,
+  "type": "nodePool",
+  "nodeTemplateId": $NODE_TEMPLATE_ID_WITH_QUOTES,
+  "clusterId": $CLUSTER_ID_WITH_QUOTES,
+  "hostnamePrefix": "homelab"
+}
+EOF
+curl -H "Authorization: Bearer $API_TOKEN" -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/nodepool' --insecure -d @/tmp/nodepool.json
+sleep 5
