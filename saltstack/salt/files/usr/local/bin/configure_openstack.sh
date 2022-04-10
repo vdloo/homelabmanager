@@ -68,12 +68,19 @@ openstack keypair create --public-key /opt/stack/.ssh/id_rsa.pub homelabkey
 
 echo "Configuring the admin openstack user"
 . /opt/stack/devstack/openrc admin admin
-echo "Setting quotas"
-nova quota-update --ram 64000 $(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
-nova quota-update --instances 100 $(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
-nova quota-update --cores 1000 $(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
-openstack quota set --volumes 1000 $(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
-openstack quota set --floating-ips 1000 $(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
-openstack quota set --ports 1000 $(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
+echo "Disabling quotas"
+TENANT_ID=$(openstack project list | grep -v alt_demo | grep demo | awk '{print$2}')
+openstack quota set --ram -1 $TENANT_ID
+openstack quota set --instances -1 $TENANT_ID
+openstack quota set --cores -1 $TENANT_ID
+openstack quota set --volumes -1 $TENANT_ID
+openstack quota set --floating-ips -1 $TENANT_ID
+openstack quota set --ports -1 $TENANT_ID
+openstack quota set --gigabytes -1 $TENANT_ID
+openstack quota set --secgroups -1 $TENANT_ID
+openstack quota set --secgroup-rules -1 $TENANT_ID
+openstack quota set --snapshots -1 $TENANT_ID
+openstack quota set --routers -1 $TENANT_ID
+openstack quota set --networks -1 $TENANT_ID
 
 echo "All done! Go to http://{{ pillar['openstack_static_ip'] }} to log in."
