@@ -25,10 +25,11 @@ ADMIN_PASSWORD={{ pillar['openstack_stack_password'] }}
 DATABASE_PASSWORD={{ pillar['openstack_stack_password'] }}
 RABBIT_PASSWORD={{ pillar['openstack_stack_password'] }}
 SERVICE_PASSWORD={{ pillar['openstack_stack_password'] }}
-[[post-config|$NOVA_CONF]]
+[[post-config|\$NOVA_CONF]]
 [DEFAULT]
-disk_allocation_ratio=2.0
-ram_allocation_ratio=2.0
+cpu_allocation_ratio = 20.0
+ram_allocation_ratio = 2.0
+disk_allocation_ratio = 1.0
 EOF
 
 FORCE=yes ./stack.sh && echo "Stacking is done!"
