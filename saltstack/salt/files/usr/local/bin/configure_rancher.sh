@@ -244,7 +244,7 @@ CLUSTER_ID_WITH_QUOTES=$(curl -s -H "Authorization: Bearer $API_TOKEN" -X GET -H
 sleep 5
 
 echo "Getting the ID of the OpenStack NodeTemplate that we created before"
-NODE_TEMPLATE_ID_WITH_QUOTES=$(curl -s -H "Authorization: Bearer $API_TOKEN" -X GET -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/nodeTemplate' --insecure | jq '.data | .[].id')
+NODE_TEMPLATE_ID_WITH_QUOTES=$(curl -s -H "Authorization: Bearer $API_TOKEN" -X GET -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/nodeTemplate' --insecure | jq '.data | .[].id' | head -n 1)
 sleep 5
 
 echo "Creating nodepool for cluster"
