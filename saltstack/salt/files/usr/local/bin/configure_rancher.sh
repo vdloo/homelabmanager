@@ -6,11 +6,23 @@
 # not enabled by default. Then a new cluster is created that uses the OpenStack
 # driver.
 
+check_rancher_running () {
+    if docker ps | grep -q rancher; then
+        echo "Rancher already running!"
+        exit 0
+    fi
+}
 
-if docker ps | grep -q rancher; then
-    echo "Rancher already running!"
-    exit 0
-fi
+check_rancher_running
+
+echo "Checking if OpenStack is up yet"
+while ! curl http://{{ pillar['openstack_static_ip'] }}/dashboard/auth/login/?next=/dashboard/ 2>&1 | grep horizon -q; do
+    echo "OpenStack is not up yet, will try again later.."
+    sleep 120
+done
+echo "OpenStack is up!"
+
+check_rancher_running
 echo "Starting Rancher container"
 docker run -d --restart=unless-stopped -p 80:80 -p 443:443 \
     -e CATTLE_BOOTSTRAP_PASSWORD="{{ pillar['rancher_secret'] }}" \
