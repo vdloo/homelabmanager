@@ -27,6 +27,11 @@ runcmd:
 - |
     set -e
     
+    # Obviously you should not do this in any real environment
+    echo "root:toor" | chpasswd
+    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+    sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+    
     if lsb_release -d | grep -q Debian; then
         echo "auto lo" > /etc/network/interfaces
         echo "iface lo inet loopback" >> /etc/network/interfaces
@@ -64,13 +69,24 @@ runcmd:
         fi
     fi
     
+    # TODO: make the router(s) push the default gateway properly and remove this workaround
+    # Fix routes on subnets if default gateway incorrect
+    echo '#/usr/bin/bash' > /usr/local/bin/fix_subnet_routes.sh
+    echo 'sleep 5' >> /usr/local/bin/fix_subnet_routes.sh
+    echo 'ALT_GATEWAY=$(ip route | grep -v 192.168.1.1 | grep "0.0.0.0/24 via 192.168." | cut -d " " -f3)' >> /usr/local/bin/fix_subnet_routes.sh
+    echo 'test ! -z $ALT_GATEWAY && ip route add default via $ALT_GATEWAY || /bin/true' >> /usr/local/bin/fix_subnet_routes.sh
+    chmod u+x /usr/local/bin/fix_subnet_routes.sh
+    /usr/local/bin/fix_subnet_routes.sh
+    echo '[Service]' > /lib/systemd/system/fix_routes.service
+    echo 'ExecStart=/usr/bin/bash /usr/local/bin/fix_subnet_routes.sh' >> /lib/systemd/system/fix_routes.service
+    echo 'Type=oneshot' >> /lib/systemd/system/fix_routes.service
+    echo '[Install]' >> /lib/systemd/system/fix_routes.service
+    echo 'WantedBy=multi-user.target' >> /lib/systemd/system/fix_routes.service
+    systemctl daemon-reload
+    systemctl enable fix_routes.service
+
     # Wait until we have network
     while ! ping -c 3 8.8.8.8; do sleep 1; done
-    
-    # Obviously you should not do this in any real environment
-    echo "root:toor" | chpasswd
-    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
-    sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
     
     # Configure the hostname
     echo {name}-on-{hypervisor} > /etc/hostname
