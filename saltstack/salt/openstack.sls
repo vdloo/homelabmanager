@@ -67,7 +67,7 @@ write_configure_openstack_script:
 
 configure_openstack_if_needed:
   cmd.run:
-    - name: /usr/local/bin/configure_openstack.sh > /tmp/configure_openstack_log 2>&1 &
+    - name: /usr/local/bin/configure_openstack.sh >> /tmp/configure_openstack_log 2>&1 &
     - runas: stack
     - cwd: /opt/stack
   require:
