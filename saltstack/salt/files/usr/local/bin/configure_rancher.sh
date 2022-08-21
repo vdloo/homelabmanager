@@ -15,13 +15,6 @@ check_rancher_running () {
 
 check_rancher_running
 
-echo "Checking if OpenStack is up yet"
-while ! curl http://{{ pillar['openstack_static_ip'] }}/dashboard/auth/login/?next=/dashboard/ 2>&1 | grep horizon -q; do
-    echo "OpenStack is not up yet, will try again later.."
-    sleep 120
-done
-echo "OpenStack is up!"
-
 check_rancher_running
 echo "Starting Rancher container"
 docker run -d --restart=unless-stopped -p 80:80 -p 443:443 \
@@ -51,6 +44,13 @@ echo "Retrieved API token: $API_TOKEN"
 echo "Enabling OpenStack Node Driver"
 curl -H "Authorization: Bearer $API_TOKEN" -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/nodeDrivers/openstack?action=activate' --insecure
 sleep 5
+
+echo "Checking if OpenStack is up yet"
+while ! curl http://{{ pillar['openstack_static_ip'] }}/dashboard/auth/login/?next=/dashboard/ 2>&1 | grep horizon -q; do
+    echo "OpenStack is not up yet, will try again later.."
+    sleep 120
+done
+echo "OpenStack is up!"
 
 echo "Importing nodeTemplate"
 cat << EOF > /tmp/node_template.json
