@@ -43,3 +43,6 @@ base:
   'role:rancher':
     - match: grain
     - rancher
+  'role:kubernetes':
+    - match: grain
+    - kubernetes
