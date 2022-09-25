@@ -34,8 +34,12 @@ while ! grep -q token <<< "$API_TOKEN"; do
 done
 echo "Retrieved API token: $API_TOKEN"
 
-echo "Giving Rancher some time to settle down, then proceeding with retrieving the node command"
+echo "Giving Rancher some time to settle down"
 sleep 30
+
+echo "Installing rancher ca for self-signed certificate"
+echo -e "$(curl -s https://{{ pillar['rancher_static_ip'] }}/v1/management.cattle.io.settings -H "Authorization: Bearer $LOGIN_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq . | grep value | grep "BEGIN CERTIFICATE" | cut -d '"' -f4  | head -n 1)" > /usr/local/share/ca-certificates/rke.crt
+update-ca-certificates
 
 echo "Waiting for cluster definition.."
 while ! test $(curl -s https://{{ pillar['rancher_static_ip'] }}/v3/clusterregistrationtokens -H "Authorization: Bearer $LOGIN_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq .data | grep clusterId | grep -v local | wc -l) -ge 1; do
