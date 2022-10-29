@@ -11,6 +11,12 @@ if docker ps | grep -q rancher; then
     exit 0
 fi
 
+if test -e /usr/local/share/ca-certificates/rke.crt; then
+    echo "Kubelet already installed"
+    exit 0
+fi
+
+
 echo "Waiting for Rancher to come up on the Rancher host"
 while ! curl http://{{ pillar['rancher_static_ip'] }}/dashboard/auth/login 2>&1 | grep "/dashboard/" -q; do
     echo "Rancher is not up yet, will try again later.."
@@ -48,5 +54,7 @@ done
 
 echo "Retrieving the node command"
 NODE_COMMAND=$(curl 'https://{{ pillar['rancher_static_ip'] }}/v3/clusterregistrationtokens' -H "Authorization: Bearer $API_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq .data[0].nodeCommand | tr -d '"')
+echo "Sleeping some random amount of time before joining the cluster"
+sleep $((RANDOM % 1800))
 echo "Joining cluster by running $NODE_COMMAND --etcd --controlplane --worker"
 $NODE_COMMAND --etcd --controlplane --worker
