@@ -40,113 +40,113 @@ echo "Retrieved API token: $API_TOKEN"
 echo "Defining homelabmanager cluster"
 cat << 'EOF' > /tmp/homelabmanagercluster.json
 {
-  "dockerRootDir": "/var/lib/docker",
-  "enableClusterAlerting": false,
-  "enableClusterMonitoring": false,
-  "enableNetworkPolicy": false,
-  "windowsPreferedCluster": false,
-  "type": "cluster",
-  "name": "homelabmanagerk8s",
-  "rancherKubernetesEngineConfig": {
-    "addonJobTimeout": 45,
-    "enableCriDockerd": false,
-    "ignoreDockerVersion": true,
-    "rotateEncryptionKey": false,
-    "sshAgentAuth": false,
-    "type": "rancherKubernetesEngineConfig",
-    "kubernetesVersion": "v1.24.2-rancher1-1",
-    "authentication": {
-      "strategy": "x509",
-      "type": "authnConfig"
-    },
-    "dns": {
-      "type": "dnsConfig",
-      "nodelocal": {
-        "type": "nodelocal",
-        "ip_address": "",
-        "node_selector": null,
-        "update_strategy": {}
-      }
-    },
-    "network": {
-      "mtu": 0,
-      "plugin": "flannel",
-      "type": "networkConfig",
-      "options": {
-        "flannel_backend_type": "vxlan"
-      }
-    },
-    "ingress": {
-      "defaultBackend": false,
-      "defaultIngressClass": true,
-      "httpPort": 0,
-      "httpsPort": 0,
-      "provider": "nginx",
-      "type": "ingressConfig"
-    },
-    "monitoring": {
-      "provider": "metrics-server",
-      "replicas": 1,
-      "type": "monitoringConfig"
-    },
-    "services": {
-      "type": "rkeConfigServices",
-      "kubeApi": {
-        "alwaysPullImages": false,
-        "podSecurityPolicy": false,
-        "serviceNodePortRange": "30000-32767",
-        "type": "kubeAPIService",
-        "secretsEncryptionConfig": {
-          "enabled": false,
-          "type": "secretsEncryptionConfig"
-        }
-      },
-      "etcd": {
-        "creation": "12h",
-        "extraArgs": {
-          "heartbeat-interval": 500,
-          "election-timeout": 5000
+    "dockerRootDir": "/var/lib/docker",
+    "enableClusterAlerting": false,
+    "enableClusterMonitoring": false,
+    "enableNetworkPolicy": false,
+    "windowsPreferedCluster": false,
+    "type": "cluster",
+    "name": "homelabmanagerk8s",
+    "rancherKubernetesEngineConfig": {
+        "addonJobTimeout": 45,
+        "enableCriDockerd": false,
+        "ignoreDockerVersion": true,
+        "rotateEncryptionKey": false,
+        "sshAgentAuth": false,
+        "type": "rancherKubernetesEngineConfig",
+        "kubernetesVersion": "v1.24.4-rancher1-1",
+        "authentication": {
+            "strategy": "x509",
+            "type": "authnConfig"
         },
-        "gid": 0,
-        "retention": "72h",
-        "snapshot": false,
-        "uid": 0,
-        "type": "etcdService",
-        "backupConfig": {
-          "enabled": true,
-          "intervalHours": 12,
-          "retention": 6,
-          "safeTimestamp": false,
-          "timeout": 300,
-          "type": "backupConfig"
+        "dns": {
+            "type": "dnsConfig",
+            "nodelocal": {
+                "type": "nodelocal",
+                "ip_address": "",
+                "node_selector": null,
+                "update_strategy": {}
+            }
+        },
+        "network": {
+            "mtu": 0,
+            "plugin": "canal",
+            "type": "networkConfig",
+            "options": {
+                "flannel_backend_type": "vxlan"
+            }
+        },
+        "ingress": {
+            "defaultBackend": false,
+            "defaultIngressClass": true,
+            "httpPort": 0,
+            "httpsPort": 0,
+            "provider": "nginx",
+            "type": "ingressConfig"
+        },
+        "monitoring": {
+            "provider": "metrics-server",
+            "replicas": 1,
+            "type": "monitoringConfig"
+        },
+        "services": {
+            "type": "rkeConfigServices",
+            "kubeApi": {
+                "alwaysPullImages": false,
+                "podSecurityPolicy": false,
+                "serviceNodePortRange": "30000-32767",
+                "type": "kubeAPIService",
+                "secretsEncryptionConfig": {
+                    "enabled": false,
+                    "type": "secretsEncryptionConfig"
+                }
+            },
+            "etcd": {
+                "creation": "12h",
+                "extraArgs": {
+                    "heartbeat-interval": 500,
+                    "election-timeout": 5000
+                },
+                "gid": 0,
+                "retention": "72h",
+                "snapshot": false,
+                "uid": 0,
+                "type": "etcdService",
+                "backupConfig": {
+                    "enabled": true,
+                    "intervalHours": 12,
+                    "retention": 6,
+                    "safeTimestamp": false,
+                    "timeout": 300,
+                    "type": "backupConfig"
+                }
+            }
+        },
+        "upgradeStrategy": {
+            "maxUnavailableControlplane": "1",
+            "maxUnavailableWorker": "10%",
+            "drain": "false",
+            "nodeDrainInput": {
+                "deleteLocalData": false,
+                "force": false,
+                "gracePeriod": -1,
+                "ignoreDaemonSets": true,
+                "timeout": 120,
+                "type": "nodeDrainInput"
+            },
+            "maxUnavailableUnit": "percentage"
         }
-      }
     },
-    "upgradeStrategy": {
-      "maxUnavailableControlplane": "1",
-      "maxUnavailableWorker": "10%",
-      "drain": "false",
-      "nodeDrainInput": {
-        "deleteLocalData": false,
-        "force": false,
-        "gracePeriod": -1,
-        "ignoreDaemonSets": true,
-        "timeout": 120,
-        "type": "nodeDrainInput"
-      },
-      "maxUnavailableUnit": "percentage"
+    "localClusterAuthEndpoint": {
+        "enabled": true,
+        "type": "localClusterAuthEndpoint"
+    },
+    "labels": {},
+    "scheduledClusterScan": {
+        "enabled": false,
+        "scheduleConfig": null,
+        "scanConfig": null
     }
-  },
-  "localClusterAuthEndpoint": {
-    "enabled": true,
-    "type": "localClusterAuthEndpoint"
-  },
-  "labels": {},
-  "scheduledClusterScan": {
-    "enabled": false,
-    "scheduleConfig": null,
-    "scanConfig": null
-  }
 }
 EOF
 curl -H "Authorization: Bearer $API_TOKEN" -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/clusters?_replace=true' --insecure -d @/tmp/homelabmanagercluster.json
