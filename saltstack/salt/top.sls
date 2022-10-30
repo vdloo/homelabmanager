@@ -46,3 +46,6 @@ base:
   'role:kubernetes':
     - match: grain
     - kubernetes
+  'role:k8scontrolplane':
+    - match: grain
+    - kubernetes
