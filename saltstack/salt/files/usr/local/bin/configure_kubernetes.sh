@@ -6,16 +6,10 @@
 # join the already defined cluster). This way we can add any amount of vms
 # to the cluster as soon as they come up, and rancher is up.
 
-if docker ps | grep -q rancher; then
-    echo "Rancher already running!"
-    exit 0
-fi
-
 if test -e /usr/local/share/ca-certificates/rke.crt; then
     echo "Kubelet already installed"
     exit 0
 fi
-
 
 echo "Waiting for Rancher to come up on the Rancher host"
 while ! curl http://{{ pillar['rancher_static_ip'] }}/dashboard/auth/login 2>&1 | grep "/dashboard/" -q; do
@@ -55,6 +49,20 @@ done
 echo "Retrieving the node command"
 NODE_COMMAND=$(curl 'https://{{ pillar['rancher_static_ip'] }}/v3/clusterregistrationtokens' -H "Authorization: Bearer $API_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq .data[0].nodeCommand | tr -d '"')
 echo "Sleeping some random amount of time before joining the cluster"
-sleep $((RANDOM % 1800))
-echo "Joining cluster by running $NODE_COMMAND --etcd --controlplane --worker"
-$NODE_COMMAND --etcd --controlplane --worker
+if grep -q 'role: k8scontrolplane' /etc/salt/grains; then
+  NODE_COMMAND="$NODE_COMMAND --etcd --controlplane"
+  echo "Joining cluster as control plane by running $NODE_COMMAND in a bit.."
+else
+  NODE_COMMAND="$NODE_COMMAND --worker"
+  echo "Joining cluster as a worker by running $NODE_COMMAND in a bit.."
+  sleep 180
+fi
+sleep $((RANDOM % 180))
+
+if docker ps | grep -q rancher; then
+    echo "Rancher already running! No need to join the cluster, aborting"
+    exit 0
+fi
+
+echo "Joining cluster now!"
+$NODE_COMMAND
