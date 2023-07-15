@@ -37,7 +37,7 @@
       "image": "debian-10-openstack-amd64.qcow2",
       "static_ip": "192.168.1.245",
       "saltmaster_ip": null,
-      "enabled": false,
+      "enabled": true,
       "ipv6_overlay": true,
       "ipv6_pubkey": "",
       "ipv6_privkey": "",
