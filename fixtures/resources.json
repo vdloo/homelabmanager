@@ -1,0 +1,50 @@
+[
+  {
+    "model": "resources.hypervisor",
+    "pk": 1,
+    "fields": {
+      "name": "thinkpad",
+      "interface": "enp0s20f0u4"
+    }
+  },
+  {
+    "model": "resources.profile",
+    "pk": 1,
+    "fields": {
+      "name": "default",
+      "enabled": true
+    }
+  },
+  {
+    "model": "resources.profile",
+    "pk": 2,
+    "fields": {
+      "name": "offline",
+      "enabled": false
+    }
+  },
+  {
+    "model": "resources.virtualmachine",
+    "pk": 1,
+    "fields": {
+      "create": "2023-07-15T18:10:44.750Z",
+      "name": "devenv",
+      "ram_in_mb": 4096,
+      "cpu": 8,
+      "host": 1,
+      "role": "devenv",
+      "profile": 1,
+      "image": "debian-10-openstack-amd64.qcow2",
+      "static_ip": "192.168.1.245",
+      "saltmaster_ip": null,
+      "enabled": false,
+      "ipv6_overlay": true,
+      "ipv6_pubkey": "",
+      "ipv6_privkey": "",
+      "ipv6_ip": "",
+      "extra_storage_in_gb": 1,
+      "network_interface_count": 1,
+      "extra_storage_pool": "default"
+    }
+  }
+]
