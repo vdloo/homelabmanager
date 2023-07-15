@@ -11,6 +11,7 @@ rm -rf /tmp/vim_configure_area
 mkdir /tmp/vim_configure_area
 cd /tmp/vim_configure_area
 wget http://www.vim.org/scripts/download_script.php?src_id=15530 -O zenburn.vim
+wget https://raw.githubusercontent.com/jnurmine/Zenburn/master/colors/zenburn.vim -O zenburn.vim
 
 mkdir -p /root/.vim/{bundle,colors}
 mkdir -p /home/$UNPRIVILEGED_USER/.vim/{bundle,colors}
