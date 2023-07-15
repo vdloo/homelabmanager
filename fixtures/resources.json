@@ -36,7 +36,7 @@
       "profile": 1,
       "image": "debian-10-openstack-amd64.qcow2",
       "static_ip": "192.168.1.245",
-      "saltmaster_ip": null,
+      "saltmaster_ip": "192.168.1.239",
       "enabled": true,
       "extra_storage_in_gb": 1,
       "network_interface_count": 1,
