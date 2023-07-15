@@ -38,10 +38,6 @@
       "static_ip": "192.168.1.245",
       "saltmaster_ip": null,
       "enabled": true,
-      "ipv6_overlay": true,
-      "ipv6_pubkey": "",
-      "ipv6_privkey": "",
-      "ipv6_ip": "",
       "extra_storage_in_gb": 1,
       "network_interface_count": 1,
       "extra_storage_pool": "default"

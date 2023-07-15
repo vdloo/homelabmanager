@@ -48,7 +48,6 @@ install_shellserver_packages:
   pkg.installed:
     - pkgs:
       - curl
-      - consul
       - figlet
       - git
       - irssi
@@ -160,28 +159,6 @@ run_use_prometheus_if_up_periodically:
     - user: root
     - minute: '*'
     - name: /usr/local/bin/use_prometheus_if_up.sh
-
-clone_yggdrasil_repo:
-  git.latest:
-    - target: /etc/yggdrasil-go
-    - branch: cli-tool-to-convert-pubkey-to-ip
-    - name: https://github.com/vdloo/yggdrasil-go
-    - force_reset: true
-
-write_install_yggdrasil_system_wide_script:
-  file.managed:
-    - name: /usr/local/bin/install_yggdrasil_system_wide.sh
-    - source: salt://files/usr/local/bin/install_yggdrasil_system_wide.sh
-    - user: root
-    - group: root
-    - mode: 755
-    - template: jinja
-
-install_yggdrasil_system_wide_if_needed:
-  cmd.run:
-    - name: /usr/local/bin/install_yggdrasil_system_wide.sh > /tmp/install_yggdrasil_log 2>&1 &
-    - onchanges:
-      - git: clone_yggdrasil_repo
 
 write_locale_file:
   file.managed:
@@ -369,36 +346,6 @@ install_root_irssi_config_file:
     - mode: 0640
     - template: jinja
 
-{% if grains.ipv6_overlay %}
-write_yggdrasil_service_unit:
-  file.managed:
-    - name: /usr/lib/systemd/system/yggdrasil.service
-    - source: salt://files/usr/lib/systemd/system/yggdrasil.service
-    - user: root
-    - group: root
-    - mode: 644
-
-daemon_reload_if_yggdrasil_unit_changed:
-  cmd.run:
-    - name: systemctl daemon-reload
-    - onchanges:
-        - file: /usr/lib/systemd/system/yggdrasil.service
-
-ensure_yggdrasil_running:
-  service.running:
-    - enable: true
-    - name: yggdrasil
-{% endif %}
-
-{% if grains.os_family == 'Arch' %}
-create_consul_config_directory:
-  file.directory:
-    - name: /opt/consul
-    - user: consul
-    - group: consul
-    - mode: 0755
-{% endif %}
-
 install_uuid_from_string_script:
   file.managed:
     - name: /usr/local/bin/uuid_from_string.py
@@ -406,28 +353,6 @@ install_uuid_from_string_script:
     - user: root
     - group: root
     - mode: 755
-
-install_configure_consul_script:
-  file.managed:
-    - name: /usr/local/bin/configure_consul.sh
-    - source: salt://files/usr/local/bin/configure_consul.sh
-    - user: root
-    - group: root
-    - mode: 755
-    - template: jinja
-
-configure_consul_if_needed:
-  cmd.run:
-    - name: /usr/local/bin/configure_consul.sh > /tmp/configure_consul_log 2>&1 &
-    - onchanges:
-      - file: /usr/local/bin/configure_consul.sh
-
-start_and_enable_consul:
-  service.running:
-    - enable: true
-    - name: consul
-    - watch:
-        - file: /usr/local/bin/configure_consul.sh
 
 install_machine_check_packages:
   pkg.installed:

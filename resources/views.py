@@ -2,7 +2,7 @@ from os import environ
 from django.http import HttpResponse
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
-from resources.models import VirtualMachine, Profile, get_ipv6_ip_by_pubkey
+from resources.models import VirtualMachine, Profile
 
 QEMU_CONN = """
 terraform {
@@ -145,11 +145,6 @@ runcmd:
     echo "auth_timeout: 120" >> /etc/salt/minion
     echo "role: {role}" > /etc/salt/grains
     echo "hypervisor: {hypervisor}" >> /etc/salt/grains
-    echo "ipv6_overlay: {ipv6_overlay}" >> /etc/salt/grains
-    echo "ipv6_pubkey: {ipv6_pubkey}" >> /etc/salt/grains
-    echo "ipv6_privkey: {ipv6_privkey}" >> /etc/salt/grains
-    echo "ipv6_allowed_keys: {ipv6_allowed_keys}" >> /etc/salt/grains
-    echo "ipv6_allowed_ips: {ipv6_allowed_ips}" >> /etc/salt/grains
     systemctl stop salt-minion || /bin/true
     systemctl enable salt-minion || /bin/true
     rm -f /etc/salt/minion_id
@@ -301,29 +296,12 @@ def generate_cloud_init_configuration(hypervisor_name):
     )
     cloud_init_config = ""
     for relevant_resource in relevant_resources:
-        allowed_keys = ','.join(
-            [v.ipv6_pubkey for v in VirtualMachine.objects.filter(
-                ipv6_overlay=True,
-                profile=Profile.objects.filter(enabled=True).first()
-            )]
-        ) if relevant_resource.ipv6_overlay else relevant_resource.ipv6_pubkey
-        allowed_ips = ','.join(
-            [get_ipv6_ip_by_pubkey(v.ipv6_pubkey) for v in VirtualMachine.objects.filter(
-                ipv6_overlay=True,
-                profile=Profile.objects.filter(enabled=True).first()
-            )]
-        ) if relevant_resource.ipv6_overlay else get_ipv6_ip_by_pubkey(relevant_resource.ipv6_pubkey)
         cloud_init_config += SALT_ROLE.format(
             role=relevant_resource.role,
             name=relevant_resource.name,
             static_ip=relevant_resource.static_ip or '',
             hypervisor=relevant_resource.host.name,
             vm_saltmaster=relevant_resource.saltmaster_ip or get_vm_saltmaster_ip(),
-            ipv6_overlay=str(relevant_resource.ipv6_overlay).lower(),
-            ipv6_pubkey=relevant_resource.ipv6_pubkey or '',
-            ipv6_privkey=relevant_resource.ipv6_privkey or '',
-            ipv6_allowed_keys=allowed_keys,
-            ipv6_allowed_ips=allowed_ips
         )
     return cloud_init_config
 
