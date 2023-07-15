@@ -38,7 +38,7 @@ ensure_homelabmanager_db:
     - env:
       - PYTHONPATH: {{ pillar['shellserver_unprivileged_user_name'] }}
       - DJANGO_SETTINGS_MODULE: homelabmanager.settings
-    - name: venv/bin/python manage.py migrate
+    - name: venv/bin/python manage.py migrate && venv/bin/python manage.py loaddata fixtures/resources.json
     - runas: {{ pillar['shellserver_unprivileged_user_name'] }}
     - cwd: /home/{{ pillar['shellserver_unprivileged_user_name'] }}/homelabmanager
 {%- endif %}
