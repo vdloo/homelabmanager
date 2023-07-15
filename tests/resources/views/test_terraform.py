@@ -8,18 +8,6 @@ from resources.factory import VirtualMachineFactory, HypervisorFactory, ProfileF
 
 class TestTerraform(TestCase):
     def setUp(self):
-        generate_ipv6_keypair = self.set_up_patch(
-            'resources.models.generate_ipv6_keypair'
-        )
-        generate_ipv6_keypair.return_value = ('pubkey', 'privkey')
-        self.set_up_patch(
-            'resources.models.get_ipv6_ip_by_pubkey',
-            return_value='1:2:3:4:5:6:7:8'
-        )
-        self.set_up_patch(
-            'resources.views.get_ipv6_ip_by_pubkey',
-            return_value='1:2:3:4:5:6:7:8'
-        )
         self.profile = ProfileFactory.create(enabled=True)
         self.hypervisor_1 = HypervisorFactory.create(name='hypervisor88')
         self.hypervisor_2 = HypervisorFactory.create(name='hypervisor99')

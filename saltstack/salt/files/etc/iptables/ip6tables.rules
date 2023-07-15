@@ -1,13 +1,5 @@
-#yggdrasil
 *filter
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
-# Allow return connections initiated from the host
--A INPUT -i tun0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A INPUT -i tun0 -m conntrack --ctstate INVALID -j DROP
-{% set allowed_ipv6_ips = grains.ipv6_allowed_ips.split(',') %}
-{% for allowed_ipv6_ip in allowed_ipv6_ips %}-A INPUT -i tun0 -j ACCEPT -s {{ allowed_ipv6_ip }}
-{% endfor %}
--A INPUT -i tun0 -j DROP
 COMMIT
