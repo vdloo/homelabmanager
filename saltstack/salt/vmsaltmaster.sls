@@ -18,7 +18,7 @@ write_configure_homelab_vm_salt_master_script:
 
 configure_homelab_vm_salt_master_if_needed:
   cmd.run:
-    - name: /usr/local/bin/configure_homelab_vm_salt_master.sh > /tmp/conifgure_homelab_vm_salt_master_log 2>&1 &
+    - name: /usr/local/bin/configure_homelab_vm_salt_master.sh > /tmp/configure_homelab_vm_salt_master_log 2>&1 &
     - onchanges:
       - git: clone_homelabmanager_repo
 
