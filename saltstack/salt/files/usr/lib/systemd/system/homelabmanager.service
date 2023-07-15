@@ -1,0 +1,16 @@
+[Unit]
+Description=Homelabmanager
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+User={{ pillar['shellserver_unprivileged_user_name'] }}
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/home/{{ pillar['shellserver_unprivileged_user_name'] }}/homelabmanager
+ExecStart=/home/{{ pillar['shellserver_unprivileged_user_name'] }}/homelabmanager/venv/bin/python /home/{{ pillar['shellserver_unprivileged_user_name'] }}/homelabmanager/manage.py runserver {{ pillar['vmsaltmaster_static_ip'] }}:4424
+Environment="VM_SALTMASTER_IP={{ pillar['vmsaltmaster_static_ip'] }}"
+
+[Install]
+WantedBy=multi-user.target
