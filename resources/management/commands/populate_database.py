@@ -2,14 +2,8 @@ from django.core.management import BaseCommand
 from resources.models import Hypervisor, Profile
 
 HYPERVISORS = [
-    ('h52', 'eth0'),
-    ('h54', 'enp2s0'),
-    ('h55', 'enp2s0'),
-    ('h56', 'eno1'),
-    ('h59', 'ens3f3'),
-    ('h60', 'enp5s0f3'),
-    ('h61', 'eno1'),
-    ('h63', 'enp2s0')
+    ('desktop', 'enp0s31f6'),
+    ('thinkpad', 'enp0s20f0u4'),
 ]
 
 
