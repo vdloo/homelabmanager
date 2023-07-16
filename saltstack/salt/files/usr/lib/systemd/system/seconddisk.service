@@ -1,0 +1,11 @@
+[Unit]
+Description=seconddisk
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash -x /usr/local/bin/seconddisk.sh
+RemainAfterExit=true
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
