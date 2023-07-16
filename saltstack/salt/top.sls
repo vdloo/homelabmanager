@@ -39,13 +39,17 @@ base:
     - vmsaltmaster
   'role:openstack':
     - match: grain
+    - seconddisk
     - openstack
   'role:rancher':
     - match: grain
+    - seconddisk
     - rancher
   'role:kubernetes':
     - match: grain
+    - seconddisk
     - kubernetes
   'role:k8scontrolplane':
     - match: grain
+    - seconddisk
     - kubernetes
