@@ -7,7 +7,7 @@ jenkins_repository:
     - name: deb https://pkg.jenkins.io/debian-stable binary/
     - file: /etc/apt/sources.list.d/jenkins.list
     - gpgcheck: 1
-    - key_url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+    - key_url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
 
 install_jenkinsci_packages:
   pkg.installed:
