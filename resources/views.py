@@ -100,7 +100,7 @@ runcmd:
         pacman-key --populate archlinux
         pacman -Syy
         pacman -S gnupg archlinux-keyring --noconfirm
-        pacman -Su salt cloud-utils e2fsprogs --noconfirm --overwrite /usr/bin/growpart
+        pacman -Su salt cloud-utils e2fsprogs git --noconfirm --overwrite /usr/bin/growpart
     else
         apt-get update --allow-releaseinfo-change
         apt-get install curl -y
@@ -127,11 +127,13 @@ runcmd:
         fi
         
         apt-get update
-        apt-get install cloud-guest-utils e2fsprogs salt-minion  -y
+        apt-get install cloud-guest-utils e2fsprogs salt-minion salt-master git  -y
     fi
     
     growpart /dev/vda 1 || /bin/true
     resize2fs /dev/vda1 || /bin/true
+
+    # Configure salt-minion
     echo "master: {vm_saltmaster}" > /etc/salt/minion
     echo "tcp_keepalive: True" >> /etc/salt/minion
     echo "tcp_keepalive_idle: 30" >> /etc/salt/minion
@@ -147,6 +149,21 @@ runcmd:
     echo "hypervisor: {hypervisor}" >> /etc/salt/grains
     systemctl stop salt-minion || /bin/true
     systemctl enable salt-minion || /bin/true
+
+
+    # Configure salt-master (in case no central master is used)
+    (cd /etc/; git clone https://github.com/vdloo/homelabmanager)
+    if [ ! -L /srv/salt ]; then ln -s /etc/homelabmanager/saltstack/salt /srv/salt; fi
+    if [ ! -L /srv/pillar ]; then ln -s /etc/homelabmanager/saltstack/pillar /srv/pillar; fi
+    if [ ! -L /srv/reactor ]; then ln -s /etc/homelabmanager/saltstack/reactor /srv/reactor; fi
+    # Obviously never configure a Saltmaster like this in any real environment
+    echo "open_mode: True" > /etc/salt/master
+    echo "auto_accept: True" >> /etc/salt/master
+    echo "reactor:" >> /etc/salt/master
+    echo "  - 'salt/minion/*/start':" >> /etc/salt/master
+    echo "    - /srv/reactor/salt.sls" >> /etc/salt/master
+    systemctl stop salt-master || /bin/true
+    systemctl enable salt-master || /bin/true
     rm -f /etc/salt/minion_id
     
     # Delete the cloud-config config and reboot
