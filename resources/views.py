@@ -100,7 +100,7 @@ runcmd:
         pacman-key --populate archlinux
         pacman -Syy
         pacman -S gnupg archlinux-keyring --noconfirm
-        pacman -Su salt cloud-utils e2fsprogs git --noconfirm --overwrite /usr/bin/growpart
+        pacman -Su salt cloud-utils e2fsprogs qemu-guest-agent git --noconfirm --overwrite /usr/bin/growpart
     else
         apt-get update --allow-releaseinfo-change
         apt-get install curl -y
@@ -127,7 +127,7 @@ runcmd:
         fi
         
         apt-get update
-        apt-get install cloud-guest-utils e2fsprogs salt-minion salt-master git  -y
+        apt-get install cloud-guest-utils e2fsprogs salt-minion salt-master qemu-guest-agent git  -y
     fi
     
     growpart /dev/vda 1 || /bin/true
@@ -152,11 +152,14 @@ runcmd:
 
 
     # Configure salt-master (in case no central master is used)
+    rm -rf /etc/homelabmanager
     (cd /etc/; git clone https://github.com/vdloo/homelabmanager)
     if [ ! -L /srv/salt ]; then ln -s /etc/homelabmanager/saltstack/salt /srv/salt; fi
     if [ ! -L /srv/pillar ]; then ln -s /etc/homelabmanager/saltstack/pillar /srv/pillar; fi
     if [ ! -L /srv/reactor ]; then ln -s /etc/homelabmanager/saltstack/reactor /srv/reactor; fi
     # Obviously never configure a Saltmaster like this in any real environment
+    # We only bind on localhost, no external can connect to this salt-master
+    echo "interface: 127.0.0.1" >> /etc/salt/master
     echo "open_mode: True" > /etc/salt/master
     echo "auto_accept: True" >> /etc/salt/master
     echo "reactor:" >> /etc/salt/master
