@@ -1,0 +1,46 @@
+[
+  {
+    "model": "resources.hypervisor",
+    "pk": 1,
+    "fields": {
+      "name": "local",
+      "interface": "eth0"
+    }
+  },
+  {
+    "model": "resources.profile",
+    "pk": 1,
+    "fields": {
+      "name": "default",
+      "enabled": true
+    }
+  },
+  {
+    "model": "resources.profile",
+    "pk": 2,
+    "fields": {
+      "name": "offline",
+      "enabled": false
+    }
+  },
+  {
+    "model": "resources.virtualmachine",
+    "pk": 1,
+    "fields": {
+      "create": "2023-07-15T18:10:44.750Z",
+      "name": "integrationtest",
+      "ram_in_mb": 4096,
+      "cpu": 8,
+      "host": 1,
+      "role": "shellserver",
+      "profile": 1,
+      "image": "arch-openstack-LATEST-image-bootstrap.qcow2",
+      "static_ip": "192.168.1.123",
+      "saltmaster_ip": "127.0.0.1",
+      "enabled": true,
+      "extra_storage_in_gb": 1,
+      "network_interface_count": 1,
+      "extra_storage_pool": "default"
+    }
+  }
+]
