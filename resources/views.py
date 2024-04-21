@@ -74,7 +74,7 @@ runcmd:
     echo '#/usr/bin/bash' > /usr/local/bin/fix_subnet_routes.sh
     echo 'sleep 5' >> /usr/local/bin/fix_subnet_routes.sh
     echo 'ALT_GATEWAY=$(ip route | grep "link src" | tail -n 1 | head -n 1 | cut -d "/" -f1 | sed "s/\.0/\.1/g" | grep -v 192.168.1.1)' >> /usr/local/bin/fix_subnet_routes.sh
-    echo 'test ! -z $ALT_GATEWAY && (ip route del default via 192.168.1.1 || /bin/true; ip route add default via $ALT_GATEWAY || /bin/true)' >> /usr/local/bin/fix_subnet_routes.sh
+    echo 'test ! -z $ALT_GATEWAY && (ip route del default via 192.168.1.1 || /bin/true; ip route add default via $ALT_GATEWAY || /bin/true) || /bin/true' >> /usr/local/bin/fix_subnet_routes.sh
     chmod u+x /usr/local/bin/fix_subnet_routes.sh
     /usr/local/bin/fix_subnet_routes.sh
     echo '[Service]' > /lib/systemd/system/fix_routes.service
