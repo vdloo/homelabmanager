@@ -101,7 +101,7 @@ runcmd:
         pacman-key --populate archlinux
         pacman -Syy
         pacman -S gnupg archlinux-keyring --noconfirm
-        pacman -Su salt cloud-utils e2fsprogs --noconfirm --overwrite /usr/bin/growpart
+        pacman -Su salt cloud-utils e2fsprogs python-tornado --noconfirm --overwrite /usr/bin/growpart
     else
         apt-get update --allow-releaseinfo-change
         apt-get install curl -y
