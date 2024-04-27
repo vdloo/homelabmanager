@@ -41,7 +41,7 @@ runcmd:
             echo "  address {static_ip}" >> /etc/network/interfaces
             echo "  netmask 255.255.255.0" >> /etc/network/interfaces
             echo "  gateway 192.168.1.1" >> /etc/network/interfaces
-            echo "  dns-nameservers 8.8.8.8 8.8.4.4" >> /etc/network/interfaces
+            echo "  dns-nameservers 1.1.1.1 1.0.0.1" >> /etc/network/interfaces
         else
             echo "iface eth0 inet dhcp" >> /etc/network/interfaces
         fi
@@ -49,21 +49,22 @@ runcmd:
         systemctl stop systemd-resolved || /bin/true
         systemctl disable systemd-resolved || /bin/true
         rm -rf /etc/resolv.conf
-        echo "nameserver 8.8.8.8" > /etc/resolv.conf
-        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        echo "nameserver 1.1.1.1" > /etc/resolv.conf
+        echo "nameserver 1.0.0.1" >> /etc/resolv.conf
         IFACE_NAME="ens3"
         if [ -f "/etc/arch-release" ]; then
             IFACE_NAME="eth0"
         fi
-        rm -rf /etc/systemd/network/$IFACE_NAME-dhcp.network
+        rm -rf /etc/systemd/network/*.network
         echo "[Match]" > /etc/systemd/network/01-homelab.network
         echo "Name=$IFACE_NAME" >> /etc/systemd/network/01-homelab.network
         echo "[Network]" >> /etc/systemd/network/01-homelab.network
         if [ ! -z "{static_ip}" ]; then
             echo "Address={static_ip}/24" >> /etc/systemd/network/01-homelab.network
-            echo "Gateway=192.168.1.1" >> /etc/systemd/network/01-homelab.network
-            echo "DNS=8.8.8.8" >> /etc/systemd/network/01-homelab.network
-            echo "DNS=8.8.4.4" >> /etc/systemd/network/01-homelab.network
+            echo "Gateway=$(echo {static_ip} | cut -d'.' -f1-3).1" >> /etc/systemd/network/01-homelab.network
+            echo "DNS=1.1.1.1" >> /etc/systemd/network/01-homelab.network
+            echo "DNS=1.0.0.1" >> /etc/systemd/network/01-homelab.network
+            echo "UseRoutes=False" >> /etc/systemd/network/01-homelab.network
         else
             echo "DHCP=yes" >> /etc/systemd/network/01-homelab.network
         fi
@@ -73,8 +74,8 @@ runcmd:
     # Fix routes on subnets if default gateway incorrect
     echo '#/usr/bin/bash' > /usr/local/bin/fix_subnet_routes.sh
     echo 'sleep 5' >> /usr/local/bin/fix_subnet_routes.sh
-    echo 'ALT_GATEWAY=$(ip route | grep "link src" | tail -n 1 | head -n 1 | cut -d "/" -f1 | sed "s/\.0/\.1/g" | grep -v 192.168.1.1)' >> /usr/local/bin/fix_subnet_routes.sh
-    echo 'test ! -z $ALT_GATEWAY && (ip route del default via 192.168.1.1 || /bin/true; ip route add default via $ALT_GATEWAY || /bin/true) || /bin/true' >> /usr/local/bin/fix_subnet_routes.sh
+    echo 'ALT_GATEWAY=$(ip route | grep "link src" | tail -n 1 | head -n 1 | cut -d "/" -f1 | sed "s/\.0/\.1/g" | grep -v 192.168.1.1 | cut -d " " -f1)' >> /usr/local/bin/fix_subnet_routes.sh
+    echo 'test ! -z "$ALT_GATEWAY" && (ip route del default via 192.168.1.1 || /bin/true; ip route add default via $ALT_GATEWAY || /bin/true) || /bin/true' >> /usr/local/bin/fix_subnet_routes.sh
     chmod u+x /usr/local/bin/fix_subnet_routes.sh
     /usr/local/bin/fix_subnet_routes.sh
     echo '[Service]' > /lib/systemd/system/fix_routes.service
@@ -86,7 +87,7 @@ runcmd:
     systemctl enable fix_routes.service
 
     # Wait until we have network
-    while ! ping -c 3 8.8.8.8; do sleep 1; done
+    while ! ping -c 3 1.1.1.1; do sleep 1; done
     
     # Configure the hostname
     echo {name}-on-{hypervisor} > /etc/hostname
