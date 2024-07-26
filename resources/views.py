@@ -35,15 +35,20 @@ runcmd:
     if lsb_release -d | grep -q Debian; then
         echo "auto lo" > /etc/network/interfaces
         echo "iface lo inet loopback" >> /etc/network/interfaces
-        echo "auto eth0" >> /etc/network/interfaces
+        if lsb_release -d | grep buster; then
+            INTERFACE_NAME=eth0
+        else
+            INTERFACE_NAME=ens3
+        fi
+        echo "auto $INTERFACE_NAME" >> /etc/network/interfaces
         if [ ! -z "{static_ip}" ]; then
-            echo "iface eth0 inet static" >> /etc/network/interfaces
+            echo "iface $INTERFACE_NAME inet static" >> /etc/network/interfaces
             echo "  address {static_ip}" >> /etc/network/interfaces
             echo "  netmask 255.255.255.0" >> /etc/network/interfaces
             echo "  gateway 192.168.1.1" >> /etc/network/interfaces
             echo "  dns-nameservers 1.1.1.1 1.0.0.1" >> /etc/network/interfaces
         else
-            echo "iface eth0 inet dhcp" >> /etc/network/interfaces
+            echo "iface $INTERFACE_NAME inet dhcp" >> /etc/network/interfaces
         fi
     else
         systemctl stop systemd-resolved || /bin/true
