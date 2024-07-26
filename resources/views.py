@@ -32,7 +32,7 @@ runcmd:
     echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
     
-    if lsb_release -d | grep -q Debian; then
+    if lsb_release -d | grep -q buster; then
         echo "auto lo" > /etc/network/interfaces
         echo "iface lo inet loopback" >> /etc/network/interfaces
         echo "auto eth0" >> /etc/network/interfaces
@@ -46,6 +46,10 @@ runcmd:
             echo "iface eth0 inet dhcp" >> /etc/network/interfaces
         fi
     else
+        if lsb_release -d | grep -q Debian; then
+            # To use systemd-networkd directly on Bookworm
+            apt-get purge netplan.io -y || /bin/true
+        fi
         systemctl stop systemd-resolved || /bin/true
         systemctl disable systemd-resolved || /bin/true
         rm -rf /etc/resolv.conf
@@ -85,6 +89,7 @@ runcmd:
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/fix_routes.service
     systemctl daemon-reload
     systemctl enable fix_routes.service
+    systemctl restart systemd-networkd
 
     # Wait until we have network
     while ! ping -c 3 1.1.1.1; do sleep 1; done
