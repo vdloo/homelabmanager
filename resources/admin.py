@@ -5,8 +5,8 @@ from django.contrib.auth.models import Group
 
 
 class VirtualMachineAdmin(admin.ModelAdmin):
-    list_display = ('name', 'ram_in_mb', 'cpu', 'host', 'role', 'profile', 'image', 'enabled')
-    list_filter = ('name', 'ram_in_mb', 'cpu', 'host', 'role', 'profile', 'image', 'enabled')
+    list_display = ('name', 'ram_in_mb', 'cpu', 'host', 'role', 'profile', 'static_ip', 'image', 'enabled')
+    list_filter = ('name', 'ram_in_mb', 'cpu', 'host', 'role', 'profile', 'static_ip', 'image', 'enabled')
     search_fields = ('name', 'host', 'role', 'profile', 'enabled')
 
 
