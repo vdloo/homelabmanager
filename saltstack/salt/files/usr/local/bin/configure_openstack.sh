@@ -10,7 +10,7 @@ fi
 git clone https://github.com/openstack/devstack.git
 cd devstack
 git fetch
-git checkout stable/2024.2
+git checkout stable/2023.1
 GIT_BASE_IF_NEEDED=""
 cat << EOF > local.conf
 [[local|localrc]]
@@ -22,12 +22,17 @@ ADMIN_PASSWORD={{ pillar['openstack_stack_password'] }}
 DATABASE_PASSWORD={{ pillar['openstack_stack_password'] }}
 RABBIT_PASSWORD={{ pillar['openstack_stack_password'] }}
 SERVICE_PASSWORD={{ pillar['openstack_stack_password'] }}
+SERVICE_TIMEOUT=180
 [[post-config|\$NOVA_CONF]]
 [DEFAULT]
 cpu_allocation_ratio = 20.0
 ram_allocation_ratio = 2.0
 disk_allocation_ratio = 2.0
 EOF
+
+sudo chmod -R 755 /opt
+sudo rm -rf /etc/ssh/sshd_config.d
+sudo systemctl restart sshd
 
 FORCE=yes ./stack.sh && echo "Stacking is done!"
 
