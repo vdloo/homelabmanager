@@ -70,7 +70,7 @@ openstack image create --container-format bare --disk-format raw --file debian-1
 rm -f debian-12-genericcloud-amd64.raw 
 
 echo "Adding keypair to demo user"
-openstack keypair create --public-key /opt/stack/.ssh/id_rsa.pub homelabkey
+openstack keypair create --public-key /opt/stack/.ssh/id_ed25519.pub homelabkey
 
 echo "Configuring the admin openstack user"
 . /opt/stack/devstack/openrc admin admin
@@ -90,6 +90,6 @@ openstack quota set --routers -1 $TENANT_ID
 openstack quota set --networks -1 $TENANT_ID
 
 echo "Adding keypair to admin user"
-openstack keypair create --public-key /opt/stack/.ssh/id_rsa.pub homelabkey
+openstack keypair create --public-key /opt/stack/.ssh/id_ed25519.pub homelabkey
 
 echo "All done! Go to http://{{ pillar['openstack_static_ip'] }} to log in."

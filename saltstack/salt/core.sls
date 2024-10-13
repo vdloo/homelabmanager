@@ -46,7 +46,7 @@ install_core_packages_for_debian:
 
 ensure_global_key_is_on_disk:
   file.managed:
-    - name: /root/.ssh/id_rsa
+    - name: /root/.ssh/id_ed25519
     - contents_pillar: private_key
     - user: root
     - group: root
@@ -54,7 +54,7 @@ ensure_global_key_is_on_disk:
 
 ensure_global_public_key_is_on_disk:
   file.managed:
-    - name: /root/.ssh/id_rsa.pub
+    - name: /root/.ssh/id_ed25519.pub
     - contents_pillar: public_key
     - user: root
     - group: root

@@ -209,7 +209,7 @@ cat << EOF > /tmp/node_template.json
     "insecure": true,
     "ipVersion": "4",
     "keypairName": "homelabkey",
-    "privateKeyFile": "$(cat ~/.ssh/id_rsa | awk '{printf "%s\\n", $0}')",
+    "privateKeyFile": "$(cat ~/.ssh/id_ed25519 | awk '{printf "%s\\n", $0}')",
     "netId": "",
     "netName": "private",
     "novaNetwork": false,
