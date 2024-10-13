@@ -12,6 +12,9 @@ cd devstack
 git fetch
 git checkout stable/2023.1
 GIT_BASE_IF_NEEDED=""
+if [ -d /mnt/storage/openstack ]; then
+    GIT_BASE_IF_NEEDED="GIT_BASE=file:///mnt/storage/openstack"
+fi
 cat << EOF > local.conf
 [[local|localrc]]
 $GIT_BASE_IF_NEEDED
