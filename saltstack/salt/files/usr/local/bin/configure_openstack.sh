@@ -14,6 +14,7 @@ git checkout stable/2023.1
 GIT_BASE_IF_NEEDED=""
 if [ -d /mnt/storage/openstack ]; then
     GIT_BASE_IF_NEEDED="GIT_BASE=file:///mnt/storage/openstack"
+    git config --global --add safe.directory '*'
 fi
 cat << EOF > local.conf
 [[local|localrc]]
