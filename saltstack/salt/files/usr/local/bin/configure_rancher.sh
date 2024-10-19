@@ -91,6 +91,11 @@ cat << 'EOF' > /tmp/homelabmanagercluster.json
         },
         "services": {
             "type": "rkeConfigServices",
+            "kubelet": {
+                "extraArgs": {
+                    "runtime-request-timeout": "10m"
+                }
+            },
             "kubeApi": {
                 "alwaysPullImages": false,
                 "podSecurityPolicy": false,
