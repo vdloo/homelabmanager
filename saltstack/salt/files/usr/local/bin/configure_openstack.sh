@@ -52,7 +52,7 @@ else
     wget -q https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
 fi
 qemu-img resize noble-server-cloudimg-amd64.img +5G
-openstack image create --container-format bare --disk-format raw --file noble-server-cloudimg-amd64.img noble-server-cloudimg-amd64
+openstack image create --container-format bare --disk-format qcow2 --file noble-server-cloudimg-amd64.img noble-server-cloudimg-amd64
 rm -f noble-server-cloudimg-amd64.img 
 
 echo "Waiting 5 seconds before proceeding to import Bookworm image"
