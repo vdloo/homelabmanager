@@ -69,18 +69,6 @@ qemu-img resize debian-12-genericcloud-amd64.raw +3G
 openstack image create --container-format bare --disk-format raw --file debian-12-genericcloud-amd64.raw debian-12-genericcloud-amd64
 rm -f debian-12-genericcloud-amd64.raw 
 
-echo "Waiting 5 seconds before proceeding to import Focal image"
-sleep 5
-echo "Importing Ubuntu Focal image"
-if [ -f /mnt/storage/openstack/focal-server-cloudimg-amd64.img ]; then
-    cp /mnt/storage/openstack/focal-server-cloudimg-amd64.img .
-else
-    wget -q https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
-fi
-qemu-img resize focal-server-cloudimg-amd64.img +5G
-openstack image create --container-format bare --disk-format raw --file focal-server-cloudimg-amd64.img focal-server-cloudimg-amd64
-rm -f focal-server-cloudimg-amd64.img
-
 echo "Adding keypair to demo user"
 openstack keypair create --public-key /opt/stack/.ssh/id_ed25519.pub homelabkey
 
