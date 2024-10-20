@@ -35,7 +35,7 @@
       "role": "shellserver",
       "profile": 1,
       "image": "debian-12-generic-amd64-20240717-1811.qcow2",
-      "static_ip": "192.168.1.123",
+      "static_ip": "192.168.253.123",
       "saltmaster_ip": "127.0.0.1",
       "enabled": true,
       "extra_storage_in_gb": 1,
