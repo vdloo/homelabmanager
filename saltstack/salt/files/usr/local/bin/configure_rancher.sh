@@ -363,7 +363,7 @@ curl -H "Authorization: Bearer $API_TOKEN" -X POST -H 'Accept: application/json'
 sleep 5
 
 echo "Getting the ID of the newly created cluster"
-CLUSTER_ID_WITH_QUOTES=$(curl -s -H "Authorization: Bearer $API_TOKEN" -X GET -H 'Accept: application/json' -H 'Content-Type: application/json' 'https://127.0.0.1/v3/clusters' --insecure  | jq '.data | map({key: .name, value: .id}) | .[].value' | grep -v local | head -n 1)
+CLUSTER_ID_WITH_QUOTES=$(curl -s https://127.0.0.1/v3/clusters -H "Authorization: Bearer $API_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq '.data[] | select (.name == "openstackk8s").id')
 sleep 5
 
 echo "Getting the ID of the OpenStack NodeTemplate that we created before"
