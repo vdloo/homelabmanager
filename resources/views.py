@@ -223,7 +223,7 @@ resource "libvirt_domain" "{name}_on_{hypervisor}" {{
   }}
 
   cpu {{
-    mode = "host-model"
+    mode = "host-passthrough"
   }}
 
   boot_device {{
