@@ -34,7 +34,7 @@
       "host": 1,
       "role": "shellserver",
       "profile": 1,
-      "image": "arch-openstack-LATEST-image-bootstrap.qcow2",
+      "image": "debian-12-generic-amd64-20240717-1811.qcow2",
       "static_ip": "192.168.1.123",
       "saltmaster_ip": "127.0.0.1",
       "enabled": true,
