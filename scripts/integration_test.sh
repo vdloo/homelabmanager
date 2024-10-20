@@ -62,10 +62,10 @@ cd /tmp/integration-test-environment/homelabmanager
 python3 -m venv venv
 . venv/bin/activate
 pip3 install -r requirements/dev.txt
-ACTIVE_INTERFACE=$(ip addr | awk '/state UP/ {print $2}' | cut -d ':' -f1 | tail -n 1)
+ACTIVE_INTERFACE=$(ip addr | awk '/state UP/ {print $2}' | grep -v macvtap | cut -d ':' -f1 | tail -n 1)
 ./manage.py migrate
 sed -i "s/eth0/$ACTIVE_INTERFACE/g" fixtures/integrationtest.json
-sed -i "s/192.168.1.123/$TESTVMIP/g" fixtures/integrationtest.json
+sed -i "s/192.168.253.123/$TESTVMIP/g" fixtures/integrationtest.json
 sed -i "s/shellserver/$ROLETOTEST/g" fixtures/integrationtest.json
 ./manage.py loaddata fixtures/integrationtest.json
 export VM_SALTMASTER_IP=127.0.0.1
