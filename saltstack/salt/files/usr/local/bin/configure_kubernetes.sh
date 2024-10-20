@@ -42,12 +42,13 @@ echo -e "$(curl -s https://{{ pillar['rancher_static_ip'] }}/v1/management.cattl
 update-ca-certificates
 
 echo "Waiting for cluster definition.."
-while ! test $(curl -s https://{{ pillar['rancher_static_ip'] }}/v3/clusterregistrationtokens -H "Authorization: Bearer $LOGIN_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq .data | grep clusterId | grep -v local | wc -l) -ge 1; do
+while ! curl -s https://{{ pillar['rancher_static_ip'] }}/v3/clusters -H "Authorization: Bearer $LOGIN_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq -r '.data[] | select (.name == "homelabmanagerk8s").type' | grep -q cluster; do
     sleep 10
 done
 
 echo "Retrieving the node command"
-NODE_COMMAND=$(curl 'https://{{ pillar['rancher_static_ip'] }}/v3/clusterregistrationtokens' -H "Authorization: Bearer $API_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq .data[0].nodeCommand | tr -d '"')
+NODE_ID=$(curl -s https://{{ pillar['rancher_static_ip'] }}/v3/clusters -H "Authorization: Bearer $LOGIN_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq -r '.data[] | select (.name == "homelabmanagerk8s").id')
+NODE_COMMAND=$(curl -s https://{{ pillar['rancher_static_ip'] }}/v3/clusterregistrationtokens -H "Authorization: Bearer $API_TOKEN" -H 'content-type: application/json' --compressed --insecure | jq -r ".data[] | select (.clusterId == \"$NODE_ID\").nodeCommand")
 echo "Sleeping some random amount of time before joining the cluster"
 if grep -q 'role: k8scontrolplane' /etc/salt/grains; then
   NODE_COMMAND="$NODE_COMMAND --etcd --controlplane"
