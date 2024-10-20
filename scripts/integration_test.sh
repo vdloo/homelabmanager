@@ -20,9 +20,9 @@ function terraform_environment()
     if ! cat checksum | md5sum --quiet -c; then
         md5sum main.tf > checksum
         sudo terraform destroy --auto-approve || /bin/true
-        sudo virsh list --all | grep -v debian-10 | grep -v focal | grep -v ubuntu18 | grep -v arch-openstack | grep shut | awk '{print$2}' | xargs -I {} sh -c 'sudo virsh destroy {} || /bin/true; sudo virsh undefine {} || /bin/true' || /bin/true
+        sudo virsh list --all | grep -v debian-10 | grep -v debian-12 | grep -v focal | grep -v jammy-server | grep -v ubuntu18 | grep -v arch-openstack | grep shut | awk '{print$2}' | xargs -I {} sh -c 'sudo virsh destroy {} || /bin/true; sudo virsh undefine {} || /bin/true' || /bin/true
         cd /var/lib/libvirt/images
-        ls /var/lib/libvirt/images | grep -v focal | grep -v bionic-server | grep -v debian-10 | grep -v arch-openstack | xargs -I {} sudo rm -rf "{}"
+        ls /var/lib/libvirt/images | grep -v focal | grep -v jammy-server | grep -v bionic-server | grep -v debian-10 | grep -v debian-12 | grep -v arch-openstack | xargs -I {} sudo rm -rf "{}"
         cd -
         sudo terraform apply --auto-approve || /bin/true
         sleep 1
