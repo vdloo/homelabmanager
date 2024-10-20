@@ -28,7 +28,7 @@ ensure_stack_ssh_dir:
 
 ensure_global_key_is_on_disk_for_stack_user:
   file.managed:
-    - name: /opt/stack/.ssh/id_rsa
+    - name: /opt/stack/.ssh/id_ed25519
     - contents_pillar: private_key
     - user: stack
     - group: stack
@@ -36,7 +36,7 @@ ensure_global_key_is_on_disk_for_stack_user:
 
 ensure_global_public_key_is_on_disk_for_stack_user:
   file.managed:
-    - name: /opt/stack/.ssh/id_rsa.pub
+    - name: /opt/stack/.ssh/id_ed25519.pub
     - contents_pillar: public_key
     - user: stack
     - group: stack

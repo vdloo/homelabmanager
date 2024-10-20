@@ -45,7 +45,7 @@ symlink_jenkins_home_from_storage:
 
 ensure_jenkins_ssh_key:
   file.managed:
-    - name: /var/lib/jenkins/.ssh/id_rsa
+    - name: /var/lib/jenkins/.ssh/id_ed25519
     - contents_pillar: private_key
     - user: jenkins
     - group: jenkins
