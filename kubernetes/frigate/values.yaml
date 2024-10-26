@@ -1,0 +1,19 @@
+config: | 
+  mqtt:
+    enabled: False
+  cameras:
+    cam1:
+      enabled: True
+      ffmpeg:
+        inputs:
+          - path: rtsp://exampleuser:examplepassword@192.168.1.123:554/stream1
+            roles:
+              - record
+      detect:
+        enabled: False
+  record:
+    enabled: True
+    retain:
+      days: 1
+      mode: all
+  version: 0.14
