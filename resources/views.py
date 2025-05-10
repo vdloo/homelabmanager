@@ -106,7 +106,14 @@ runcmd:
         pacman-key --populate archlinux
         pacman -Syy
         pacman -S gnupg archlinux-keyring --noconfirm
-        pacman -Su salt cloud-utils e2fsprogs python-tornado --noconfirm --overwrite /usr/bin/growpart
+        pacman -Su cloud-utils e2fsprogs python-tornado base-devel git --noconfirm --overwrite /usr/bin/growpart
+        sudo -u arch bash -c "cd; git clone https://aur.archlinux.org/yay.git; cd yay; makepkg -si --noconfirm"
+        sudo -u arch yay -S salt --noconfirm
+        # Workaround for fixing broken Python 3.13 support in salt
+        # See https://github.com/saltstack/salt/pull/67788
+        wget -q https://raw.githubusercontent.com/saltstack/salt/8a8fc0814264364de2928aeb1207226d18b6f2f8/salt/modules/linux_shadow.py -O /usr/lib/python3.13/site-packages/salt/modules/linux_shadow.py
+        userdel arch
+        rm -rf /home/arch
     else
         apt-get update --allow-releaseinfo-change
         apt-get install curl -y
