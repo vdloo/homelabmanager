@@ -25,11 +25,33 @@ write_aider_service_unit:
     - mode: 644
     - template: jinja
 
+write_vibe_skeleton_service_unit:
+  file.managed:
+    - name: /usr/lib/systemd/system/vibe-skeleton.service
+    - source: salt://files/usr/lib/systemd/system/vibe-skeleton.service
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+
 daemon_reload_if_aider_unit_changed:
   cmd.run:
     - name: systemctl daemon-reload
     - onchanges:
         - file: /usr/lib/systemd/system/aider.service
+
+write_install_vibe_skeleton_script:
+  file.managed:
+    - name: /usr/local/bin/install_vibe_skeleton.sh
+    - source: salt://files/usr/local/bin/install_vibe_skeleton.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+install_vibe_skeleton_if_needed:
+  cmd.run:
+    - name: /usr/local/bin/install_vibe_skeleton.sh > /tmp/install_vibe_skeleton 2>&1 &
 
 ensure_aider_dir:
   file.directory:
