@@ -12,3 +12,4 @@ git clone https://github.com/vdloo/homelabmanager &
 git clone https://github.com/vdloo/dotfiles &
 git clone https://github.com/vdloo/machine-check &
 git clone https://github.com/vdloo/detect-os-release &
+git clone https://github.com/vdloo/vibe-skeleton &
