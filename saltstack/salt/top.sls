@@ -1,6 +1,9 @@
 base:
   '*':
     - core
+  'role:agent':
+    - match: grain
+    - agent
   'role:shellserver':
     - match: grain
     - shellserver
