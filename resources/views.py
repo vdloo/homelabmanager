@@ -106,7 +106,14 @@ runcmd:
         pacman-key --populate archlinux
         pacman -Syy
         pacman -S gnupg archlinux-keyring --noconfirm
-        pacman -Su salt cloud-utils e2fsprogs python-tornado --noconfirm --overwrite /usr/bin/growpart
+        pacman -Su cloud-utils e2fsprogs python-tornado base-devel git --noconfirm --overwrite /usr/bin/growpart
+        sudo -u arch bash -c "cd; git clone https://aur.archlinux.org/yay.git; cd yay; makepkg -si --noconfirm"
+        sudo -u arch yay -S salt --noconfirm
+        # Workaround for fixing broken Python 3.13 support in salt
+        # See https://github.com/saltstack/salt/pull/67788
+        wget -q https://raw.githubusercontent.com/saltstack/salt/8a8fc0814264364de2928aeb1207226d18b6f2f8/salt/modules/linux_shadow.py -O /usr/lib/python3.13/site-packages/salt/modules/linux_shadow.py
+        userdel arch
+        rm -rf /home/arch
     else
         apt-get update --allow-releaseinfo-change
         apt-get install curl -y
@@ -119,18 +126,14 @@ runcmd:
             curl -fsSL -o /etc/apt/keyrings/salt-archive-keyring-2023.gpg https://repo.saltproject.io/salt/py3/ubuntu/22.04/amd64/SALT-PROJECT-GPG-PUBKEY-2023.gpg
             echo "deb [signed-by=/etc/apt/keyrings/salt-archive-keyring-2023.gpg arch=amd64] https://repo.saltproject.io/salt/py3/ubuntu/22.04/amd64/latest jammy main" > /etc/apt/sources.list.d/salt.list
         else
-            curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/debian/10/amd64/latest/salt-archive-keyring.gpg
-            echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg] https://repo.saltproject.io/py3/debian/10/amd64/latest buster main" > /etc/apt/sources.list.d/salt.list
+            curl -fsSL https://packages.broadcom.com/artifactory/api/security/keypair/SaltProjectKey/public | tee /etc/apt/keyrings/salt-archive-keyring.pgp
+            curl -fsSL https://github.com/saltstack/salt-install-guide/releases/latest/download/salt.sources | tee /etc/apt/sources.list.d/salt.sources
             if timeout 1 bash -c "</dev/tcp/192.168.1.252/80"; then
-                echo "deb [trusted=yes] http://192.168.1.252 buster main" > /tmp/temp_apt_sources.list
-                echo "deb [trusted=yes] http://192.168.1.252 buster-updates main" >> /tmp/temp_apt_sources.list
-                echo "deb [trusted=yes] http://192.168.1.252 buster-backports main" >> /tmp/temp_apt_sources.list
-                echo "deb [trusted=yes] http://192.168.1.252 buster-security main" >> /tmp/temp_apt_sources.list
+                echo "deb [trusted=yes] http://192.168.1.252 bookworm main" > /tmp/temp_apt_sources.list
+                echo "deb [trusted=yes] http://192.168.1.252 bookworm-updates main" >> /tmp/temp_apt_sources.list
             else
-                echo "deb http://deb.debian.org/debian/ buster main" > /tmp/temp_apt_sources.list
-                echo "deb http://deb.debian.org/debian/ buster-updates main" >> /tmp/temp_apt_sources.list
-                echo "deb http://archive.debian.org/debian/ buster-backports main" >> /tmp/temp_apt_sources.list
-                echo "deb http://security.debian.org/debian-security buster/updates main" >> /tmp/temp_apt_sources.list
+                echo "deb http://deb.debian.org/debian/ bookworm main" > /tmp/temp_apt_sources.list
+                echo "deb http://deb.debian.org/debian/ bookworm-updates main" >> /tmp/temp_apt_sources.list
             fi
             mv /tmp/temp_apt_sources.list /etc/apt/sources.list
         fi
