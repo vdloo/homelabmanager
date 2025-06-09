@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 set -e
 
+AGENT_NUMBER=(233 110)
+
 UNPRIVILEGED_USER={{ pillar['shellserver_unprivileged_user_name'] }}
 if ! id "$UNPRIVILEGED_USER" &>/dev/null; then
     echo "No such user '$UNPRIVILEGED_USER'"
@@ -8,8 +10,13 @@ if ! id "$UNPRIVILEGED_USER" &>/dev/null; then
 fi
 if ! grep -q 'alias aider' /home/$UNPRIVILEGED_USER/.bashrc-local; then
     echo "alias aider='/etc/aider/venv/bin/aider --openai-api-base http://192.168.1.233:8080 --openai-api-key dummy --model openai/localmodel --no-show-model-warnings --yes --analytics-disable --no-show-model-warnings --no-check-model-accepts-settings '" >> /home/$UNPRIVILEGED_USER/.bashrc-local
-    echo "alias aider1='/etc/aider/venv/bin/aider --openai-api-base http://192.168.1.233:8080 --openai-api-key dummy --model openai/localmodel --no-show-model-warnings --yes --analytics-disable --no-show-model-warnings --no-check-model-accepts-settings '" >> /home/$UNPRIVILEGED_USER/.bashrc-local
-    echo "alias aider2='/etc/aider/venv/bin/aider --openai-api-base http://192.168.1.110:8080 --openai-api-key dummy --model openai/localmodel --no-show-model-warnings --yes --analytics-disable --no-show-model-warnings --no-check-model-accepts-settings '" >> /home/$UNPRIVILEGED_USER/.bashrc-local
+    counter=1
+    for num in "${AGENT_NUMBER[@]}"; do
+        ip="192.168.1.$num"
+        alias_name="aider$counter"
+        echo "alias $alias_name='/etc/aider/venv/bin/aider --openai-api-base http://$ip:8080 --openai-api-key dummy --model openai/localmodel --no-show-model-warnings --yes --analytics-disable --no-show-model-warnings --no-check-model-accepts-settings '" >> /home/$UNPRIVILEGED_USER/.bashrc-local
+        counter=$((counter + 1))
+    done
 fi
 # Just to make sure we're using a locally hosted model
 if ! grep -q openai; then
@@ -25,8 +32,8 @@ else
   python3 -m venv venv
   . venv/bin/activate
   pip3 install -U --upgrade-strategy only-if-needed aider-chat[browser]
-  systemctl enable aider@233
-  systemctl restart aider@233
-  systemctl enable aider@110
-  systemctl restart aider@110
+  for num in "${AGENT_NUMBER[@]}"; do
+    systemctl enable aider@$num
+    systemctl restart aider@$num
+  done
 fi
