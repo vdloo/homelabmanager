@@ -1,0 +1,15 @@
+[Unit]
+Description=Vibe Skeleton
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+User={{ pillar['shellserver_unprivileged_user_name'] }}
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/home/{{ pillar['shellserver_unprivileged_user_name'] }}/code/projects/vibe-skeleton
+ExecStart=/home/{{ pillar['shellserver_unprivileged_user_name'] }}/code/projects/vibe-skeleton/venv/bin/python /home/{{ pillar['shellserver_unprivileged_user_name'] }}/code/projects/vibe-skeleton/manage.py runserver 0.0.0.0:8080
+
+[Install]
+WantedBy=multi-user.target

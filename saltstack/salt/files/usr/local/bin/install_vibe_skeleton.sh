@@ -12,7 +12,7 @@ if test -d venv; then
   echo "vibe-skeleton venv already exists"
 else
   echo "Installing vibe-skeleton in venv"
-  sudo -i -u $UNPRIVILEGED_USER bash -c (python -m venv venv; . venv/bin/activate; pip install -r requirements/dev.txt; ./manage.py migrate)
+  sudo -i -u $UNPRIVILEGED_USER bash -c 'cd code/projects/vibe-skeleton; python3 -m venv venv; . venv/bin/activate; pip install -r requirements/dev.txt; ./manage.py migrate'
   systemctl enable vibe-skeleton
   systemctl restart vibe-skeleton
 fi
