@@ -1,0 +1,21 @@
+[Unit]
+Description=Aider Agent %i
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+User={{ pillar['shellserver_unprivileged_user_name'] }}
+Type=simple
+Restart=always
+RestartSec=10
+WorkingDirectory=/home/{{ pillar['shellserver_unprivileged_user_name'] }}/code/projects/vibe-skeleton%i
+ExecStartPre=/usr/bin/git instaweb --port 8%i --start
+ExecStart=/etc/aider/venv/bin/aider --openai-api-base http://192.168.1.%i:8080 --openai-api-key dummy --model openai/localmodel --no-show-model-warnings --yes --analytics-disable --browser
+Environment=STREAMLIT_SERVER_PORT=7%i
+
+[Install]
+WantedBy=multi-user.target
+
+
+[Install]
+WantedBy=multi-user.target

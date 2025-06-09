@@ -18,8 +18,8 @@ install_agent_packages_for_debian:
 
 write_aider_service_unit:
   file.managed:
-    - name: /usr/lib/systemd/system/aider.service
-    - source: salt://files/usr/lib/systemd/system/aider.service
+    - name: /usr/lib/systemd/system/aider@.service
+    - source: salt://files/usr/lib/systemd/system/aider@.service
     - user: root
     - group: root
     - mode: 644
@@ -27,8 +27,8 @@ write_aider_service_unit:
 
 write_vibe_skeleton_service_unit:
   file.managed:
-    - name: /usr/lib/systemd/system/vibe-skeleton.service
-    - source: salt://files/usr/lib/systemd/system/vibe-skeleton.service
+    - name: /usr/lib/systemd/system/vibe-skeleton@.service
+    - source: salt://files/usr/lib/systemd/system/vibe-skeleton@.service
     - user: root
     - group: root
     - mode: 644
@@ -38,7 +38,7 @@ daemon_reload_if_aider_unit_changed:
   cmd.run:
     - name: systemctl daemon-reload
     - onchanges:
-        - file: /usr/lib/systemd/system/aider.service
+        - file: /usr/lib/systemd/system/aider@.service
 
 write_install_vibe_skeleton_script:
   file.managed:
@@ -48,6 +48,13 @@ write_install_vibe_skeleton_script:
     - group: root
     - mode: 755
     - template: jinja
+
+daemon_reload_if_vibe_skeleton_unit_changed:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - onchanges:
+        - file: /usr/lib/systemd/system/vibe-skeleton@.service
+
 
 install_vibe_skeleton_if_needed:
   cmd.run:

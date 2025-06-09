@@ -13,6 +13,10 @@ if test -d venv; then
 else
   echo "Installing vibe-skeleton in venv"
   sudo -i -u $UNPRIVILEGED_USER bash -c 'cd code/projects/vibe-skeleton; python3 -m venv venv; . venv/bin/activate; pip install -r requirements/dev.txt; ./manage.py migrate'
-  systemctl enable vibe-skeleton
-  systemctl restart vibe-skeleton
+  sudo -i -u $UNPRIVILEGED_USER bash -c 'cp -R code/projects/vibe-skeleton code/projects/vibe-skeleton233'
+  systemctl enable vibe-skeleton@233
+  systemctl restart vibe-skeleton@233
+  sudo -i -u $UNPRIVILEGED_USER bash -c 'cp -R code/projects/vibe-skeleton code/projects/vibe-skeleton110'
+  systemctl enable vibe-skeleton@110
+  systemctl restart vibe-skeleton@110
 fi

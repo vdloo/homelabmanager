@@ -8,6 +8,8 @@ if ! id "$UNPRIVILEGED_USER" &>/dev/null; then
 fi
 if ! grep -q 'alias aider' /home/$UNPRIVILEGED_USER/.bashrc-local; then
     echo "alias aider='/etc/aider/venv/bin/aider --openai-api-base http://192.168.1.233:8080 --openai-api-key dummy --model openai/localmodel --no-show-model-warnings --yes --analytics-disable --no-show-model-warnings --no-check-model-accepts-settings '" >> /home/$UNPRIVILEGED_USER/.bashrc-local
+    echo "alias aider1='/etc/aider/venv/bin/aider --openai-api-base http://192.168.1.233:8080 --openai-api-key dummy --model openai/localmodel --no-show-model-warnings --yes --analytics-disable --no-show-model-warnings --no-check-model-accepts-settings '" >> /home/$UNPRIVILEGED_USER/.bashrc-local
+    echo "alias aider2='/etc/aider/venv/bin/aider --openai-api-base http://192.168.1.110:8080 --openai-api-key dummy --model openai/localmodel --no-show-model-warnings --yes --analytics-disable --no-show-model-warnings --no-check-model-accepts-settings '" >> /home/$UNPRIVILEGED_USER/.bashrc-local
 fi
 # Just to make sure we're using a locally hosted model
 if ! grep -q openai; then
@@ -23,6 +25,8 @@ else
   python3 -m venv venv
   . venv/bin/activate
   pip3 install -U --upgrade-strategy only-if-needed aider-chat[browser]
-  systemctl enable aider
-  systemctl restart aider
+  systemctl enable aider@233
+  systemctl restart aider@233
+  systemctl enable aider@110
+  systemctl restart aider@110
 fi
