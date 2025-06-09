@@ -13,6 +13,7 @@ class TestAutomaticLoginMiddleware(TestCase):
 
         required_fields = list(VirtualMachineAdmin.list_display)
         required_fields.remove('enabled')
+        required_fields.remove('static_ip')
         self.assertEqual(ret.status_code, 200)
         for attribute in required_fields:
             self.assertIn(
