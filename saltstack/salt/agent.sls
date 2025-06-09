@@ -82,3 +82,59 @@ write_install_aider_script:
 install_aider_if_needed:
   cmd.run:
     - name: /usr/local/bin/install_aider.sh > /tmp/install_aider_log 2>&1 &
+
+ensure_llama_cpp_dir:
+  file.directory:
+    - name: /etc/llama.cpp
+    - user: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - group: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - mode: 755
+    - makedirs: true
+
+clone_llama_cpp_repo:
+  git.latest:
+    - target: /etc/llama.cpp
+    - branch: master
+    - name: https://github.com/ggml-org/llama.cpp
+    - user: {{ pillar['shellserver_unprivileged_user_name'] }}
+    - update_head: False
+
+write_llama_cpp_service_unit:
+  file.managed:
+    - name: /usr/lib/systemd/system/llama_cpp.service
+    - source: salt://files/usr/lib/systemd/system/llama_cpp.service
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+
+daemon_reload_if_llama_cpp_unit_changed:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - onchanges:
+        - file: /usr/lib/systemd/system/llama_cpp.service
+
+install_llama_cpp_packages:
+  pkg.installed:
+    - pkgs:
+        - libcurl4-openssl-dev
+        - cmake
+
+write_install_llama_cpp_script:
+  file.managed:
+    - name: /usr/local/bin/install_llama_cpp.sh
+    - source: salt://files/usr/local/bin/install_llama_cpp.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+    - require:
+      - file: /etc/llama.cpp
+
+install_llama_cpp_if_needed:
+  cmd.run:
+    - name: /usr/local/bin/install_llama_cpp.sh > /tmp/install_llama_cpp_log 2>&1 &
+    - onchanges:
+      - git: clone_llama_cpp_repo
+  require:
+    - pkg: libcurl4-openssl-dev

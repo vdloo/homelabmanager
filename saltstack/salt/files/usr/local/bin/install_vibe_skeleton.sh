@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 set -e
 
-AGENT_NUMBER=(233 110)
+AGENT_NUMBER=(233 110 235)
 UNPRIVILEGED_USER={{ pillar['shellserver_unprivileged_user_name'] }}
 if ! id "$UNPRIVILEGED_USER" &>/dev/null; then
     echo "No such user '$UNPRIVILEGED_USER'"

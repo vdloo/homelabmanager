@@ -1,0 +1,15 @@
+[Unit]
+Description=llama.cpp
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+User={{ pillar['shellserver_unprivileged_user_name'] }}
+Type=simple
+Restart=always
+RestartSec=10
+WorkingDirectory=/etc/llama.cpp
+ExecStart=/bin/bash -c "test -d /mnt/storage/models && build/bin/llama-server -m $(find /mnt/storage/models/ -name '*.gguf' | head -n 1) -t $(nproc) --port 8080 --host 192.168.1.235 -c 32768"
+
+[Install]
+WantedBy=multi-user.target
