@@ -9,7 +9,7 @@ Type=simple
 Restart=always
 RestartSec=1
 WorkingDirectory=/home/{{ pillar['shellserver_unprivileged_user_name'] }}/code/projects/vibe-skeleton%i
-ExecStart=/home/{{ pillar['shellserver_unprivileged_user_name'] }}/code/projects/vibe-skeleton%i/venv/bin/python /home/{{ pillar['shellserver_unprivileged_user_name'] }}/code/projects/vibe-skeleton/manage.py runserver 0.0.0.0:9%i
+ExecStart=/home/{{ pillar['shellserver_unprivileged_user_name'] }}/code/projects/vibe-skeleton%i/venv/bin/python /home/{{ pillar['shellserver_unprivileged_user_name'] }}/code/projects/vibe-skeleton%i/manage.py runserver 0.0.0.0:9%i
 
 [Install]
 WantedBy=multi-user.target
