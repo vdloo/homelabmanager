@@ -83,6 +83,19 @@ install_aider_if_needed:
   cmd.run:
     - name: /usr/local/bin/install_aider.sh > /tmp/install_aider_log 2>&1 &
 
+write_install_opencode_script:
+  file.managed:
+    - name: /usr/local/bin/install_opencode.sh
+    - source: salt://files/usr/local/bin/install_opencode.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+
+install_opencode_if_needed:
+  cmd.run:
+    - name: /usr/local/bin/install_opencode.sh > /tmp/install_opencode_log 2>&1 &
+
 ensure_llama_cpp_dir:
   file.directory:
     - name: /etc/llama.cpp
@@ -98,6 +111,7 @@ clone_llama_cpp_repo:
     - name: https://github.com/ggml-org/llama.cpp
     - user: {{ pillar['shellserver_unprivileged_user_name'] }}
     - update_head: False
+    - force_fetch: True
 
 write_llama_cpp_service_unit:
   file.managed:
