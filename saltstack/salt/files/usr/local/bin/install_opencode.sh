@@ -18,7 +18,7 @@ cat << 'EOF' > /home/{{ pillar['shellserver_unprivileged_user_name'] }}/.config/
 {
   "$schema": "https://opencode.ai/config.json",
   "disabled_providers": ["opencode"],
-  "theme": "lucent-orng"
+  "theme": "lucent-orng",
   "provider": {
     "gpu": {
       "npm": "@ai-sdk/openai-compatible",
